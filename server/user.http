@@ -1,0 +1,5 @@
+### Hämta alla användare
+GET http://localhost:3000/api/users
+
+### Hämta en specifik användare
+GET http://localhost:3000/api/users/6746e0fab030939318458061

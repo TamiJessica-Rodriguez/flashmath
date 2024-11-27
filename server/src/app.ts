@@ -5,7 +5,7 @@ import 'express-async-errors';
 
 // import { imagesRouter } from './images/images-router';
 // import { postsRouter } from './posts/post-router';
-// import { userRouter } from './users/user-router';
+import { userRouter } from './users/user-router';
 
 export const app = express();
 
@@ -20,7 +20,7 @@ app.use(express.json());
 // );
 
 // app.use('/api/posts', postsRouter);
-// app.use('/api/users', userRouter);
+app.use('/api/users', userRouter);
 // app.use('/api/images', imagesRouter);
 
 //error handler

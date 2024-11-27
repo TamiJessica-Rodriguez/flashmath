@@ -3,3 +3,17 @@ GET http://localhost:3000/api/users
 
 ### Hämta en specifik användare
 GET http://localhost:3000/api/users/6746e0fab030939318458061
+
+### Skapa en ny användare
+POST http://localhost:3000/api/users/create
+Content-Type: application/json
+
+{
+    "firstname": "Jessica",
+    "lastname": "Rodriguez",
+    "username": "jessijessi",
+    "password": "123456"
+}
+
+### Ta bort en användare
+DELETE http://localhost:3000/api/users/6746e0fab030939318458061

@@ -1,7 +1,8 @@
 import express from 'express';
-import { getUsers } from './user-handlers';
+import { createUser, deleteUser, getUsers } from './user-handlers';
 
 export const userRouter = express.Router();
 
-// Endpoint för att hämta alla användare
 userRouter.get('/', getUsers);
+userRouter.post('/create', createUser);
+userRouter.delete('/:id', deleteUser);

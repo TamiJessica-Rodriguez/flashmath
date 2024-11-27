@@ -9,9 +9,9 @@ POST http://localhost:3000/api/users/create
 Content-Type: application/json
 
 {
-    "firstname": "Jessica",
-    "lastname": "Rodriguez",
-    "username": "jessijessi",
+    "firstname": "Hugo",
+    "lastname": "Roque",
+    "username": "hugohugo",
     "password": "123456"
 }
 

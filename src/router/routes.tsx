@@ -1,4 +1,5 @@
 import Index from '../pages/Index';
+// import Login from '../pages/Login';
 
 const routes = [
     {
@@ -7,8 +8,8 @@ const routes = [
         layout: 'blank',
     },
     // {
-    //     path: '/ritningstolken',
-    //     element: <Uploads />,
+    //     path: '/login',
+    //     element: <Login />,
     //     layout: 'default',
     // },
     // {

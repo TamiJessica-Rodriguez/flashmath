@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import { z } from 'zod';
 import { UserModel, UserZodSchema } from './user-model';
 
@@ -31,10 +32,18 @@ export const createUser = async (req: Request, res: Response) => {
             return res.status(409).json({ message: 'Användarnamnet finns redan' });
         }
 
-        // Skapa en ny användare
-        const newUser = new UserModel(validatedData);
+        // Hasha lösenordet
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(validatedData.password, salt);
+
+        // Skapa en ny användare med det hashade lösenordet
+        const newUser = new UserModel({
+            ...validatedData,
+            password: hashedPassword,
+        });
         await newUser.save();
 
+        // Returnera användarens data utan lösenord
         res.status(201).json({
             message: 'Användare skapad',
             user: {
@@ -56,8 +65,6 @@ export const createUser = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Kunde inte skapa användare' });
     }
 };
-
-import mongoose from 'mongoose';
 
 export const deleteUser = async (req: Request, res: Response) => {
     try {
@@ -148,3 +155,9 @@ export const updateUser = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Kunde inte uppdatera användaren' });
     }
 };
+
+// Hashar ett lösenord
+export async function hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(password, salt);
+}

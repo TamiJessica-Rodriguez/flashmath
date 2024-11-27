@@ -1,0 +1,77 @@
+[
+    {
+        "id": 1,
+        "label": "BEL_Armatur_Vägg",
+        "iconPath": "/assets/icons/location-icon.svg"
+    },
+    {
+        "id": 2,
+        "label": "BEL_Downlight / Plafond_ Tak",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 3,
+        "label": "BEL_LED_Limpa_Tak",
+        "iconPath": "/assets/icons/vehicle-icon.svg"
+    },
+    {
+        "id": 4,
+        "label": "BEL_LED_Limpa_Vägg",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 5,
+        "label": "BEL_LED-platta_60*60",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 6,
+        "label": "BEL_Lamputtag_Tak",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 7,
+        "label": "BEL_Lamputtag/Armatur_Vägg",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 8,
+        "label": "BEL_Nödbelysning",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 9,
+        "label": "BEL_Stolpe",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 10,
+        "label": "BEL_Pollare",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 11,
+        "label": "BEL_Spotlight",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 12,
+        "label": "BEL_Strålkastare",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 13,
+        "label": "BEL_Utrymningsskylt_Tak",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 14,
+        "label": "BEL_Utrymningsskylt_Vägg",
+        "iconPath": "/assets/icons/building-icon.svg"
+    },
+    {
+        "id": 15,
+        "label": "Okänd",
+        "iconPath": "/assets/icons/building-icon.svg"
+    }
+]

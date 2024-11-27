@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { UserModel, UserZodSchema } from './user-model';
@@ -7,8 +8,8 @@ import { UserModel, UserZodSchema } from './user-model';
  */
 export const getUsers = async (req: Request, res: Response) => {
     try {
-        const users = await UserModel.find(); // Hämta alla användare
-        console.log('Fetched users:', users); // Logga resultatet
+        const users = await UserModel.find();
+        console.log('Fetched users:', users);
         res.status(200).json(users);
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -84,5 +85,66 @@ export const deleteUser = async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Error deleting user:', error);
         res.status(500).json({ message: 'Kunde inte ta bort användaren' });
+    }
+};
+
+/**
+ * Uppdatera en användares användarnamn och/eller lösenord.
+ */
+export const updateUser = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        console.log('Update request received for ID:', id);
+
+        // Kontrollera om ID är ett giltigt MongoDB ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            console.error('Invalid ID:', id);
+            return res.status(400).json({ message: 'Ogiltigt ID' });
+        }
+
+        // Validera inkommande data
+        const updateSchema = z.object({
+            username: z.string().min(3, 'Användarnamn måste vara minst 3 tecken långt').optional(),
+            password: z.string().min(6, 'Lösenordet måste vara minst 6 tecken långt').optional(),
+        });
+
+        const validatedData = updateSchema.parse(req.body);
+
+        // Hantera lösenordshashning om lösenordet ska uppdateras
+        if (validatedData.password) {
+            const salt = await bcrypt.genSalt(10);
+            validatedData.password = await bcrypt.hash(validatedData.password, salt);
+        }
+
+        // Uppdatera användaren i databasen
+        const updatedUser = await UserModel.findByIdAndUpdate(id, { $set: validatedData }, { new: true, runValidators: true });
+
+        if (!updatedUser) {
+            console.error('User not found for ID:', id);
+            return res.status(404).json({ message: 'Användaren hittades inte' });
+        }
+
+        console.log('User updated:', updatedUser);
+
+        res.status(200).json({
+            message: 'Användare uppdaterad',
+            user: {
+                firstname: updatedUser.firstname,
+                lastname: updatedUser.lastname,
+                username: updatedUser.username,
+            },
+        });
+    } catch (error) {
+        console.error('Error updating user:', error);
+
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({
+                message: 'Ogiltiga uppgifter',
+                errors: error.errors,
+            });
+        }
+
+        res.status(500).json({ message: 'Kunde inte uppdatera användaren' });
     }
 };

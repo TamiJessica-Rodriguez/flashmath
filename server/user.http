@@ -15,5 +15,14 @@ Content-Type: application/json
     "password": "123456"
 }
 
-# ### Ta bort en användare
-# DELETE http://localhost:3000/api/users/6746e0fab030939318458061
+### Ta bort en användare
+DELETE http://localhost:3000/api/users/6746e0fab030939318458061
+
+### Uppdatera en användare
+PUT http://localhost:3000/api/users/67471a2e010696a45c5c713c
+Content-Type: application/json
+
+{
+    "username": "Jessica",
+    "password": "superpassword"
+}

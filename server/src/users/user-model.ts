@@ -40,12 +40,19 @@ const userSchema = new Schema<IUser>(
     { collection: 'User' }
 );
 
-// Pre-save middleware for password hashing
 userSchema.pre('save', async function (next) {
     const user = this as IUser;
+
+    // Kontrollera om lösenordet är ändrat
     if (user.isModified('password')) {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
+        try {
+            // Generera en salt och hash lösenordet
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(user.password, salt);
+        } catch (error: any) {
+            console.error('Error hashing password:', error);
+            next(error as mongoose.CallbackError);
+        }
     }
     next();
 });

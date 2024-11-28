@@ -1,6 +1,9 @@
 ### Hämta alla användare
 GET http://localhost:3000/api/users
 
+### Ta bort en användare
+DELETE http://localhost:3000/api/users/6748b28abaf9dd1e3497885c
+
 ### Hämta en specifik användare
 GET http://localhost:3000/api/users/6746e0fab030939318458061
 
@@ -9,14 +12,13 @@ POST http://localhost:3000/api/users/create
 Content-Type: application/json
 
 {
-    "firstname": "Hugo",
+    "firstname": "Jessica",
     "lastname": "Rivero",
-    "username": "Hugo",
-    "password": "HugoHugo"
+    "username": "Jessica",
+    "password": "Jessica"
 }
 
-### Ta bort en användare
-DELETE http://localhost:3000/api/users/67476b02f851d42d7aa60534
+
 
 ### Uppdatera en användare
 PUT http://localhost:3000/api/users/6747617fdf2ebf65c9f12220
@@ -32,8 +34,8 @@ POST http://localhost:3000/api/users/login
 Content-Type: application/json
 
 {
-    "username": "Carolina",
-    "password": "Carolina"
+    "username": "Jessica",
+    "password": "Jessica"
 }
 
 ### LOGOUT A USER

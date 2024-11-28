@@ -21,27 +21,71 @@ export const getUsers = async (req: Request, res: Response) => {
 /**
  * Skapa en ny användare.
  */
-export const createUser = async (req: Request, res: Response) => {
+// export const createUser = async (req: Request, res: Response) => {
+//     try {
+//         // Validera inkommande data med Zod
+//         const validatedData = UserZodSchema.parse(req.body);
+
+//         // Kontrollera om användarnamnet redan finns
+//         const existingUser = await UserModel.findOne({ username: validatedData.username });
+//         if (existingUser) {
+//             return res.status(409).json({ message: 'Användarnamnet finns redan' });
+//         }
+
+//         // Hasha lösenordet
+//         const salt = await bcrypt.genSalt(10);
+//         const hashedPassword = await bcrypt.hash(validatedData.password, salt);
+
+//         // Skapa en ny användare med det hashade lösenordet
+//         const newUser = new UserModel({
+//             ...validatedData,
+//             password: hashedPassword,
+//         });
+//         await newUser.save();
+
+//         // Returnera användarens data utan lösenord
+//         res.status(201).json({
+//             message: 'Användare skapad',
+//             user: {
+//                 firstname: newUser.firstname,
+//                 lastname: newUser.lastname,
+//                 username: newUser.username,
+//             },
+//         });
+//     } catch (error) {
+//         // Hantera Zod-fel
+//         if (error instanceof z.ZodError) {
+//             return res.status(400).json({
+//                 message: 'Ogiltiga användaruppgifter',
+//                 errors: (error as z.ZodError).errors, // Returnera detaljer om valideringsfel
+//             });
+//         }
+
+//         console.error('Error creating user:', error);
+//         res.status(500).json({ message: 'Kunde inte skapa användare' });
+//     }
+// };
+
+export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
         // Validera inkommande data med Zod
         const validatedData = UserZodSchema.parse(req.body);
 
+        console.log('Validated user data:', validatedData);
+
         // Kontrollera om användarnamnet redan finns
         const existingUser = await UserModel.findOne({ username: validatedData.username });
         if (existingUser) {
-            return res.status(409).json({ message: 'Användarnamnet finns redan' });
+            console.log('User already exists:', existingUser);
+            res.status(409).json({ message: 'Användarnamnet finns redan' });
+            return;
         }
 
-        // Hasha lösenordet
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(validatedData.password, salt);
-
-        // Skapa en ny användare med det hashade lösenordet
-        const newUser = new UserModel({
-            ...validatedData,
-            password: hashedPassword,
-        });
+        // Skapa en ny användare med hashning hanterad i pre-save hook
+        const newUser = new UserModel(validatedData);
         await newUser.save();
+
+        console.log('New user created:', newUser);
 
         // Returnera användarens data utan lösenord
         res.status(201).json({
@@ -55,10 +99,11 @@ export const createUser = async (req: Request, res: Response) => {
     } catch (error) {
         // Hantera Zod-fel
         if (error instanceof z.ZodError) {
-            return res.status(400).json({
+            res.status(400).json({
                 message: 'Ogiltiga användaruppgifter',
-                errors: (error as z.ZodError).errors, // Returnera detaljer om valideringsfel
+                errors: error.errors,
             });
+            return;
         }
 
         console.error('Error creating user:', error);
@@ -162,20 +207,85 @@ export async function hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, salt);
 }
 
+// Login user
+
+// export const loginUser = async (req: Request, res: Response) => {
+//     const { username, password } = req.body;
+
+//     try {
+//         // Hitta användaren och inkludera lösenordet
+//         const user = await UserModel.findOne({ username }).select('+password');
+//         if (!user) {
+//             return res.status(401).json('Fel användarnamn eller lösenord');
+//         }
+
+//         console.log('User fetched:', user);
+
+//         // Verifiera lösenordet med bcrypt
+//         const isPasswordValid = await bcrypt.compare(password, user.password);
+//         if (!isPasswordValid) {
+//             return res.status(401).json('Fel lösenord');
+//         }
+
+//         console.log('Password is valid');
+
+//         // Returnera framgångsrikt svar
+//         res.status(200).json({
+//             message: 'Inloggning lyckades',
+//             user: {
+//                 id: user._id,
+//                 username: user.username,
+//             },
+//         });
+//     } catch (error) {
+//         console.error('Error during login:', error);
+//         res.status(500).json({ message: 'Kunde inte logga in' });
+//     }
+// };
+
+import argon2 from 'argon2';
+
 export const loginUser = async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
     try {
+        // Hitta användaren och inkludera lösenordet
         const user = await UserModel.findOne({ username }).select('+password');
         if (!user) {
             return res.status(401).json('Fel användarnamn eller lösenord');
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        console.log('User fetched:', user);
+
+        let isPasswordValid = false;
+
+        // Försök verifiera lösenordet med bcrypt
+        isPasswordValid = await bcrypt.compare(password, user.password);
+
         if (!isPasswordValid) {
-            return res.status(401).json('Fel användarnamn eller lösenord');
+            console.log('Bcrypt verification failed, trying argon2...');
+            // Om bcrypt misslyckas, försök med argon2
+            try {
+                isPasswordValid = await argon2.verify(user.password, password);
+                if (isPasswordValid) {
+                    console.log('Argon2 verification succeeded, rehashing with bcrypt...');
+                    // Rehash lösenordet med bcrypt och uppdatera användaren i databasen
+                    const newHashedPassword = await bcrypt.hash(password, 10);
+                    user.password = newHashedPassword;
+                    await user.save();
+                }
+            } catch (argonError) {
+                console.error('Argon2 verification failed:', argonError);
+            }
         }
 
+        if (!isPasswordValid) {
+            return res.status(401).json('Fel lösenord');
+        }
+
+        console.log('Password is valid');
+
+        // Returnera framgångsrikt svar
         res.status(200).json({
             message: 'Inloggning lyckades',
             user: {

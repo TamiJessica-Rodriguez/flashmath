@@ -28,7 +28,7 @@ const routes = [
     {
         path: 'addition',
         element: <Addition />,
-        layout: '',
+        layout: 'blank',
     },
     // {
     //     path: '/bildhantering',

@@ -8,3 +8,4 @@ userRouter.post('/create', createUser);
 userRouter.delete('/:id', deleteUser);
 userRouter.put('/:id', updateUser);
 userRouter.post('/login', loginUser);
+// userRouter.post('/login', logoutUser);

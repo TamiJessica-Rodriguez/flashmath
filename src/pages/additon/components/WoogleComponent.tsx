@@ -6,17 +6,26 @@ interface WoogleProps {
 }
 
 const WoogleComponent: React.FC<WoogleProps> = ({ onClose }) => {
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState(''); // Fråga som användaren skriver
     const [response, setResponse] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [file, setFile] = useState<File | null>(null); // För att hantera uppladdade filer
+    const [fileContent, setFileContent] = useState<string | null>(null); // För att lagra filens innehåll
 
+    // Hantera textfrågan (sökfråga)
     const handleSearch = async () => {
-        if (!query.trim()) {
+        if (!query.trim() && !fileContent) {
             return;
         }
 
         setLoading(true);
         setResponse(null);
+
+        // Kontrollera om användaren har laddat upp en fil eller om det är en textfråga
+        let contentToAnalyze = query;
+        if (fileContent) {
+            contentToAnalyze = `Här är texten från din fil: ${fileContent}. Fråga: ${query}`;
+        }
 
         try {
             const res = await axios.post(
@@ -24,30 +33,40 @@ const WoogleComponent: React.FC<WoogleProps> = ({ onClose }) => {
                 {
                     model: 'gpt-3.5-turbo',
                     messages: [
-                        {
-                            role: 'system',
-                            content: 'You are a helpful assistant providing educational information for children aged 7-9.',
-                        },
-                        {
-                            role: 'user',
-                            content: `Answer this question in a simple and kid-friendly way: ${query}`,
-                        },
+                        { role: 'system', content: 'Du är en hjälpsam assistent.' },
+                        { role: 'user', content: contentToAnalyze },
                     ],
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+                        Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`, // Hämta API-nyckeln från miljövariabler
                         'Content-Type': 'application/json',
                     },
                 }
             );
 
-            setResponse(res.data.choices[0].message.content);
+            setResponse(res.data.choices[0].message.content); // Sätt svaret från OpenAI
         } catch (error) {
             console.error('Error fetching data from OpenAI:', error);
             setResponse('Kunde inte få svar från Woogle just nu.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    // Hantera filuppladdning
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const selectedFile = e.target.files[0];
+            setFile(selectedFile);
+
+            // Läs filens innehåll som text
+            const reader = new FileReader();
+            reader.onload = () => {
+                const text = reader.result as string;
+                setFileContent(text); // Uppdatera fileContent med filens innehåll
+            };
+            reader.readAsText(selectedFile); // Läs filen som text
         }
     };
 
@@ -64,6 +83,7 @@ const WoogleComponent: React.FC<WoogleProps> = ({ onClose }) => {
                     </button>
                 </div>
 
+                {/* Textfråga */}
                 <div className="flex items-center gap-4 mb-6">
                     <input
                         type="text"
@@ -77,8 +97,23 @@ const WoogleComponent: React.FC<WoogleProps> = ({ onClose }) => {
                     </button>
                 </div>
 
+                {/* Filuppladdning */}
+                <div className="flex flex-col mb-6">
+                    <label htmlFor="file-upload" className="text-white mb-2">
+                        Välj en fil att analysera (frivilligt):
+                    </label>
+                    <input type="file" id="file-upload" onChange={handleFileChange} className="text-black p-2 rounded-lg" />
+                </div>
+
+                {/* Svar från OpenAI */}
                 <div className="bg-gray-700 p-6 rounded-lg min-h-[200px]">
-                    {loading ? <p className="text-center">Söker efter svar...</p> : response ? <p>{response}</p> : <p className="text-gray-400 text-center">Inget svar ännu. Gör en sökning ovan.</p>}
+                    {loading ? (
+                        <p className="text-center">Söker efter svar...</p>
+                    ) : response ? (
+                        <p>{response}</p>
+                    ) : (
+                        <p className="text-gray-400 text-center">Inget svar ännu. Gör en sökning ovan eller ladda upp en fil för att ställa en fråga om den.</p>
+                    )}
                 </div>
             </div>
         </div>
@@ -86,3 +121,5 @@ const WoogleComponent: React.FC<WoogleProps> = ({ onClose }) => {
 };
 
 export default WoogleComponent;
+
+// sk - proj - yhuZm_9y_IYRoy - INwWg0E7dVUf6FnDozDRXI_KSlTRUUwL_wzBlt4UqhL - IA7g - Qm3iS7_wbDT3BlbkFJ - kM9yJTnaJXoavwWt9pFQ5Z7TFVn436jmaf1C7MlysyPEtkOV9YmH2mb9resUhWy4uMY6V5xwA;

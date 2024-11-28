@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-const Index = () => {
+const Main = () => {
     const navigate = useNavigate();
 
     // Data för korten
@@ -113,4 +113,4 @@ const Index = () => {
     );
 };
 
-export default Index;
+export default Main;

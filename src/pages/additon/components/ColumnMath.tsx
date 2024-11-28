@@ -39,7 +39,7 @@ const ColumnMath = () => {
     const digitsToArray = (number: number) => number.toString().padStart(3, '0').split(''); // Dela upp talet i siffror
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center px-4">
+        <div className="min-h-screen bg-white text-white flex flex-col items-center justify-center px-4">
             <div className="w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-md">
                 <h2 className="text-xl font-bold text-center mb-6">Uppställningsmatematik</h2>
                 <div className="flex flex-col items-center gap-2">

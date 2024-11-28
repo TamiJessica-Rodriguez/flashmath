@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import IconX from '../../components/Icon/IconX';
 import IconFile from '../../components/Icon/IconFile';
 import { useNavigate } from 'react-router-dom';
-import { uploadFiles } from '../../controller/imageController';
+import { uploadFiles } from '../../controllers/imageController';
 import { useDropzone } from 'react-dropzone';
 
 const FileUploadPreview = () => {

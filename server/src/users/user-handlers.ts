@@ -161,3 +161,30 @@ export async function hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
 }
+
+export const loginUser = async (req: Request, res: Response) => {
+    const { username, password } = req.body;
+
+    try {
+        const user = await UserModel.findOne({ username }).select('+password');
+        if (!user) {
+            return res.status(401).json('Fel användarnamn eller lösenord');
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json('Fel användarnamn eller lösenord');
+        }
+
+        res.status(200).json({
+            message: 'Inloggning lyckades',
+            user: {
+                id: user._id,
+                username: user.username,
+            },
+        });
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ message: 'Kunde inte logga in' });
+    }
+};

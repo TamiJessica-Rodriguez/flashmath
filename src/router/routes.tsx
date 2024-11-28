@@ -1,5 +1,6 @@
 import Index from '../pages/Index';
-// import Login from '../pages/Login';
+import Login from '../pages/Login';
+import SignUp from '../pages/SignUp';
 
 const routes = [
     {
@@ -7,11 +8,16 @@ const routes = [
         element: <Index />,
         layout: 'blank',
     },
-    // {
-    //     path: '/login',
-    //     element: <Login />,
-    //     layout: 'default',
-    // },
+    {
+        path: '/login',
+        element: <Login />,
+        layout: 'blank',
+    },
+    {
+        path: '/signup',
+        element: <SignUp />,
+        layout: 'default',
+    },
     // {
     //     path: '/bildhantering',
     //     element: <ProcessedImages />,

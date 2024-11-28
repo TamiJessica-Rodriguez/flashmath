@@ -10,19 +10,31 @@ Content-Type: application/json
 
 {
     "firstname": "Hugo",
-    "lastname": "Roque",
-    "username": "hugohugo",
-    "password": "123456"
+    "lastname": "Rivero",
+    "username": "Hugo",
+    "password": "HugoHugo"
 }
 
 ### Ta bort en användare
-DELETE http://localhost:3000/api/users/6746e0fab030939318458061
+DELETE http://localhost:3000/api/users/67476b02f851d42d7aa60534
 
 ### Uppdatera en användare
-PUT http://localhost:3000/api/users/67471a2e010696a45c5c713c
+PUT http://localhost:3000/api/users/6747617fdf2ebf65c9f12220
 Content-Type: application/json
 
 {
     "username": "Jessica",
     "password": "superpassword"
 }
+
+### Logga in
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+    "username": "Carolina",
+    "password": "Carolina"
+}
+
+### LOGOUT A USER
+POST http://localhost:3000/api/users/logout

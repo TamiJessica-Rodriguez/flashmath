@@ -103,7 +103,7 @@ const ColumnMath = () => {
                 {feedback && <div className="text-center text-lg font-bold my-4">{feedback}</div>}
 
                 {/* Kontrollknapp */}
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-5">
                     <button onClick={checkAnswer} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
                         Kontrollera
                     </button>

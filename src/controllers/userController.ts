@@ -1,30 +1,3 @@
-// import axios from 'axios';
-
-// interface UserData {
-//     firstname: string;
-//     lastname: string;
-//     username: string;
-//     password: string;
-// }
-
-// const API_URL = 'http://localhost:3000/api/users';
-
-// export const createUser = async (userData: UserData) => {
-//     try {
-//         const response = await axios.post(`${API_URL}/create`, userData, {
-//             withCredentials: true,
-//         });
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error creating user:', error);
-//         if (axios.isAxiosError(error)) {
-//             throw new Error(error.response?.data?.message || 'Ett nätverksfel inträffade vid skapandet av användaren');
-//         } else {
-//             throw new Error('Ett nätverksfel inträffade vid skapandet av användaren');
-//         }
-//     }
-// };
-
 import axios from 'axios';
 
 interface UserData {
@@ -32,6 +5,7 @@ interface UserData {
     lastname: string;
     username: string;
     password: string;
+    avatar: string;
 }
 
 const API_URL = 'http://localhost:3000/api/users';

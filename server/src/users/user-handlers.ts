@@ -21,51 +21,6 @@ export const getUsers = async (req: Request, res: Response) => {
 /**
  * Skapa en ny användare.
  */
-// export const createUser = async (req: Request, res: Response) => {
-//     try {
-//         // Validera inkommande data med Zod
-//         const validatedData = UserZodSchema.parse(req.body);
-
-//         // Kontrollera om användarnamnet redan finns
-//         const existingUser = await UserModel.findOne({ username: validatedData.username });
-//         if (existingUser) {
-//             return res.status(409).json({ message: 'Användarnamnet finns redan' });
-//         }
-
-//         // Hasha lösenordet
-//         const salt = await bcrypt.genSalt(10);
-//         const hashedPassword = await bcrypt.hash(validatedData.password, salt);
-
-//         // Skapa en ny användare med det hashade lösenordet
-//         const newUser = new UserModel({
-//             ...validatedData,
-//             password: hashedPassword,
-//         });
-//         await newUser.save();
-
-//         // Returnera användarens data utan lösenord
-//         res.status(201).json({
-//             message: 'Användare skapad',
-//             user: {
-//                 firstname: newUser.firstname,
-//                 lastname: newUser.lastname,
-//                 username: newUser.username,
-//             },
-//         });
-//     } catch (error) {
-//         // Hantera Zod-fel
-//         if (error instanceof z.ZodError) {
-//             return res.status(400).json({
-//                 message: 'Ogiltiga användaruppgifter',
-//                 errors: (error as z.ZodError).errors, // Returnera detaljer om valideringsfel
-//             });
-//         }
-
-//         console.error('Error creating user:', error);
-//         res.status(500).json({ message: 'Kunde inte skapa användare' });
-//     }
-// };
-
 export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
         // Validera inkommande data med Zod
@@ -94,6 +49,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
                 firstname: newUser.firstname,
                 lastname: newUser.lastname,
                 username: newUser.username,
+                avatar: newUser.avatar, // Skicka avatar-data tillbaka
             },
         });
     } catch (error) {
@@ -206,42 +162,6 @@ export async function hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
 }
-
-// Login user
-
-// export const loginUser = async (req: Request, res: Response) => {
-//     const { username, password } = req.body;
-
-//     try {
-//         // Hitta användaren och inkludera lösenordet
-//         const user = await UserModel.findOne({ username }).select('+password');
-//         if (!user) {
-//             return res.status(401).json('Fel användarnamn eller lösenord');
-//         }
-
-//         console.log('User fetched:', user);
-
-//         // Verifiera lösenordet med bcrypt
-//         const isPasswordValid = await bcrypt.compare(password, user.password);
-//         if (!isPasswordValid) {
-//             return res.status(401).json('Fel lösenord');
-//         }
-
-//         console.log('Password is valid');
-
-//         // Returnera framgångsrikt svar
-//         res.status(200).json({
-//             message: 'Inloggning lyckades',
-//             user: {
-//                 id: user._id,
-//                 username: user.username,
-//             },
-//         });
-//     } catch (error) {
-//         console.error('Error during login:', error);
-//         res.status(500).json({ message: 'Kunde inte logga in' });
-//     }
-// };
 
 import argon2 from 'argon2';
 

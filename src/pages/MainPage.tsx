@@ -1,7 +1,23 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Main = () => {
     const navigate = useNavigate();
+    const [user, setUser] = useState<{ username: string; avatar: string } | null>(null);
+
+    // Fetch user data on mount
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
+
+    // Log out user
+    const handleLogout = () => {
+        localStorage.removeItem('user'); // Clear user data
+        navigate('/login'); // Redirect to login page
+    };
 
     // Data för korten
     const cards = [
@@ -36,26 +52,24 @@ const Main = () => {
     ];
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4 md:px-0">
-            {/* Logga in-symbol */}
-            <button
-                onClick={() => navigate('/login')}
-                className="fixed top-4 left-4 w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center text-white shadow-lg transition duration-300"
-            >
-                {/* Heroicons Login Symbol */}
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-7.5A2.25 2.25 0 003.75 5.25v13.5A2.25 2.25 0 006 21h7.5a2.25 2.25 0 002.25-2.25V15m0-3h-10.5m10.5 0L19.5 12m-3.75 0 3.75 3"
-                    />
-                </svg>
-            </button>
+        <div className="min-h-screen bg-white flex flex-col items-center">
+            {/* Avatar och användarnamn */}
+            <div className="fixed top-4 right-4 flex items-center space-x-4 bg-gray-100 p-2 rounded shadow-md">
+                {user && (
+                    <>
+                        {user.avatar && <img src={`/assets/images/${user.avatar}`} alt="Avatar" className="w-10 h-10 rounded-full" />}
+                        <span className="font-semibold text-gray-700">{user.username}</span>
+                        <button onClick={handleLogout} className="text-sm text-red-500 hover:underline ml-2">
+                            Logga ut
+                        </button>
+                    </>
+                )}
+            </div>
 
             {/* Titel och text */}
-            <div className="mb-10 mt-4 md:mt-0">
-                <h1 className="text-3xl md:text-4xl font-bold text-center">Välkommen till FlashMath!</h1>
-                <p className="text-center text-lg mt-2">Välj en aktivitet nedan och börja öva på matematik.</p>
+            <div className="mb-10 mt-4 md:mt-0 text-center">
+                <h1 className="text-3xl md:text-4xl font-bold">Välkommen till FlashMath!</h1>
+                <p className="text-lg mt-2">Välj en aktivitet nedan och börja öva på matematik.</p>
             </div>
 
             {/* Grid för kort */}
@@ -67,44 +81,12 @@ const Main = () => {
                         className="cursor-pointer max-w-[22rem] w-full bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] rounded border border-gray-300 hover:shadow-xl transition-shadow"
                     >
                         <div className="py-7 px-6">
-                            {/* Bild */}
                             <div className="-mt-7 mb-7 -mx-6 rounded-tl rounded-tr h-[260px] overflow-hidden">
                                 <img src={card.image} alt={card.title} className="w-full h-full object-cover" />
                             </div>
-
-                            {/* Datum och titel */}
                             <p className="text-primary text-xs mb-1.5 font-bold">{card.date}</p>
                             <h5 className="text-[#3b3f5c] text-[15px] font-bold mb-4">{card.title}</h5>
-
-                            {/* Beskrivning */}
                             <p className="text-gray-600">{card.description}</p>
-
-                            {/* Footer */}
-                            <div className="relative flex justify-between mt-6 pt-4 border-t border-gray-200">
-                                {/* Författare */}
-                                <div className="flex items-center font-semibold">
-                                    <div className="w-9 h-9 rounded-full overflow-hidden inline-block mr-2">
-                                        <span className="flex w-full h-full items-center justify-center bg-[#515365] text-white">AG</span>
-                                    </div>
-                                    <div className="text-[#515365]">{card.author}</div>
-                                </div>
-
-                                {/* Interaktioner */}
-                                <div className="flex font-semibold">
-                                    <div className="text-primary flex items-center mr-3">
-                                        <svg className="w-4 h-4 mr-1 fill-current text-primary">
-                                            <circle cx="12" cy="12" r="10" />
-                                        </svg>
-                                        51
-                                    </div>
-                                    <div className="text-primary flex items-center">
-                                        <svg className="w-4 h-4 mr-1 fill-current text-primary">
-                                            <circle cx="12" cy="12" r="10" />
-                                        </svg>
-                                        250
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 ))}

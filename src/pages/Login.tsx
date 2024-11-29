@@ -17,6 +17,23 @@ const Login = () => {
         });
     };
 
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     setError('');
+
+    //     try {
+    //         // Call the API for login
+    //         const response = await loginUser(form.username, form.password);
+    //         console.log('Login successful:', response);
+
+    //         // Redirect to mainPage after successful login
+    //         navigate('/mainPage');
+    //     } catch (error: any) {
+    //         console.error('Error logging in:', error.message);
+    //         setError(error.message || 'Felaktigt användarnamn eller lösenord');
+    //     }
+    // };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
@@ -25,6 +42,9 @@ const Login = () => {
             // Call the API for login
             const response = await loginUser(form.username, form.password);
             console.log('Login successful:', response);
+
+            // Save user data to localStorage or global state
+            localStorage.setItem('user', JSON.stringify(response.user));
 
             // Redirect to mainPage after successful login
             navigate('/mainPage');

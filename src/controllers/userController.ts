@@ -53,6 +53,23 @@ export const loginUser = async (username: string, password: string) => {
 };
 
 /**
+ * Log out the current user
+ */
+export const logoutUser = async () => {
+    try {
+        const response = await axios.post(`${API_URL}/logout`, {}, { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        console.error('Error logging out:', error);
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data?.message || 'Ett nätverksfel inträffade vid utloggningen');
+        } else {
+            throw new Error('Ett nätverksfel inträffade vid utloggningen');
+        }
+    }
+};
+
+/**
  * Fetch all users
  */
 export const getUsers = async () => {
@@ -67,23 +84,6 @@ export const getUsers = async () => {
             throw new Error(error.response?.data?.message || 'Ett nätverksfel inträffade vid hämtning av användare');
         } else {
             throw new Error('Ett nätverksfel inträffade vid hämtning av användare');
-        }
-    }
-};
-
-/**
- * Log out the current user
- */
-export const logoutUser = async () => {
-    try {
-        const response = await axios.post(`${API_URL}/logout`, {}, { withCredentials: true });
-        return response.data;
-    } catch (error) {
-        console.error('Error logging out:', error);
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Ett nätverksfel inträffade vid utloggningen');
-        } else {
-            throw new Error('Ett nätverksfel inträffade vid utloggningen');
         }
     }
 };

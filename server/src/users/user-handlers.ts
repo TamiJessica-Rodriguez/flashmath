@@ -218,3 +218,13 @@ export const loginUser = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Kunde inte logga in' });
     }
 };
+
+export const logoutUser = (req: Request, res: Response) => {
+    try {
+        req.session = null; // Rensa sessionen
+        res.status(200).json({ message: 'Utloggning lyckades' });
+    } catch (error) {
+        console.error('Unexpected error during logout:', error);
+        res.status(500).json({ message: 'Ett oväntat fel har uppstått vid utloggning' });
+    }
+};

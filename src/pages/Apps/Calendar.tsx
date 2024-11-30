@@ -1,15 +1,15 @@
-import FullCalendar from '@fullcalendar/react';
-// import '@fullcalendar/core';
+import '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import Swal from 'sweetalert2';
+import { Fragment, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setPageTitle } from '../../store/themeConfigSlice';
+import Swal from 'sweetalert2';
 import IconPlus from '../../components/Icon/IconPlus';
 import IconX from '../../components/Icon/IconX';
+import { setPageTitle } from '../../store/themeConfigSlice';
 
 const Calendar = () => {
     const dispatch = useDispatch();

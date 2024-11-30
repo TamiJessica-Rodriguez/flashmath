@@ -53,19 +53,6 @@ const Main = () => {
 
     return (
         <div className="min-h-screen bg-white flex flex-col items-center">
-            {/* Avatar och användarnamn */}
-            <div className="fixed top-4 right-4 flex items-center space-x-4 bg-gray-100 p-2 rounded shadow-md">
-                {user && (
-                    <>
-                        {user.avatar && <img src={`/assets/images/${user.avatar}`} alt="Avatar" className="w-10 h-10 rounded-full" />}
-                        <span className="font-semibold text-gray-700">{user.username}</span>
-                        <button onClick={handleLogout} className="text-sm text-red-500 hover:underline ml-2">
-                            Logga ut
-                        </button>
-                    </>
-                )}
-            </div>
-
             {/* Titel och text */}
             <div className="mb-10 mt-4 md:mt-0 text-center">
                 <h1 className="text-3xl md:text-4xl font-bold">Välkommen till FlashMath!</h1>

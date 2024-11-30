@@ -45,7 +45,7 @@ const AdditionComponent = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center relative overflow-hidden">
+        <div className="min-h-screen bg-white text-white flex items-center justify-center relative overflow-hidden">
             {/* Main Content */}
             <div className={`transition-transform duration-700 ease-in-out ${showVideo || showAudioPlayer || showWoogle ? '-translate-x-full' : 'translate-x-0'} flex-shrink-0 w-full max-w-md`}>
                 {/* Instructions */}

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; // Importera useNavigate
 import { AppDispatch, IRootState } from '../store/store';
 import { registerUser } from '../store/userSlice';
 
-// Lista över avatarer
 const avatars = [
     { name: 'Crab Pirate', value: 'crabpirate.png', image: '/assets/images/crabpirate.png' },
     { name: 'Bee Pirate', value: 'beepirate.png', image: '/assets/images/beepirate.png' },
@@ -23,6 +23,7 @@ const SignUp = () => {
     });
 
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate(); // Skapa en navigate-funktion
     const { loading, error, user } = useSelector((state: IRootState) => state.user);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,9 +40,14 @@ const SignUp = () => {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        dispatch(registerUser(form));
+        dispatch(registerUser(form)).then((action: any) => {
+            if (action.meta.requestStatus === 'fulfilled') {
+                // Omdirigera användaren till login-sidan vid framgång
+                navigate('/login');
+            }
+        });
     };
 
     return (

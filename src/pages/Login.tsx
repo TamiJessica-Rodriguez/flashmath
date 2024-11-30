@@ -26,6 +26,9 @@ const Login = () => {
     //         const response = await loginUser(form.username, form.password);
     //         console.log('Login successful:', response);
 
+    //         // Save user data to localStorage or global state
+    //         localStorage.setItem('user', JSON.stringify(response.user));
+
     //         // Redirect to mainPage after successful login
     //         navigate('/mainPage');
     //     } catch (error: any) {
@@ -39,7 +42,6 @@ const Login = () => {
         setError('');
 
         try {
-            // Call the API for login
             const response = await loginUser(form.username, form.password);
             console.log('Login successful:', response);
 
@@ -49,8 +51,17 @@ const Login = () => {
             // Redirect to mainPage after successful login
             navigate('/mainPage');
         } catch (error: any) {
-            console.error('Error logging in:', error.message);
-            setError(error.message || 'Felaktigt användarnamn eller lösenord');
+            console.error('Error logging in:', error);
+            if (error.response) {
+                // Server responded with a status other than 2xx
+                setError(error.response.data || 'Felaktigt användarnamn eller lösenord');
+            } else if (error.request) {
+                // Request was made but no response received
+                setError('Ingen respons från servern. Kontrollera din anslutning.');
+            } else {
+                // Something else caused the error
+                setError('Ett oväntat fel inträffade. Försök igen senare.');
+            }
         }
     };
 

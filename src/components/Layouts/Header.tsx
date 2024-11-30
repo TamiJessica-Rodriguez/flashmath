@@ -992,12 +992,13 @@
 // export default Header;
 
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const [user, setUser] = useState<{ username: string; avatar: string } | null>(null);
     const [showMenu, setShowMenu] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation(); // Hook to get the current path
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -1016,43 +1017,79 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     };
 
     return (
-        <header className="flex justify-between items-center px-4 py-2 bg-gray-100 shadow-md">
-            <div className="flex items-center space-x-4">
-                {/* Toggle Sidebar Button */}
-                <button onClick={toggleSidebar} className="p-2 bg-gray-200 hover:bg-gray-300 rounded-md" aria-label="Toggle Sidebar">
-                    ☰
-                </button>
-            </div>
-
-            <div className="relative flex items-center space-x-4">
-                {/* Calendar Link */}
-                <Link to="/calendar" className="flex items-center text-gray-700 hover:text-blue-500">
-                    📅 <span className="ml-2 font-medium">Kalender</span>
-                </Link>
-
-                {/* User Section */}
+        <header className="flex flex-col bg-gray-100 shadow-md">
+            {/* Main Header */}
+            <div className="flex justify-between items-center px-4 py-2">
                 <div className="flex items-center space-x-4">
-                    <span className="font-medium text-gray-700">{user?.username}</span>
-                    <img
-                        src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
-                        alt="User Avatar"
-                        className="w-9 h-9 rounded-full cursor-pointer"
-                        onClick={() => setShowMenu((prev) => !prev)} // Toggle dropdown menu
-                    />
+                    {/* Toggle Sidebar Button */}
+                    <button onClick={toggleSidebar} className="p-2 bg-gray-200 hover:bg-gray-300 rounded-md" aria-label="Toggle Sidebar">
+                        ☰
+                    </button>
                 </div>
 
-                {/* Dropdown Menu */}
-                {showMenu && (
-                    <div className="absolute right-0 mt-2 w-40 bg-white shadow-md rounded-md z-10">
-                        <button onClick={handleProfileClick} className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">
-                            Profil
-                        </button>
-                        <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-200">
-                            Logga ut
-                        </button>
+                <div className="relative flex items-center space-x-4">
+                    {/* Calendar Link */}
+                    <Link to="/calendar" className="flex items-center text-gray-700 hover:text-blue-500">
+                        📅 <span className="ml-2 font-medium">Kalender</span>
+                    </Link>
+
+                    {/* User Section */}
+                    <div className="flex items-center space-x-4">
+                        <span className="font-medium text-gray-700">{user?.username}</span>
+                        <img
+                            src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
+                            alt="User Avatar"
+                            className="w-9 h-9 rounded-full cursor-pointer"
+                            onClick={() => setShowMenu((prev) => !prev)} // Toggle dropdown menu
+                        />
                     </div>
-                )}
+
+                    {/* Dropdown Menu */}
+                    {showMenu && (
+                        <div className="absolute right-0 mt-2 w-40 bg-white shadow-md rounded-md z-10">
+                            <button onClick={handleProfileClick} className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                Profil
+                            </button>
+                            <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-200">
+                                Logga ut
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
+
+            {/* Submenu - Visible only on /engelska */}
+            {location.pathname === '/english' && (
+                <nav className="bg-gray-200 px-4 py-2">
+                    <ul className="flex space-x-4">
+                        <li>
+                            <Link to="/english/kursmaterial" className="text-gray-700 hover:text-blue-500 flex items-center">
+                                📘 <span className="ml-2">Kursmaterial</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/english/kursplan" className="text-gray-700 hover:text-blue-500 flex items-center">
+                                🗂️ <span className="ml-2">Kursplan</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/english/betygskriterier" className="text-gray-700 hover:text-blue-500 flex items-center">
+                                🏅 <span className="ml-2">Betygskriterier</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/english/uppgifter" className="text-gray-700 hover:text-blue-500 flex items-center">
+                                ✏️ <span className="ml-2">Uppgifter</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/english/video" className="text-gray-700 hover:text-blue-500 flex items-center">
+                                🎥 <span className="ml-2">Video</span>
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
+            )}
         </header>
     );
 };

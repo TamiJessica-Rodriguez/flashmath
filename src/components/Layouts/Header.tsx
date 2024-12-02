@@ -1019,38 +1019,43 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     return (
         <header className="flex flex-col bg-gray-100 shadow-md">
             {/* Main Header */}
-            <div className="flex justify-between items-center px-4 py-2">
+            <div className="flex justify-between items-center px-4 py-3">
                 <div className="flex items-center space-x-4">
                     {/* Toggle Sidebar Button */}
-                    <button onClick={toggleSidebar} className="p-2 bg-gray-200 hover:bg-gray-300 rounded-md" aria-label="Toggle Sidebar">
+                    <button onClick={toggleSidebar} className="p-3 bg-gray-200 hover:bg-gray-300 rounded-md text-lg font-bold" aria-label="Toggle Sidebar">
                         ☰
                     </button>
                 </div>
 
-                <div className="relative flex items-center space-x-4">
-                    {/* Calendar Link */}
-                    <Link to="/calendar" className="flex items-center text-gray-700 hover:text-blue-500">
-                        📅 <span className="ml-2 font-medium">Kalender</span>
+                <div className="relative flex items-center space-x-6">
+                    {/* Schema Link */}
+                    <Link to="/weeklyschedule" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
+                        📋 <span className="ml-2">Schema</span>
+                    </Link>
+
+                    {/* Teams Link */}
+                    <Link to="/teams" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
+                        👥 <span className="ml-2">Teams</span>
                     </Link>
 
                     {/* User Section */}
                     <div className="flex items-center space-x-4">
-                        <span className="font-medium text-gray-700">{user?.username}</span>
+                        <span className="text-lg font-bold text-gray-700">{user?.username}</span>
                         <img
                             src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
                             alt="User Avatar"
-                            className="w-9 h-9 rounded-full cursor-pointer"
+                            className="w-10 h-10 rounded-full cursor-pointer"
                             onClick={() => setShowMenu((prev) => !prev)} // Toggle dropdown menu
                         />
                     </div>
 
                     {/* Dropdown Menu */}
                     {showMenu && (
-                        <div className="absolute right-0 mt-2 w-40 bg-white shadow-md rounded-md z-10">
-                            <button onClick={handleProfileClick} className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">
+                        <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10">
+                            <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-bold text-gray-700 hover:bg-gray-200">
                                 Profil
                             </button>
-                            <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-200">
+                            <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-lg font-bold text-red-600 hover:bg-gray-200">
                                 Logga ut
                             </button>
                         </div>
@@ -1060,30 +1065,30 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
 
             {/* Submenu - Visible only on /engelska */}
             {location.pathname === '/english' && (
-                <nav className="bg-gray-200 px-4 py-2">
-                    <ul className="flex space-x-4">
+                <nav className="bg-gray-200 px-4 py-3">
+                    <ul className="flex space-x-6">
                         <li>
-                            <Link to="/english/kursmaterial" className="text-gray-700 hover:text-blue-500 flex items-center">
+                            <Link to="/english/kursmaterial" className="text-gray-700 hover:text-blue-500 flex items-center text-lg font-bold">
                                 📘 <span className="ml-2">Kursmaterial</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/english/kursplan" className="text-gray-700 hover:text-blue-500 flex items-center">
+                            <Link to="/english/kursplan" className="text-gray-700 hover:text-blue-500 flex items-center text-lg font-bold">
                                 🗂️ <span className="ml-2">Kursplan</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/english/betygskriterier" className="text-gray-700 hover:text-blue-500 flex items-center">
+                            <Link to="/english/betygskriterier" className="text-gray-700 hover:text-blue-500 flex items-center text-lg font-bold">
                                 🏅 <span className="ml-2">Betygskriterier</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/english/uppgifter" className="text-gray-700 hover:text-blue-500 flex items-center">
+                            <Link to="/english/uppgifter" className="text-gray-700 hover:text-blue-500 flex items-center text-lg font-bold">
                                 ✏️ <span className="ml-2">Uppgifter</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/english/video" className="text-gray-700 hover:text-blue-500 flex items-center">
+                            <Link to="/english/video" className="text-gray-700 hover:text-blue-500 flex items-center text-lg font-bold">
                                 🎥 <span className="ml-2">Video</span>
                             </Link>
                         </li>

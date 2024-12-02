@@ -9,6 +9,7 @@ import Login from '../pages/Login';
 import MainPage from '../pages/MainPage';
 import SignUp from '../pages/SignUp';
 import StartPageStudent from '../pages/StartPageStudent';
+import WeeklySchedule from '../pages/WeeklySchedule';
 
 const routes = [
     {
@@ -39,6 +40,11 @@ const routes = [
     {
         path: '/startpagestudent',
         element: <StartPageStudent />,
+        layout: '',
+    },
+    {
+        path: '/weeklyschedule',
+        element: <WeeklySchedule />,
         layout: '',
     },
     {

@@ -28,8 +28,8 @@ const Login = () => {
             // Save user data to localStorage or global state
             localStorage.setItem('user', JSON.stringify(response.user));
 
-            // Redirect to mainPage after successful login
-            navigate('/mainPage');
+            // Redirect to startpagestudent after successful login
+            navigate('/startpagestudent');
         } catch (error: any) {
             console.error('Error logging in:', error);
             if (error.response) {

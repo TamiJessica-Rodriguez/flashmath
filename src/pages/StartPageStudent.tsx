@@ -22,12 +22,12 @@
 //     const [selectedTab, setSelectedTab] = useState<string>('all');
 
 //     const notesList: Note[] = [
-//         { id: 1, user: 'Kourdonya', thumb: 'profile-5.jpeg', title: 'Engelska', date: '11/01/2020', tag: 'personal' },
-//         { id: 2, user: 'Anna', thumb: 'profile-4.jpeg', title: 'Svenska', date: '11/02/2020', tag: 'work' },
-//         { id: 3, user: 'Nazim', thumb: 'profile-3.jpeg', title: 'Naturkunskap', date: '11/03/2020', tag: 'social' },
-//         { id: 4, user: 'Johan', thumb: 'profile-2.jpeg', title: 'Musik', date: '11/04/2020', tag: 'important' },
+//         { id: 1, user: 'Mohanned', thumb: 'profile-5.jpeg', title: 'Engelska', date: '11/01/2020', tag: 'personal' },
+//         { id: 2, user: 'Nazim', thumb: 'profile-4.jpeg', title: 'Svenska', date: '11/02/2020', tag: 'work' },
+//         { id: 3, user: 'Johan', thumb: 'profile-3.jpeg', title: 'Naturkunskap', date: '11/03/2020', tag: 'social' },
+//         { id: 4, user: 'Kourdonya', thumb: 'profile-2.jpeg', title: 'Musik', date: '11/04/2020', tag: 'important' },
 //         { id: 5, user: 'Oscar', thumb: 'profile-1.jpeg', title: 'Idrott & Hälsa', date: '11/05/2020', tag: 'work' },
-//         { id: 6, user: 'Mohanned', thumb: 'profile-6.jpeg', title: 'Matematik', date: '11/06/2020', tag: 'personal' },
+//         { id: 6, user: 'Nathalie', thumb: 'profile-6.jpeg', title: 'Matematik', date: '11/06/2020', tag: 'personal' },
 //     ];
 
 //     const filteredNotes = selectedTab === 'all' ? notesList : notesList.filter((note) => note.tag === selectedTab);
@@ -45,10 +45,12 @@
 //         Matematik: { colorClass: 'bg-orange-200', emoji: '➗' },
 //     };
 
-//     const scheduleNotes = notesList.map((note) => ({
-//         title: note.title,
-//         colorClass: courseDetails[note.title]?.colorClass || 'bg-gray-100',
-//     }));
+//     const scheduleNotes = [
+//         { title: 'Engelska', colorClass: 'bg-blue-200', startTime: '08:00', endTime: '09:30' },
+//         { title: 'Svenska', colorClass: 'bg-green-200', startTime: '10:00', endTime: '11:15' },
+//         { title: 'Musik', colorClass: 'bg-pink-200', startTime: '13:00', endTime: '14:30' },
+//         { title: 'Matematik', colorClass: 'bg-orange-200', startTime: '15:00', endTime: '16:30' },
+//     ];
 
 //     return (
 //         <div className="flex flex-col gap-5 relative sm:h-[calc(100vh_-_150px)] h-full">
@@ -136,12 +138,12 @@ const StartPageStudent: React.FC = () => {
     const [selectedTab, setSelectedTab] = useState<string>('all');
 
     const notesList: Note[] = [
-        { id: 1, user: 'Kourdonya', thumb: 'profile-5.jpeg', title: 'Engelska', date: '11/01/2020', tag: 'personal' },
-        { id: 2, user: 'Anna', thumb: 'profile-4.jpeg', title: 'Svenska', date: '11/02/2020', tag: 'work' },
-        { id: 3, user: 'Nazim', thumb: 'profile-3.jpeg', title: 'Naturkunskap', date: '11/03/2020', tag: 'social' },
-        { id: 4, user: 'Johan', thumb: 'profile-2.jpeg', title: 'Musik', date: '11/04/2020', tag: 'important' },
+        { id: 1, user: 'Mohanned', thumb: 'profile-5.jpeg', title: 'Engelska', date: '11/01/2020', tag: 'personal' },
+        { id: 2, user: 'Nazim', thumb: 'profile-4.jpeg', title: 'Svenska', date: '11/02/2020', tag: 'work' },
+        { id: 3, user: 'Johan', thumb: 'profile-3.jpeg', title: 'Naturkunskap', date: '11/03/2020', tag: 'social' },
+        { id: 4, user: 'Kourdonya', thumb: 'profile-2.jpeg', title: 'Musik', date: '11/04/2020', tag: 'important' },
         { id: 5, user: 'Oscar', thumb: 'profile-1.jpeg', title: 'Idrott & Hälsa', date: '11/05/2020', tag: 'work' },
-        { id: 6, user: 'Mohanned', thumb: 'profile-6.jpeg', title: 'Matematik', date: '11/06/2020', tag: 'personal' },
+        { id: 6, user: 'Nathalie', thumb: 'profile-6.jpeg', title: 'Matematik', date: '11/06/2020', tag: 'personal' },
     ];
 
     const filteredNotes = selectedTab === 'all' ? notesList : notesList.filter((note) => note.tag === selectedTab);
@@ -185,7 +187,9 @@ const StartPageStudent: React.FC = () => {
                                 <div
                                     key={note.id}
                                     className={`panel p-6 h-64 relative cursor-pointer ${details?.colorClass || 'bg-gray-100'} shadow-lg rounded-lg`}
-                                    onClick={() => navigate(`/courses/${note.title.toLowerCase()}`)}
+                                    onClick={() => {
+                                        if (note.title === 'Engelska') navigate('/english');
+                                    }}
                                 >
                                     {/* Ämne och kursnamn */}
                                     <div className="text-center mb-4">
@@ -199,7 +203,7 @@ const StartPageStudent: React.FC = () => {
                                     <div className="absolute bottom-2 left-2 flex items-center">
                                         <img className="w-12 h-12 rounded-full object-cover mr-3" src={`/assets/images/${note.thumb}`} alt={note.user} />
                                         <div>
-                                            <h5 className="font-semibold text-lg">{note.user}</h5>
+                                            <h5 className="font-semibold text-lg">Lärare: {note.user}</h5>
                                             <p className="text-sm text-gray-500">Uppdaterad senast: {note.date}</p>
                                         </div>
                                     </div>

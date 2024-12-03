@@ -998,7 +998,7 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const [user, setUser] = useState<{ username: string; avatar: string } | null>(null);
     const [showMenu, setShowMenu] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation(); // Hook to get the current path
+    const location = useLocation();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -1009,11 +1009,11 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
 
     const handleLogout = () => {
         localStorage.removeItem('user');
-        navigate('/'); // Redirect to home
+        navigate('/');
     };
 
     const handleProfileClick = () => {
-        navigate('/profile'); // Redirect to profile page
+        navigate('/profile');
     };
 
     return (
@@ -1021,40 +1021,33 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             {/* Main Header */}
             <div className="flex justify-between items-center px-4 py-3">
                 <div className="flex items-center space-x-4">
-                    {/* Toggle Sidebar Button */}
                     <button onClick={toggleSidebar} className="p-3 bg-gray-200 hover:bg-gray-300 rounded-md text-lg font-bold" aria-label="Toggle Sidebar">
                         ☰
                     </button>
                 </div>
 
                 <div className="relative flex items-center space-x-6">
-                    {/* Schema Link */}
                     <Link to="/info" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
                         🌍 <span className="ml-2">InfoHyllan</span>
                     </Link>
-
-                    {/* Schema Link */}
                     <Link to="/weeklyschedule" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
                         📋 <span className="ml-2">Schema</span>
                     </Link>
-
-                    {/* Teams Link */}
                     <Link to="/teams" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
                         👥 <span className="ml-2">Teams</span>
                     </Link>
-
-                    {/* User Section */}
+                    <Link to="/personalassistant" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
+                        🤖 <span className="ml-2">Personlig Assistent</span>
+                    </Link>
                     <div className="flex items-center space-x-4">
                         <span className="text-lg font-bold text-gray-700">{user?.username}</span>
                         <img
                             src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
                             alt="User Avatar"
                             className="w-10 h-10 rounded-full cursor-pointer"
-                            onClick={() => setShowMenu((prev) => !prev)} // Toggle dropdown menu
+                            onClick={() => setShowMenu((prev) => !prev)}
                         />
                     </div>
-
-                    {/* Dropdown Menu */}
                     {showMenu && (
                         <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10">
                             <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-bold text-gray-700 hover:bg-gray-200">
@@ -1068,33 +1061,33 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                 </div>
             </div>
 
-            {/* Submenu - Visible only on /engelska */}
-            {location.pathname === '/english' && (
-                <nav className="bg-gray-200 px-4 py-3">
-                    <ul className="flex space-x-6">
+            {/* Submenu - Visible on /swedishmenu and /mathematicsmenu */}
+            {(location.pathname === '/swedishmenu' || location.pathname === '/mathematicsmenu') && (
+                <nav className="bg-gray-200 px-4 py-2">
+                    <ul className="flex space-x-4 text-sm text-gray-600 font-medium">
                         <li>
-                            <Link to="/english/kursmaterial" className="text-gray-700 hover:text-blue-500 flex items-center text-lg font-bold">
-                                📘 <span className="ml-2">Kursmaterial</span>
+                            <Link to="/swedishmenu/kursmaterial" className="hover:text-blue-500 flex items-center">
+                                📘 <span className="ml-1">Kursmaterial</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/english/kursplan" className="text-gray-700 hover:text-blue-500 flex items-center text-lg font-bold">
-                                🗂️ <span className="ml-2">Kursplan</span>
+                            <Link to="/swedishmenu/kursplan" className="hover:text-blue-500 flex items-center">
+                                🗂️ <span className="ml-1">Kursplan</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/english/betygskriterier" className="text-gray-700 hover:text-blue-500 flex items-center text-lg font-bold">
-                                🏅 <span className="ml-2">Betygskriterier</span>
+                            <Link to="/swedishmenu/betygskriterier" className="hover:text-blue-500 flex items-center">
+                                🏅 <span className="ml-1">Betygskriterier</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/english/uppgifter" className="text-gray-700 hover:text-blue-500 flex items-center text-lg font-bold">
-                                ✏️ <span className="ml-2">Uppgifter</span>
+                            <Link to="/swedishmenu/uppgifter" className="hover:text-blue-500 flex items-center">
+                                ✏️ <span className="ml-1">Uppgifter</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/english/video" className="text-gray-700 hover:text-blue-500 flex items-center text-lg font-bold">
-                                🎥 <span className="ml-2">Video</span>
+                            <Link to="/swedishmenu/video" className="hover:text-blue-500 flex items-center">
+                                🎥 <span className="ml-1">Video</span>
                             </Link>
                         </li>
                     </ul>

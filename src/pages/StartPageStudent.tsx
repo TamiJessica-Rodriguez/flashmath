@@ -110,7 +110,7 @@ const StartPageStudent: React.FC = () => {
                                         if (note.title === 'Svenska') {
                                             navigate('/swedishmenu');
                                         } else if (note.title === 'Matematik') {
-                                            navigate('/mathematics'); // Navigera till Mathematics
+                                            navigate('/mathematicsmenu'); // Navigera till Mathematics
                                         }
                                     }}
                                 >

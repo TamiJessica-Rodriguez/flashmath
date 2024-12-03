@@ -55,7 +55,7 @@ const Main = () => {
         <div className="min-h-screen bg-white flex flex-col items-center">
             {/* Titel och text */}
             <div className="mb-10 mt-4 md:mt-0 text-center">
-                <h1 className="text-3xl md:text-4xl font-bold">Välkommen till FlashMath!</h1>
+                <h1 className="text-3xl md:text-4xl font-bold">Matematik</h1>
                 <p className="text-lg mt-2">Välj en aktivitet nedan och börja öva på matematik.</p>
             </div>
 

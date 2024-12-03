@@ -7,6 +7,7 @@ import Info from '../pages/Info';
 import Login from '../pages/Login';
 import Mathematics from '../pages/Mathematics';
 import MathematicsMenu from '../pages/MathmaticsMenu';
+import PersonalAssistant from '../pages/additon/components/PersonalAssistant';
 import SignUp from '../pages/SignUp';
 import StartPageStudent from '../pages/StartPageStudent';
 import SwedishBooks from '../pages/swedish/SwedishBooks';
@@ -96,6 +97,11 @@ const routes = [
     {
         path: '/info',
         element: <Info />,
+        layout: 'blank',
+    },
+    {
+        path: '/personalassistant',
+        element: <PersonalAssistant />,
         layout: 'blank',
     },
     {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import WoogleComponent from './WoogleComponent'; // Import your Woogle component
+import PersonalAssistant from './PersonalAssistant'; // Import PersonalAssistant component
 
 const AdditionComponent = () => {
     const generateQuestion = () => {
@@ -21,8 +21,7 @@ const AdditionComponent = () => {
     const [question, setQuestion] = useState(generateQuestion());
     const [feedback, setFeedback] = useState('');
     const [showVideo, setShowVideo] = useState(false);
-    const [showAudioPlayer, setShowAudioPlayer] = useState(false);
-    const [showWoogle, setShowWoogle] = useState(false); // Add state for Woogle
+    const [showAssistant, setShowAssistant] = useState(false); // Add state for Assistant
 
     const handleAnswer = (answer: number) => {
         if (answer === question.correctAnswer) {
@@ -47,7 +46,7 @@ const AdditionComponent = () => {
     return (
         <div className="min-h-screen bg-white text-white flex items-center justify-center relative overflow-hidden">
             {/* Main Content */}
-            <div className={`transition-transform duration-700 ease-in-out ${showVideo || showAudioPlayer || showWoogle ? '-translate-x-full' : 'translate-x-0'} flex-shrink-0 w-full max-w-md`}>
+            <div className={`transition-transform duration-700 ease-in-out ${showVideo || showAssistant ? '-translate-x-full' : 'translate-x-0'} flex-shrink-0 w-full max-w-md`}>
                 {/* Instructions */}
                 <div className="w-full bg-gray-800 p-6 rounded-lg shadow-md mb-6">
                     <div className="flex justify-between items-center">
@@ -68,11 +67,8 @@ const AdditionComponent = () => {
                         <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center" onClick={() => setShowVideo(true)}>
                             🎥 Titta på en instruktionsvideo
                         </button>
-                        <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md text-center" onClick={() => setShowAudioPlayer(true)}>
-                            🎧 Lyssna på en podd
-                        </button>
-                        <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-md text-center" onClick={() => setShowWoogle(true)}>
-                            🔎 Sök i Woogle
+                        <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-md text-center" onClick={() => setShowAssistant(true)}>
+                            🧠 Be om hjälp från assistenten
                         </button>
                     </div>
                 </div>
@@ -114,26 +110,10 @@ const AdditionComponent = () => {
                 </div>
             )}
 
-            {/* Podcast Component */}
-            {showAudioPlayer && (
+            {/* Personal Assistant Component */}
+            {showAssistant && (
                 <div className="flex-shrink-0 w-full max-w-md transition-transform duration-700 ease-in-out translate-x-0">
-                    <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-                        <h2 className="text-xl font-bold mb-4">Lyssna på podd</h2>
-                        <audio controls className="w-full">
-                            <source src="https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3" type="audio/mp3" />
-                            Din webbläsare stöder inte ljuduppspelning.
-                        </audio>
-                        <button className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md" onClick={() => setShowAudioPlayer(false)}>
-                            ↩ Tillbaka till uppgiften
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* Woogle Component */}
-            {showWoogle && (
-                <div className="flex-shrink-0 w-full max-w-4xl transition-transform duration-700 ease-in-out translate-x-0">
-                    <WoogleComponent onClose={() => setShowWoogle(false)} />
+                    <PersonalAssistant onClose={() => setShowAssistant(false)} /> {/* Render the PersonalAssistant component */}
                 </div>
             )}
         </div>

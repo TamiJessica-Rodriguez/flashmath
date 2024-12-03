@@ -9,8 +9,11 @@ import MathematicsMenu from '../pages/MathmaticsMenu';
 import SignUp from '../pages/SignUp';
 import StartPageStudent from '../pages/StartPageStudent';
 import SwedishBooks from '../pages/swedish/SwedishBooks';
+import SwedishGames from '../pages/swedish/SwedishGames';
 import SwedishListen from '../pages/swedish/SwedishListen';
 import SwedishMenu from '../pages/swedish/SwedishMenu';
+import SwedishVideos from '../pages/swedish/swedishvideos';
+import SwedishVR from '../pages/swedish/SwedishVR';
 import WeeklySchedule from '../pages/WeeklySchedule';
 
 const routes = [
@@ -72,6 +75,21 @@ const routes = [
     {
         path: '/swedishlisten',
         element: <SwedishListen />,
+        layout: 'blank',
+    },
+    {
+        path: '/swedishvideos',
+        element: <SwedishVideos />,
+        layout: 'blank',
+    },
+    {
+        path: '/swedishgames',
+        element: <SwedishGames />,
+        layout: 'blank',
+    },
+    {
+        path: '/swedishvr',
+        element: <SwedishVR />,
         layout: 'blank',
     },
     {

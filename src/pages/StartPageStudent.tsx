@@ -102,13 +102,25 @@ const StartPageStudent: React.FC = () => {
                                     key={note.id}
                                     className={`panel p-6 h-64 relative cursor-pointer ${details?.colorClass || 'bg-gray-100'} shadow-lg rounded-lg`}
                                     onClick={() => {
-                                        if (note.title === 'Engelska') navigate('/english');
+                                        if (note.title === 'Engelska') {
+                                            navigate('/english');
+                                        } else if (note.title === 'Matematik') {
+                                            navigate('/mathematics'); // Navigera till Mathematics
+                                        }
                                     }}
                                 >
+                                    {/* Notifikation */}
+                                    {['Musik', 'Svenska'].includes(note.title) && <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">1</div>}
+
+                                    {/* Ämnesnamn */}
                                     <div className="text-center mb-4">
                                         <h3 className="font-bold text-2xl">{note.title}</h3>
                                     </div>
+
+                                    {/* Emoji */}
                                     <div className="absolute top-2 right-2 text-6xl">{details?.emoji || '📝'}</div>
+
+                                    {/* Lärarinfo */}
                                     <div className="absolute bottom-2 left-2 flex items-center">
                                         <img className="w-12 h-12 rounded-full object-cover mr-3" src={`/assets/images/${note.thumb}`} alt={note.user} />
                                         <div>

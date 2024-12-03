@@ -6,7 +6,7 @@ import English from '../pages/English';
 import EnglishBooks from '../pages/EnglishBooks';
 import Index from '../pages/Index';
 import Login from '../pages/Login';
-import MainPage from '../pages/MainPage';
+import Mathematics from '../pages/Mathematics';
 import SignUp from '../pages/SignUp';
 import StartPageStudent from '../pages/StartPageStudent';
 import WeeklySchedule from '../pages/WeeklySchedule';
@@ -28,8 +28,8 @@ const routes = [
         layout: 'blank',
     },
     {
-        path: '/mainPage',
-        element: <MainPage />,
+        path: '/mathematics',
+        element: <Mathematics />,
         layout: '',
     },
     {

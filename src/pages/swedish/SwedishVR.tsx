@@ -19,7 +19,7 @@ const SwedishVR = () => {
                     title: 'VikingaVR: Historiska resor',
                     description: 'Utforska Vikingatiden i en interaktiv VR-upplevelse.',
                     date: '15 Dec, 2023',
-                    image: '/assets/images/VikingaVR.webp',
+                    image: '/assets/images/VikingaVR2.webp',
                     link: '/vr/vikinga-film', // Example link
                 },
             ],
@@ -33,7 +33,7 @@ const SwedishVR = () => {
                     title: 'Vikingarnas värld',
                     description: 'Ett interaktivt VR-spel som tar dig in i Vikingarnas värld.',
                     date: '15 Dec, 2023',
-                    image: '/assets/images/Vikingaspel.webp',
+                    image: '/assets/images/Vikingaspel1.webp',
                     link: '/vr/vikinga-game', // Example link
                 },
             ],

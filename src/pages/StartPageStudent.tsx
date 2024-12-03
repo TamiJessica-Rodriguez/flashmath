@@ -107,8 +107,8 @@ const StartPageStudent: React.FC = () => {
                                     key={note.id}
                                     className={`panel p-6 h-64 relative cursor-pointer ${details?.colorClass || 'bg-gray-100'} shadow-lg rounded-lg`}
                                     onClick={() => {
-                                        if (note.title === 'Engelska') {
-                                            navigate('/english');
+                                        if (note.title === 'Svenska') {
+                                            navigate('/swedishmenu');
                                         } else if (note.title === 'Matematik') {
                                             navigate('/mathematics'); // Navigera till Mathematics
                                         }

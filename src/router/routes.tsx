@@ -3,6 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import Addition from '../pages/additon/Addition';
 import Notes from '../pages/Apps/Notes';
 import Index from '../pages/Index';
+import Info from '../pages/Info';
 import Login from '../pages/Login';
 import Mathematics from '../pages/Mathematics';
 import MathematicsMenu from '../pages/MathmaticsMenu';
@@ -90,6 +91,11 @@ const routes = [
     {
         path: '/swedishvr',
         element: <SwedishVR />,
+        layout: 'blank',
+    },
+    {
+        path: '/info',
+        element: <Info />,
         layout: 'blank',
     },
     {

@@ -1029,6 +1029,11 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
 
                 <div className="relative flex items-center space-x-6">
                     {/* Schema Link */}
+                    <Link to="/info" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
+                        🌍 <span className="ml-2">InfoHyllan</span>
+                    </Link>
+
+                    {/* Schema Link */}
                     <Link to="/weeklyschedule" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
                         📋 <span className="ml-2">Schema</span>
                     </Link>

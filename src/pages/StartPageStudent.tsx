@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { IRootState } from '../store';
 import { setPageTitle } from '../store/themeConfigSlice';
-import ScheduleColumn from './Components/DailySchedule'; // Importera den nya komponenten
+import ScheduleColumn from './Components/DailySchedule';
 
 interface Note {
     id: number;
@@ -16,10 +16,12 @@ interface Note {
 
 const StartPageStudent: React.FC = () => {
     const dispatch = useDispatch();
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass === 'rtl');
     const navigate = useNavigate();
+    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass === 'rtl');
 
     const [selectedTab, setSelectedTab] = useState<string>('all');
+    const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 640); // Kontrollera om det är mobilläge
+    const [showSchedule, setShowSchedule] = useState<boolean>(false); // Hantera rullgardinsvisning
 
     const notesList: Note[] = [
         { id: 1, user: 'Mohanned', thumb: 'profile-5.jpeg', title: 'Engelska', date: '11/01/2020', tag: 'personal' },
@@ -29,12 +31,6 @@ const StartPageStudent: React.FC = () => {
         { id: 5, user: 'Oscar', thumb: 'profile-1.jpeg', title: 'Idrott & Hälsa', date: '11/05/2020', tag: 'work' },
         { id: 6, user: 'Nathalie', thumb: 'profile-6.jpeg', title: 'Matematik', date: '11/06/2020', tag: 'personal' },
     ];
-
-    const filteredNotes = selectedTab === 'all' ? notesList : notesList.filter((note) => note.tag === selectedTab);
-
-    useEffect(() => {
-        dispatch(setPageTitle('Ämnen'));
-    }, [dispatch]);
 
     const courseDetails: Record<string, { colorClass: string; emoji: string }> = {
         Engelska: { colorClass: 'bg-blue-200', emoji: '🇬🇧' },
@@ -52,8 +48,43 @@ const StartPageStudent: React.FC = () => {
         { title: 'Matematik', colorClass: 'bg-orange-200', startTime: '15:00', endTime: '16:30' },
     ];
 
+    const filteredNotes = selectedTab === 'all' ? notesList : notesList.filter((note) => note.tag === selectedTab);
+
+    useEffect(() => {
+        dispatch(setPageTitle('Ämnen'));
+
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 640);
+            if (window.innerWidth > 640) {
+                setShowSchedule(false); // Dölj schemat automatiskt om det inte längre är mobilläge
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [dispatch]);
+
     return (
         <div className="flex flex-col gap-5 relative sm:h-[calc(100vh_-_150px)] h-full">
+            {/* Mobil länk till schemat */}
+            {isMobile && (
+                <button onClick={() => setShowSchedule(!showSchedule)} className="w-full text-center bg-blue-500 text-white py-2 rounded-md shadow-md">
+                    {showSchedule ? 'Dölj Schema' : 'Visa Schema'}
+                </button>
+            )}
+
+            {/* Rullgardin för schema */}
+            {showSchedule && (
+                <div
+                    className="absolute top-0 left-0 w-full bg-white shadow-lg z-10 p-4"
+                    onClick={() => setShowSchedule(false)} // Dölj schemat när man klickar på det
+                >
+                    <ScheduleColumn notes={scheduleNotes} />
+                </div>
+            )}
+
             {/* Titlar */}
             <div className="px-4">
                 <h1 className="text-2xl font-bold">Mina kurser</h1>
@@ -66,7 +97,6 @@ const StartPageStudent: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         {filteredNotes.map((note) => {
                             const details = courseDetails[note.title];
-
                             return (
                                 <div
                                     key={note.id}
@@ -75,15 +105,10 @@ const StartPageStudent: React.FC = () => {
                                         if (note.title === 'Engelska') navigate('/english');
                                     }}
                                 >
-                                    {/* Ämne och kursnamn */}
                                     <div className="text-center mb-4">
                                         <h3 className="font-bold text-2xl">{note.title}</h3>
                                     </div>
-
-                                    {/* Emoji */}
                                     <div className="absolute top-2 right-2 text-6xl">{details?.emoji || '📝'}</div>
-
-                                    {/* Lärarinfo och datum */}
                                     <div className="absolute bottom-2 left-2 flex items-center">
                                         <img className="w-12 h-12 rounded-full object-cover mr-3" src={`/assets/images/${note.thumb}`} alt={note.user} />
                                         <div>
@@ -98,17 +123,18 @@ const StartPageStudent: React.FC = () => {
                 </div>
 
                 {/* Höger kolumn */}
-                <div className="w-64">
-                    {/* Rubriker ovanför kolumnen */}
-                    <div className="mb-4 flex justify-between items-center">
-                        <div>
-                            <p className="text-sm font-medium">Idag:</p>
-                            <h3 className="text-lg font-bold">Tisdag</h3>
+                {!isMobile && (
+                    <div className="w-64">
+                        <div className="mb-4 flex justify-between items-center">
+                            <div>
+                                <p className="text-sm font-medium">Idag:</p>
+                                <h3 className="text-lg font-bold">Tisdag</h3>
+                            </div>
+                            <h3 className="text-lg font-bold">V.45</h3>
                         </div>
-                        <h3 className="text-lg font-bold">V.45</h3>
+                        <ScheduleColumn notes={scheduleNotes} />
                     </div>
-                    <ScheduleColumn notes={scheduleNotes} />
-                </div>
+                )}
             </div>
         </div>
     );

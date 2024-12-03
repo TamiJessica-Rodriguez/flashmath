@@ -698,17 +698,11 @@
 
 import { useEffect, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
-import { useTranslation } from 'react-i18next';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
 import { IRootState } from '../../store';
 import { toggleSidebar } from '../../store/themeConfigSlice';
-import IconCaretDown from '../Icon/IconCaretDown';
-import IconCaretsDown from '../Icon/IconCaretsDown';
-import IconMenuCalendar from '../Icon/Menu/IconMenuCalendar';
-import IconMenuDashboard from '../Icon/Menu/IconMenuDashboard';
-import IconMenuNotes from '../Icon/Menu/IconMenuNotes';
 
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState<string>('');
@@ -716,7 +710,6 @@ const Sidebar = () => {
     const semidark = useSelector((state: IRootState) => state.themeConfig.semidark);
     const location = useLocation();
     const dispatch = useDispatch();
-    const { t } = useTranslation();
 
     const toggleMenu = (menu: string) => {
         setCurrentMenu((prev) => (prev === menu ? '' : menu));
@@ -751,15 +744,16 @@ const Sidebar = () => {
                     {/* Header */}
                     <div className="flex justify-between items-center px-4 py-3">
                         <NavLink to="/" className="main-logo flex items-center shrink-0">
-                            <img className="w-8 ml-[5px] flex-none" src="/assets/images/logo.svg" alt="logo" />
-                            <span className="text-2xl ml-2 font-semibold dark:text-white-light">{t('VRISTO')}</span>
+                            🌌
+                            <span className="text-2xl ml-2 font-semibold dark:text-white-light">ORION</span>
                         </NavLink>
+
                         <button
                             type="button"
                             className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-500/10 dark:hover:bg-dark-light/10 dark:text-white-light transition"
                             onClick={() => dispatch(toggleSidebar())}
                         >
-                            <IconCaretsDown className="m-auto rotate-90" />
+                            🔽
                         </button>
                     </div>
 
@@ -770,12 +764,10 @@ const Sidebar = () => {
                             <li className="menu nav-item">
                                 <button type="button" className={`nav-link group w-full ${currentMenu === 'dashboard' ? 'active' : ''}`} onClick={() => toggleMenu('dashboard')}>
                                     <div className="flex items-center">
-                                        <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
-                                        <span className="pl-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Dashboard')}</span>
+                                        📊
+                                        <span className="pl-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">Dashboard</span>
                                     </div>
-                                    <div className={currentMenu !== 'dashboard' ? 'rotate-90' : ''}>
-                                        <IconCaretDown />
-                                    </div>
+                                    <div className={currentMenu !== 'dashboard' ? 'rotate-90' : ''}>🔽</div>
                                 </button>
                             </li>
 
@@ -783,12 +775,10 @@ const Sidebar = () => {
                             <li className="menu nav-item">
                                 <button type="button" className={`nav-link group w-full ${currentMenu === 'apps' ? 'active' : ''}`} onClick={() => toggleMenu('apps')}>
                                     <div className="flex items-center">
-                                        <IconMenuNotes className="group-hover:!text-primary shrink-0" />
-                                        <span className="pl-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Apps')}</span>
+                                        📱
+                                        <span className="pl-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">Apps</span>
                                     </div>
-                                    <div className={currentMenu !== 'apps' ? 'rotate-90' : ''}>
-                                        <IconCaretDown />
-                                    </div>
+                                    <div className={currentMenu !== 'apps' ? 'rotate-90' : ''}>🔽</div>
                                 </button>
                                 <AnimateHeight duration={300} height={currentMenu === 'apps' ? 'auto' : 0}>
                                     <ul className="sub-menu text-gray-500">
@@ -796,8 +786,8 @@ const Sidebar = () => {
                                         <li>
                                             <NavLink to="/notes" className="group">
                                                 <div className="flex items-center">
-                                                    <IconMenuNotes className="group-hover:!text-primary shrink-0" />
-                                                    <span className="pl-3">{t('Notes')}</span>
+                                                    📝
+                                                    <span className="pl-3">Notes</span>
                                                 </div>
                                             </NavLink>
                                         </li>
@@ -805,8 +795,8 @@ const Sidebar = () => {
                                         <li>
                                             <NavLink to="/apps/calendar" className="group">
                                                 <div className="flex items-center">
-                                                    <IconMenuCalendar className="group-hover:!text-primary shrink-0" />
-                                                    <span className="pl-3">{t('Calendar')}</span>
+                                                    📅
+                                                    <span className="pl-3">Calendar</span>
                                                 </div>
                                             </NavLink>
                                         </li>

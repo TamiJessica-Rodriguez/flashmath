@@ -8,8 +8,9 @@ import Mathematics from '../pages/Mathematics';
 import MathematicsMenu from '../pages/MathmaticsMenu';
 import SignUp from '../pages/SignUp';
 import StartPageStudent from '../pages/StartPageStudent';
-import SwedishBooks from '../pages/SwedishBooks';
-import SwedishMenu from '../pages/SwedishMenu';
+import SwedishBooks from '../pages/swedish/SwedishBooks';
+import SwedishListen from '../pages/swedish/SwedishListen';
+import SwedishMenu from '../pages/swedish/SwedishMenu';
 import WeeklySchedule from '../pages/WeeklySchedule';
 
 const routes = [
@@ -66,6 +67,11 @@ const routes = [
     {
         path: '/swedishbooks',
         element: <SwedishBooks />,
+        layout: 'blank',
+    },
+    {
+        path: '/swedishlisten',
+        element: <SwedishListen />,
         layout: 'blank',
     },
     {

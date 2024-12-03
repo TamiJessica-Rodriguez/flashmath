@@ -81,6 +81,11 @@ const StartPageStudent: React.FC = () => {
                     className="absolute top-0 left-0 w-full bg-white shadow-lg z-10 p-4"
                     onClick={() => setShowSchedule(false)} // Dölj schemat när man klickar på det
                 >
+                    {/* Idag */}
+                    <div className="mb-4">
+                        <h3 className="text-lg font-bold">Idag: Tisdag</h3>
+                    </div>
+
                     <ScheduleColumn notes={scheduleNotes} />
                 </div>
             )}

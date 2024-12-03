@@ -1036,7 +1036,7 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                     <Link to="/teams" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
                         👥 <span className="ml-2">Teams</span>
                     </Link>
-                    <Link to="/personalassistant" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
+                    <Link to="/studytechniques" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
                         🤖 <span className="ml-2">Personlig Assistent</span>
                     </Link>
                     <div className="flex items-center space-x-4">

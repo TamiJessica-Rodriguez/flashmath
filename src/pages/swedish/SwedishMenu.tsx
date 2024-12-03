@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import SwedishBooks from './SwedishBooks';
 import SwedishGames from './SwedishGames'; // Import the SwedishGames component
 import SwedishListen from './SwedishListen';
-import SwedishVideo from './swedishvideos'; // Import the SwedishVideo component
+import SwedishVideo from './SwedishVideos'; // Import the SwedishVideo component
 import SwedishVR from './SwedishVR'; // Import the SwedishVR component
 
 const SwedishMenu = () => {

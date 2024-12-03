@@ -7,14 +7,14 @@ import Info from '../pages/Info';
 import Login from '../pages/Login';
 import Mathematics from '../pages/Mathematics';
 import MathematicsMenu from '../pages/MathmaticsMenu';
-import PersonalAssistant from '../pages/additon/components/PersonalAssistant';
 import SignUp from '../pages/SignUp';
 import StartPageStudent from '../pages/StartPageStudent';
+import StudyTechniques from '../pages/Studytechniques';
 import SwedishBooks from '../pages/swedish/SwedishBooks';
 import SwedishGames from '../pages/swedish/SwedishGames';
 import SwedishListen from '../pages/swedish/SwedishListen';
 import SwedishMenu from '../pages/swedish/SwedishMenu';
-import SwedishVideos from '../pages/swedish/swedishvideos';
+import SwedishVideos from '../pages/swedish/SwedishVideos';
 import SwedishVR from '../pages/swedish/SwedishVR';
 import WeeklySchedule from '../pages/WeeklySchedule';
 
@@ -100,8 +100,8 @@ const routes = [
         layout: 'blank',
     },
     {
-        path: '/personalassistant',
-        element: <PersonalAssistant />,
+        path: '/studytechniques',
+        element: <StudyTechniques />,
         layout: 'blank',
     },
     {

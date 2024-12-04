@@ -14,11 +14,12 @@ const ProblemSolvingComponent = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
-            <p className="text-lg text-center mb-8">Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar!</p>
+        <div className="min-h-screen bg-gradient-to-b from-orange-100 to-orange-400 p-6 flex flex-col items-center">
+            <h1 className="text-4xl font-bold text-center mb-6 text-gray-700">Problemlösning för Årskurs 2</h1>
+            <p className="text-lg text-center mb-8 text-gray-600">Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar!</p>
 
             {/* Feedback */}
-            {feedback && <div className="bg-blue-100 text-blue-700 py-2 px-4 rounded-md mb-4 text-center shadow-md">{feedback}</div>}
+            {feedback && <div className="bg-blue-50 text-blue-700 py-2 px-4 rounded-md mb-4 text-center shadow-md">{feedback}</div>}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
                 {/* Box 1 */}

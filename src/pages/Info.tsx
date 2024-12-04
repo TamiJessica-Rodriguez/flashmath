@@ -65,6 +65,8 @@ const Info = () => {
             <div className="mb-6 text-center">
                 <h1 className="text-3xl font-bold text-gray-100">Välkommen till InfoHyllan!</h1>
                 <p className="text-lg text-gray-200">Utforska material för att lära dig och ha kul samtidigt.</p>
+                {/* Add Astronaut Hippo Image */}
+                <img src="/assets/images/austronaut.png" alt="Astronaut Hippo" className="mx-auto mt-4 w-1/6 h-auto rounded-lg shadow-lg" />
             </div>
 
             {/* Search Field */}

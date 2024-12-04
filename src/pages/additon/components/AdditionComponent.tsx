@@ -1,35 +1,62 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PersonalAssistant from './PersonalAssistant'; // Import PersonalAssistant component
 
 const AdditionComponent = () => {
+    const totalQuestions = 30;
+
     const generateQuestion = () => {
         const num1 = Math.floor(Math.random() * 10) + 1;
         const num2 = Math.floor(Math.random() * 10) + 1;
         const correctAnswer = num1 + num2;
-        const incorrectAnswers = Array(3)
-            .fill(0)
-            .map(() => correctAnswer + (Math.floor(Math.random() * 7) - 3));
-        const options = [...new Set([correctAnswer, ...incorrectAnswers])].slice(0, 4);
+
+        // Generate unique incorrect answers and ensure there are 4 options total
+        const incorrectAnswers = Array.from(
+            new Set(
+                Array(10)
+                    .fill(0)
+                    .map(() => correctAnswer + (Math.floor(Math.random() * 7) - 3))
+            )
+        ).filter((answer) => answer !== correctAnswer);
+
+        const options = [...incorrectAnswers.slice(0, 3), correctAnswer].sort(() => Math.random() - 0.5);
+
         return {
             num1,
             num2,
             correctAnswer,
-            options: options.sort(() => Math.random() - 0.5),
+            options,
         };
     };
+
+    const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500'];
 
     const [question, setQuestion] = useState(generateQuestion());
     const [feedback, setFeedback] = useState('');
     const [showVideo, setShowVideo] = useState(false);
-    const [showAssistant, setShowAssistant] = useState(false); // Add state for Assistant
-    const [isSimpleMode, setIsSimpleMode] = useState(false); // Toggle state for background and buttons
+    const [showAssistant, setShowAssistant] = useState(false);
+    const [isSimpleMode, setIsSimpleMode] = useState(false);
+    const [currentQuestion, setCurrentQuestion] = useState<number>(() => {
+        // Ladda aktuellt framsteg från localStorage om det finns
+        const savedProgress = localStorage.getItem('currentQuestion');
+        return savedProgress ? parseInt(savedProgress, 10) : 1;
+    });
+
+    useEffect(() => {
+        // Spara framsteg i localStorage
+        localStorage.setItem('currentQuestion', currentQuestion.toString());
+    }, [currentQuestion]);
 
     const handleAnswer = (answer: number) => {
         if (answer === question.correctAnswer) {
             setFeedback('Rätt! 🎉');
             setTimeout(() => {
                 setFeedback('');
-                setQuestion(generateQuestion());
+                if (currentQuestion < totalQuestions) {
+                    setQuestion(generateQuestion());
+                    setCurrentQuestion((prev) => prev + 1);
+                } else {
+                    setFeedback('Grattis! Du har klarat alla frågor! 🎉');
+                }
             }, 1500);
         } else {
             setFeedback('Fel svar. Försök igen! ❌');
@@ -42,10 +69,12 @@ const AdditionComponent = () => {
         window.speechSynthesis.speak(utterance);
     };
 
+    const progressPercentage = Math.min((currentQuestion / totalQuestions) * 100, 100);
+
     return (
         <div className={`min-h-screen ${isSimpleMode ? 'bg-white' : 'bg-gradient-to-b from-orange-100 to-orange-300'} flex items-center justify-center relative overflow-hidden`}>
             {/* Toggle Button */}
-            <div className="absolute top-4 right-4">
+            <div className="absolute top-4 right-4 mt-4">
                 <label className="flex items-center space-x-2 cursor-pointer">
                     <span className="text-sm font-semibold text-gray-700">Ingen bakgrundsfärg</span>
                     <button
@@ -55,6 +84,11 @@ const AdditionComponent = () => {
                         <span className={`absolute top-0.5 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300 ${isSimpleMode ? 'translate-x-5' : ''}`}></span>
                     </button>
                 </label>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="absolute top-0 left-0 w-full h-4 bg-gray-300">
+                <div className="h-full bg-blue-500 transition-all" style={{ width: `${progressPercentage}%` }}></div>
             </div>
 
             {/* Main Content */}
@@ -68,7 +102,8 @@ const AdditionComponent = () => {
                         </button>
                     </div>
                     <p className="text-center text-gray-600 mt-2">
-                        Din uppgift är att välja det rätta svaret på frågan ovan. Klicka på den ruta som du tror har rätt svar. Om du har rätt, kommer en ny fråga att visas automatiskt!
+                        Det finns totalt {totalQuestions} frågor. Din uppgift är att välja det rätta svaret på frågan ovan. Klicka på den ruta som du tror har rätt svar. Om du har rätt, kommer en ny
+                        fråga att visas automatiskt!
                     </p>
                 </div>
 
@@ -96,9 +131,7 @@ const AdditionComponent = () => {
                         {question.options.map((option, index) => (
                             <button
                                 key={index}
-                                className={`py-4 rounded-md font-semibold shadow-lg hover:shadow-xl transition transform hover:scale-105 ${
-                                    isSimpleMode ? 'bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-200' : 'text-white'
-                                } ${option === question.correctAnswer ? (isSimpleMode ? 'border-blue-500' : 'bg-blue-500 hover:bg-blue-600') : ''}`}
+                                className={`py-4 rounded-md font-semibold text-white shadow-lg hover:shadow-xl transition transform hover:scale-105 ${colors[index % colors.length]}`}
                                 onClick={() => handleAnswer(option)}
                             >
                                 {option}
@@ -127,7 +160,7 @@ const AdditionComponent = () => {
             {/* Personal Assistant Component */}
             {showAssistant && (
                 <div className="flex-shrink-0 w-full max-w-md transition-transform duration-700 ease-in-out translate-x-0">
-                    <PersonalAssistant onClose={() => setShowAssistant(false)} /> {/* Render the PersonalAssistant component */}
+                    <PersonalAssistant onClose={() => setShowAssistant(false)} />
                 </div>
             )}
         </div>

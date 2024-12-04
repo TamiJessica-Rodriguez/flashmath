@@ -25,7 +25,6 @@ const ProblemSolvingComponent = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-orange-100 to-orange-400 p-6 flex flex-col items-center">
-            <h1 className="text-4xl font-bold text-center mb-6 text-gray-700">Problemlösning för Årskurs 2</h1>
             <p className="text-lg text-center mb-8 text-gray-600">Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar eller lyssna på frågan!</p>
 
             {/* Feedback */}

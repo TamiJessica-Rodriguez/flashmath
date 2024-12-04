@@ -55,11 +55,11 @@ const Info = () => {
     };
 
     return (
-        <div className="flex flex-col gap-10 p-6">
+        <div className="min-h-screen bg-gradient-to-br from-gray-400 to-gray-800 flex flex-col gap-10 p-6">
             {/* Welcome Text */}
             <div className="mb-6 text-center">
-                <h1 className="text-3xl font-bold text-gray-800">Välkommen till InfoHyllan!</h1>
-                <p className="text-lg text-gray-600">Utforska material för att lära dig och ha kul samtidigt.</p>
+                <h1 className="text-3xl font-bold text-gray-100">Välkommen till InfoHyllan!</h1>
+                <p className="text-lg text-gray-200">Utforska material för att lära dig och ha kul samtidigt.</p>
             </div>
 
             {/* Search Field */}
@@ -67,7 +67,7 @@ const Info = () => {
                 <input
                     type="text"
                     placeholder="Sök efter bilder, videos, böcker eller spel..."
-                    className="w-full p-3 rounded-lg border border-gray-300 shadow focus:outline-none focus:ring focus:border-primary"
+                    className="w-full p-3 rounded-lg border border-gray-500 shadow focus:outline-none focus:ring focus:border-primary bg-gray-100 text-gray-700"
                     value={searchTerm}
                     onChange={handleSearch}
                 />
@@ -76,7 +76,7 @@ const Info = () => {
             {/* Categories */}
             {categories.map((category, index) => (
                 <div key={category.title} className="relative space-y-4">
-                    <h2 className="text-2xl font-bold text-gray-800">{category.title}</h2>
+                    <h2 className="text-2xl font-bold text-gray-200">{category.title}</h2>
                     <Swiper
                         modules={[Navigation]}
                         navigation={{

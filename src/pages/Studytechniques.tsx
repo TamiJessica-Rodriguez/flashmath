@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import PersonalAssistant from './additon/components/PersonalAssistant'; // Import PersonalAssistant component
 
 const StudyTechniques = () => {
     const [showAssistant, setShowAssistant] = useState(false);
+    const assistantRef = useRef<HTMLDivElement>(null);
+
+    const handleShowAssistant = () => {
+        setShowAssistant(true);
+        setTimeout(() => {
+            assistantRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100); // Ensure it scrolls smoothly to the assistant section
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-800 p-6">
@@ -32,24 +40,22 @@ const StudyTechniques = () => {
                     <h2 className="text-2xl font-bold text-center mb-4">Behöver du hjälp?</h2>
                     <p className="text-center mb-6">Om du har frågor eller vill ha skräddarsydd hjälp med studieteknik, använd den personliga assistenten.</p>
                     <div className="flex justify-center">
-                        <button onClick={() => setShowAssistant(true)} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg text-lg">
+                        <button onClick={handleShowAssistant} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg text-lg">
                             🧠 Be om hjälp från assistenten
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Personal Assistant Modal */}
+            {/* Personal Assistant Section */}
             {showAssistant && (
-                <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl">
-                        <h2 className="text-2xl font-bold mb-4">Personlig Assistent</h2>
-                        <PersonalAssistant onClose={() => setShowAssistant(false)} />
-                        <div className="text-center mt-6">
-                            <button onClick={() => setShowAssistant(false)} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg">
-                                ↩ Tillbaka till Studieteknik
-                            </button>
-                        </div>
+                <div ref={assistantRef} className="mt-10 max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+                    <h2 className="text-2xl font-bold mb-4 text-center">Personlig Assistent</h2>
+                    <PersonalAssistant onClose={() => setShowAssistant(false)} />
+                    <div className="text-center mt-6">
+                        <button onClick={() => setShowAssistant(false)} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg">
+                            ↩ Tillbaka till Studieteknik
+                        </button>
                     </div>
                 </div>
             )}

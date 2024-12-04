@@ -12,8 +12,8 @@ const Info = () => {
             title: 'Bilder',
             items: [
                 { id: 1, title: 'Vikingarnas Liv', image: '/assets/images/vikingatiden.jpeg' },
-                { id: 2, title: 'Spel om Vikingar', image: '/assets/images/Vikingaspel.webp' },
-                { id: 3, title: 'Handel och Krigare', image: '/assets/images/vkinga2.jpeg' },
+                { id: 2, title: 'Djurriket', image: '/assets/images/animals.webp' },
+                { id: 3, title: 'Guldfiskar', image: '/assets/images/guldfisk.webp' },
                 { id: 4, title: 'Vikingarnas Mytologi', image: '/assets/images/vikingabok3.webp' },
                 { id: 5, title: 'Historiska Strider', image: '/assets/images/vikingabook2.jpeg' },
             ],
@@ -21,19 +21,19 @@ const Info = () => {
         {
             title: 'Videos',
             items: [
-                { id: 6, title: 'Vikinga Äventyr', image: '/assets/images/vikingabok.webp' },
-                { id: 7, title: 'Vikingarnas Saga', image: '/assets/images/vkinga2.jpeg' },
-                { id: 8, title: 'Myter och Legender', image: '/assets/images/Vikingaspel.webp' },
-                { id: 9, title: 'Vikingarnas Resor', image: '/assets/images/vkinga2.jpeg' },
+                { id: 6, title: 'VR Äventyr', image: '/assets/images/VikingaVR2.webp' },
+                { id: 7, title: 'svenskaövning', image: '/assets/images/svenska.webp' },
+                { id: 8, title: 'Fåglar', image: '/assets/images/birds.webp' },
+                { id: 9, title: 'Find the words', image: '/assets/images/englishGame.webp' },
                 { id: 10, title: 'Fakta om Vikingar', image: '/assets/images/vikingatiden.jpeg' },
             ],
         },
         {
             title: 'Läsa',
             items: [
-                { id: 11, title: 'Vikingar', image: '/assets/images/vikingabok.webp' },
-                { id: 12, title: 'Nordiska Gudomar', image: '/assets/images/vkinga2.jpeg' },
-                { id: 13, title: 'Handelsvägar', image: '/assets/images/VikingaVR.webp' },
+                { id: 11, title: 'Sagan Om Luna', image: '/assets/images/luna.webp' },
+                { id: 12, title: 'Tomten', image: '/assets/images/Tomten.webp' },
+                { id: 13, title: 'Sagan om Häxan', image: '/assets/images/skracksaga.webp' },
                 { id: 14, title: 'Vikingarnas Historia', image: '/assets/images/Vikingaspel.webp' },
                 { id: 15, title: 'Sjöfarare', image: '/assets/images/vkinga2.jpeg' },
             ],
@@ -42,10 +42,10 @@ const Info = () => {
             title: 'Spel',
             items: [
                 { id: 16, title: 'Verb-spelet', image: '/assets/images/verb.webp' },
-                { id: 17, title: 'VR Äventyr', image: '/assets/images/VikingaVR.webp' },
-                { id: 18, title: 'Interaktiv Mytologi', image: '/assets/images/Vikingaspel.webp' },
-                { id: 19, title: 'Strategiska Strider', image: '/assets/images/vkinga2.jpeg' },
-                { id: 20, title: 'Bygg Vikingastäder', image: '/assets/images/vikingatiden.jpeg' },
+                { id: 17, title: 'VR Äventyr', image: '/assets/images/VikingaVR2.webp' },
+                { id: 18, title: 'Interaktiv Mytologi', image: '/assets/images/Vikingaspel1.webp' },
+                { id: 19, title: 'svenskaövning', image: '/assets/images/svenska.webp' },
+                { id: 20, title: 'Find the words', image: '/assets/images/englishGame.webp' },
             ],
         },
     ];

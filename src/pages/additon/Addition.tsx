@@ -2,13 +2,14 @@ import { Tab } from '@headlessui/react';
 import { Fragment } from 'react';
 import AdditionComponent from './components/AdditionComponent';
 import ColumnMath from './components/ColumnMath';
-import ProblemSolvingComponent from './components/ProblemSolving'; 
+import ProblemSolvingComponent from './components/ProblemSolving';
 
 // Tabs Component
 const Tabs = () => {
     return (
         <Tab.Group>
-            <Tab.List className="mt-3 flex flex-wrap gap-6">
+            {/* Tab List */}
+            <Tab.List className="mt-6 flex flex-wrap gap-6 p-4 bg-gray-100 rounded-lg shadow-md">
                 {/* Addition Tab */}
                 <Tab as={Fragment}>
                     {({ selected }) => (
@@ -43,7 +44,9 @@ const Tabs = () => {
                     )}
                 </Tab>
             </Tab.List>
-            <Tab.Panels>
+
+            {/* Tab Panels */}
+            <Tab.Panels className="mt-8 p-6 bg-gray-50 rounded-lg shadow-md">
                 {/* Addition Panel */}
                 <Tab.Panel>
                     <AdditionComponent />

@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 const Info = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
     const categories = [
         {
@@ -54,6 +55,10 @@ const Info = () => {
         setSearchTerm(e.target.value);
     };
 
+    const toggleCategory = (category: string) => {
+        setActiveCategory((prev) => (prev === category ? null : category));
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-400 to-gray-800 flex flex-col gap-10 p-6">
             {/* Welcome Text */}
@@ -73,48 +78,63 @@ const Info = () => {
                 />
             </div>
 
-            {/* Categories */}
-            {categories.map((category, index) => (
-                <div key={category.title} className="relative space-y-4">
-                    <h2 className="text-2xl font-bold text-gray-200">{category.title}</h2>
-                    <Swiper
-                        modules={[Navigation]}
-                        navigation={{
-                            nextEl: `.swiper-button-next-${index}`,
-                            prevEl: `.swiper-button-prev-${index}`,
-                        }}
-                        spaceBetween={30}
-                        slidesPerView={3}
-                        breakpoints={{
-                            1024: { slidesPerView: 3 },
-                            768: { slidesPerView: 2 },
-                            480: { slidesPerView: 1 },
-                        }}
+            {/* Navigation Links */}
+            <div className="flex justify-around mb-6">
+                {['Bilder', 'Videos', 'Läsa', 'Spel'].map((category) => (
+                    <button
+                        key={category}
+                        onClick={() => toggleCategory(category)}
+                        className={`text-lg font-bold px-4 py-2 rounded ${activeCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
                     >
-                        {category.items
-                            .filter((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase()))
-                            .map((item) => (
-                                <SwiperSlide key={item.id}>
-                                    <div className="p-3 bg-white shadow-md rounded-lg flex flex-col items-center">
-                                        <img src={item.image} alt={item.title} className="w-full h-40 object-cover rounded-md mb-3" />
-                                        <h3 className="text-lg font-semibold text-gray-700">{item.title}</h3>
-                                    </div>
-                                </SwiperSlide>
-                            ))}
-                    </Swiper>
-                    {/* Navigation buttons */}
-                    <button className={`swiper-button-prev-${index} absolute top-1/2 left-0 transform -translate-y-1/2 z-10 p-2 bg-primary text-white rounded-full shadow`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                        </svg>
+                        {category}
                     </button>
-                    <button className={`swiper-button-next-${index} absolute top-1/2 right-0 transform -translate-y-1/2 z-10 p-2 bg-primary text-white rounded-full shadow`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div>
-            ))}
+                ))}
+            </div>
+
+            {/* Display Categories */}
+            {categories
+                .filter((category) => !activeCategory || category.title === activeCategory)
+                .map((category, index) => (
+                    <div key={category.title} className="relative space-y-4">
+                        <h2 className="text-2xl font-bold text-gray-200">{category.title}</h2>
+                        <Swiper
+                            modules={[Navigation]}
+                            navigation={{
+                                nextEl: `.swiper-button-next-${index}`,
+                                prevEl: `.swiper-button-prev-${index}`,
+                            }}
+                            spaceBetween={30}
+                            slidesPerView={3}
+                            breakpoints={{
+                                1024: { slidesPerView: 3 },
+                                768: { slidesPerView: 2 },
+                                480: { slidesPerView: 1 },
+                            }}
+                        >
+                            {category.items
+                                .filter((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase()))
+                                .map((item) => (
+                                    <SwiperSlide key={item.id}>
+                                        <div className="p-3 bg-white shadow-md rounded-lg flex flex-col items-center">
+                                            <img src={item.image} alt={item.title} className="w-full h-40 object-cover rounded-md mb-3" />
+                                            <h3 className="text-lg font-semibold text-gray-700">{item.title}</h3>
+                                        </div>
+                                    </SwiperSlide>
+                                ))}
+                        </Swiper>
+                        {/* Navigation buttons */}
+                        <button className={`swiper-button-prev-${index} absolute top-1/2 left-0 transform -translate-y-1/2 z-10 p-2 bg-primary text-white rounded-full shadow`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <button className={`swiper-button-next-${index} absolute top-1/2 right-0 transform -translate-y-1/2 z-10 p-2 bg-primary text-white rounded-full shadow`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                ))}
         </div>
     );
 };

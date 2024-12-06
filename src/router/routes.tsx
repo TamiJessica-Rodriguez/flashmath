@@ -97,12 +97,12 @@ const routes = [
     {
         path: '/info',
         element: <Info />,
-        layout: 'blank',
+        layout: '',
     },
     {
         path: '/studytechniques',
         element: <StudyTechniques />,
-        layout: 'blank',
+        layout: '',
     },
     {
         path: '/calendar',

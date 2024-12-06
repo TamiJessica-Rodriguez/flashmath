@@ -103,6 +103,19 @@ const ColumnMath = () => {
                         </button>
                     </div>
 
+                    {/* Help Options */}
+                    <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md mb-6">
+                        <h2 className="text-xl font-bold text-center mb-4 text-gray-800">Behöver du hjälp?</h2>
+                        <div className="flex flex-col gap-4">
+                            <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center" onClick={() => setShowVideo(true)}>
+                                🎥 Titta på en instruktionsvideo
+                            </button>
+                            <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-md text-center" onClick={() => setShowAssistant(true)}>
+                                🧠 Be om hjälp från assistenten
+                            </button>
+                        </div>
+                    </div>
+
                     {/* Main Content */}
                     {showAllQuestions ? (
                         <>
@@ -274,4 +287,3 @@ const ColumnMath = () => {
 };
 
 export default ColumnMath;
-

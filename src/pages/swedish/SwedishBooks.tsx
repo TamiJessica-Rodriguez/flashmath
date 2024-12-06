@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
+import FileUploadPreview from './Fileupload'; // Importera FileUploadPreview-komponenten
 
 const SwedishBooks = () => {
     const dispatch = useDispatch();
@@ -99,7 +100,7 @@ const SwedishBooks = () => {
                         <div className="space-y-4">
                             {project.tasks.map((task: any) => (
                                 <div key={task.id} className={`p-3 rounded-lg ${['Böcker', 'Dokument'].includes(project.title) ? 'bg-white shadow-md flex items-center gap-4' : 'bg-gray-100'}`}>
-                                    {/* Show images for "Böcker" and "Dokument" */}
+                                    {/* Visa bilder för "Böcker" och "Dokument" */}
                                     {['Böcker', 'Dokument'].includes(project.title) && task.image && <img src={task.image} alt={task.title} className="w-24 h-32 object-cover rounded-md" />}
                                     <div>
                                         <h5 className="font-semibold text-lg text-gray-700">{task.title}</h5>
@@ -111,6 +112,12 @@ const SwedishBooks = () => {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            {/* File Upload Section */}
+            <div className="mt-8">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Ladda upp dina inlämningar</h3>
+                <FileUploadPreview />
             </div>
         </div>
     );

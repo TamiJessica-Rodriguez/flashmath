@@ -274,3 +274,4 @@ const ColumnMath = () => {
 };
 
 export default ColumnMath;
+

@@ -49,15 +49,13 @@ const AdditionComponent = () => {
     const handleAnswer = (answer: number) => {
         if (answer === question.correctAnswer) {
             setFeedback('Rätt! 🎉');
-            setTimeout(() => {
-                setFeedback('');
-                if (currentQuestion < totalQuestions) {
-                    setQuestion(generateQuestion());
-                    setCurrentQuestion((prev) => prev + 1);
-                } else {
-                    setFeedback('Grattis! Du har klarat alla frågor! 🎉');
-                }
-            }, 1500);
+            setFeedback('');
+            if (currentQuestion < totalQuestions) {
+                setQuestion(generateQuestion());
+                setCurrentQuestion((prev) => prev + 1);
+            } else {
+                setFeedback('Grattis! Du har klarat alla frågor! 🎉');
+            }
         } else {
             setFeedback('Fel svar. Försök igen! ❌');
         }

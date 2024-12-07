@@ -55,7 +55,7 @@ const Maze: React.FC = () => {
                 {mazeLayout.map((row, rowIndex) => (
                     <div key={rowIndex} className="flex">
                         {row.map((cell, cellIndex) => (
-                            <div key={cellIndex} className={`w-8 h-8 ${cell === 1 ? 'bg-black' : cell === 2 ? 'border border-blue-500 bg-transparent' : 'bg-transparent'} relative`}>
+                            <div key={cellIndex} className={`w-8 h-8 ${cell === 1 ? 'bg-black' : 'bg-transparent'} relative`}>
                                 {characterPosition.row === rowIndex && characterPosition.col === cellIndex && <img src={beepirate} alt="Character" className="absolute top-0 left-0 w-full h-full" />}
                             </div>
                         ))}

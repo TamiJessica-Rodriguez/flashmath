@@ -28,7 +28,6 @@ const mazeLayout = [
 ];
 
 const generateQuestions = () => {
-    // Generate three random addition questions with numbers between 1-30
     const questions = [];
     const answers = [];
     for (let i = 0; i < 3; i++) {
@@ -40,34 +39,6 @@ const generateQuestions = () => {
     return { questions, answers };
 };
 
-interface Position {
-    row: number;
-    col: number;
-}
-
-interface AnswerPosition extends Position {
-    value: number;
-}
-
-const placeAnswersInMaze = (answers: number[]): AnswerPosition[] => {
-    const positions: AnswerPosition[] = [];
-    const rows = mazeLayout.length;
-    const cols = mazeLayout[0].length;
-
-    answers.forEach((answer) => {
-        let placed = false;
-        while (!placed) {
-            const row = Math.floor(Math.random() * rows);
-            const col = Math.floor(Math.random() * cols);
-            if (mazeLayout[row][col] === 0 && !positions.some((pos) => pos.row === row && pos.col === col)) {
-                positions.push({ row, col, value: answer });
-                placed = true;
-            }
-        }
-    });
-    return positions;
-};
-
 const Maze: React.FC = () => {
     const [characterPosition, setCharacterPosition] = useState({ row: 1, col: 1 });
     const [purpleMonsterPosition, setPurpleMonsterPosition] = useState({ row: 10, col: 10 });
@@ -75,8 +46,30 @@ const Maze: React.FC = () => {
     const [purpleMonsterDirection, setPurpleMonsterDirection] = useState({ row: 0, col: 1 });
     const [greenMonsterDirection, setGreenMonsterDirection] = useState({ row: 0, col: -1 });
     const [score, setScore] = useState(0);
+
     const { questions, answers } = generateQuestions();
-    const [answerPositions, setAnswerPositions] = useState(placeAnswersInMaze(answers));
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [currentAnswerPosition, setCurrentAnswerPosition] = useState({ row: 0, col: 0 });
+
+    useEffect(() => {
+        // Place the current answer in a random position
+        const placeAnswer = () => {
+            const rows = mazeLayout.length;
+            const cols = mazeLayout[0].length;
+
+            let placed = false;
+            while (!placed) {
+                const row = Math.floor(Math.random() * rows);
+                const col = Math.floor(Math.random() * cols);
+
+                if (mazeLayout[row][col] === 0) {
+                    setCurrentAnswerPosition({ row, col });
+                    placed = true;
+                }
+            }
+        };
+        placeAnswer();
+    }, [currentQuestionIndex]);
 
     const handleKeyDown = (e: KeyboardEvent) => {
         setCharacterPosition((prev) => {
@@ -88,31 +81,24 @@ const Maze: React.FC = () => {
             if (e.key === 'ArrowLeft' && mazeLayout[newRow][newCol - 1] !== 1) newCol--;
             if (e.key === 'ArrowRight' && mazeLayout[newRow][newCol + 1] !== 1) newCol++;
 
-            const collectedAnswer = answerPositions.find((pos) => pos.row === newRow && pos.col === newCol);
-            if (collectedAnswer) {
+            if (newRow === currentAnswerPosition.row && newCol === currentAnswerPosition.col) {
                 setScore(score + 1);
-                setAnswerPositions(answerPositions.filter((pos) => pos !== collectedAnswer));
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                } else {
+                    alert("Congratulations! You've completed all questions!");
+                }
             }
 
             return { row: newRow, col: newCol };
         });
     };
 
-    interface Direction {
-        row: number;
-        col: number;
-    }
-
-    interface MonsterPosition {
-        row: number;
-        col: number;
-    }
-
     const moveMonster = (
-        position: MonsterPosition,
-        direction: Direction,
-        setPosition: React.Dispatch<React.SetStateAction<MonsterPosition>>,
-        setDirection: React.Dispatch<React.SetStateAction<Direction>>
+        position: { row: number; col: number },
+        direction: { row: number; col: number },
+        setPosition: React.Dispatch<React.SetStateAction<{ row: number; col: number }>>,
+        setDirection: React.Dispatch<React.SetStateAction<{ row: number; col: number }>>
     ) => {
         setPosition((prev) => {
             const nextRow = prev.row + direction.row;
@@ -122,12 +108,11 @@ const Maze: React.FC = () => {
                 return { row: nextRow, col: nextCol };
             }
 
-            // Choose a new direction if blocked
-            const directions: Direction[] = [
-                { row: -1, col: 0 }, // Up
-                { row: 1, col: 0 }, // Down
-                { row: 0, col: -1 }, // Left
-                { row: 0, col: 1 }, // Right
+            const directions = [
+                { row: -1, col: 0 },
+                { row: 1, col: 0 },
+                { row: 0, col: -1 },
+                { row: 0, col: 1 },
             ];
 
             const validMoves = directions.filter(({ row, col }) => {
@@ -169,21 +154,19 @@ const Maze: React.FC = () => {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [answerPositions]);
+    }, [currentAnswerPosition]);
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center" style={{ backgroundImage: "url('/assets/images/startPage.webp')" }}>
             <div className="text-white text-xl mb-4">
                 <p>Score: {score}</p>
-                {questions.map((question, index) => (
-                    <p key={index}>{question}</p>
-                ))}
+                <p>{questions[currentQuestionIndex]}</p>
             </div>
             <div className="relative">
                 <div className="grid grid-rows-[repeat(21,_auto)]">
                     {mazeLayout.map((row, rowIndex) => (
                         <div key={rowIndex} className="flex">
-                            {row.map((cell, cellIndex) => (
+                            {row.map((cell: number, cellIndex: number) => (
                                 <div key={cellIndex} className={`w-8 h-8 ${cell === 1 ? 'bg-black' : 'bg-transparent'} relative`}>
                                     {characterPosition.row === rowIndex && characterPosition.col === cellIndex && (
                                         <img src={beepirate} alt="Character" className="absolute top-0 left-0 w-full h-full" />
@@ -194,10 +177,8 @@ const Maze: React.FC = () => {
                                     {greenMonsterPosition.row === rowIndex && greenMonsterPosition.col === cellIndex && (
                                         <img src={bluemonster} alt="Green Monster" className="absolute top-0 left-0 w-full h-full transition-all ease-linear duration-300" />
                                     )}
-                                    {answerPositions.find((pos) => pos.row === rowIndex && pos.col === cellIndex) && (
-                                        <div className="absolute top-0 left-0 w-full h-full text-center text-white text-lg flex items-center justify-center">
-                                            {answerPositions.find((pos) => pos.row === rowIndex && pos.col === cellIndex)?.value}
-                                        </div>
+                                    {currentAnswerPosition.row === rowIndex && currentAnswerPosition.col === cellIndex && (
+                                        <div className="absolute top-0 left-0 w-full h-full text-center text-white text-lg flex items-center justify-center">{answers[currentQuestionIndex]}</div>
                                     )}
                                 </div>
                             ))}

@@ -7,6 +7,7 @@ import Info from '../pages/Info';
 import Login from '../pages/Login';
 import Mathematics from '../pages/Mathematics';
 import MathematicsMenu from '../pages/MathmaticsMenu';
+import Maze from '../pages/Maze';
 import SignUp from '../pages/SignUp';
 import StartPageStudent from '../pages/StartPageStudent';
 import StudyTechniques from '../pages/Studytechniques';
@@ -97,6 +98,11 @@ const routes = [
     {
         path: '/info',
         element: <Info />,
+        layout: '',
+    },
+    {
+        path: '/maze',
+        element: <Maze />,
         layout: '',
     },
     {

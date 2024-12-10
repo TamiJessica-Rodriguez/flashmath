@@ -2,6 +2,7 @@ import cookieSession from 'cookie-session';
 import cors from 'cors';
 import 'dotenv/config';
 import express, { NextFunction, Request, Response } from 'express';
+import { submissionsRouter } from './submissions/submission-router';
 import { userRouter } from './users/user-router';
 
 if (!process.env.COOKIE_SECRET) {
@@ -33,6 +34,7 @@ app.use(
 
 // Routes
 app.use('/api/users', userRouter);
+app.use('/api/submissions', submissionsRouter);
 
 // (Optional) Test CORS Endpoint
 app.get('/test-cors', (req, res) => {

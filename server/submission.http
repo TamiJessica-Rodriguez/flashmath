@@ -1,0 +1,54 @@
+### Create a new submission with file upload
+POST http://localhost:3000/submissions
+Content-Type: multipart/form-data
+Authorization: Bearer <your-token>
+
+--boundary
+Content-Disposition: form-data; name="title"
+
+My First Submission
+--boundary
+Content-Disposition: form-data; name="file"; filename="example.pdf"
+Content-Type: application/pdf
+
+< ./path/to/example.pdf
+--boundary--
+
+###
+
+### Get all submissions
+GET http://localhost:3000/submissions
+Authorization: Bearer <your-token>
+
+###
+
+### Get a specific submission by ID
+GET http://localhost:3000/submissions/{{submissionId}}
+Authorization: Bearer <your-token>
+
+###
+
+### Update a submission with a new file
+PUT http://localhost:3000/submissions/{{submissionId}}
+Content-Type: multipart/form-data
+Authorization: Bearer <your-token>
+
+--boundary
+Content-Disposition: form-data; name="title"
+
+Updated Submission Title
+--boundary
+Content-Disposition: form-data; name="file"; filename="updated-example.pdf"
+Content-Type: application/pdf
+
+< ./path/to/updated-example.pdf
+--boundary--
+
+###
+
+### Delete a submission by ID
+### Define the submissionId variable
+@submissionId = <your-submission-id>
+
+DELETE http://localhost:3000/submissions/{{submissionId}}
+Authorization: Bearer <your-token>

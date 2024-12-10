@@ -18,6 +18,7 @@ import SwedishListen from '../pages/swedish/SwedishListen';
 import SwedishMenu from '../pages/swedish/SwedishMenu';
 import SwedishVideos from '../pages/swedish/SwedishVideos';
 import SwedishVR from '../pages/swedish/SwedishVR';
+import TeacherStartpage from '../pages/teachers/TeacherStartpage';
 import WeeklySchedule from '../pages/WeeklySchedule';
 
 const routes = [
@@ -114,6 +115,11 @@ const routes = [
     {
         path: '/naturalscience',
         element: <NaturalScience />,
+        layout: '',
+    },
+    {
+        path: '/teacherstartpage',
+        element: <TeacherStartpage />,
         layout: '',
     },
     {

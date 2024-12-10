@@ -9,6 +9,7 @@ interface UserData {
 }
 
 const API_URL = 'http://localhost:3000/api/users';
+const SUBMISSION_API_URL = 'http://localhost:3000/api/submissions';
 
 /**
  * Create a new user
@@ -85,5 +86,27 @@ export const getUsers = async () => {
         } else {
             throw new Error('Ett nätverksfel inträffade vid hämtning av användare');
         }
+    }
+};
+
+/**
+ * Upload a file submission
+ */
+export const uploadSubmission = async (file: File, title: string) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('title', title);
+
+    try {
+        const response = await axios.post(SUBMISSION_API_URL, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error uploading submission:', error);
+        throw new Error('Ett oväntat fel inträffade vid uppladdning av inlämning.');
     }
 };

@@ -14,7 +14,7 @@ const Tabs = () => {
                 <Tab as={Fragment}>
                     {({ selected }) => (
                         <button
-                            className={`${selected ? 'bg-warning text-white !outline-none' : ''} flex items-center gap-2 text-2xl font-semibold rounded p-3 py-2 hover:bg-warning hover:text-white`}
+                            className={`${selected ? 'bg-[#66B8D5] text-white !outline-none' : ''} flex items-center gap-2 text-2xl font-semibold rounded p-3 py-2 hover:bg-[#3587a4] hover:text-white`}
                         >
                             <span className="text-3xl">➕</span> {/* Emoji för Addition */}
                             Addition
@@ -25,7 +25,7 @@ const Tabs = () => {
                 <Tab as={Fragment}>
                     {({ selected }) => (
                         <button
-                            className={`${selected ? 'bg-warning text-white !outline-none' : ''} flex items-center gap-2 text-2xl font-semibold rounded p-3 py-2 hover:bg-warning hover:text-white`}
+                            className={`${selected ? 'bg-[#66B8D5] text-white !outline-none' : ''} flex items-center gap-2 text-2xl font-semibold rounded p-3 py-2 hover:bg-[#3587a4] hover:text-white`}
                         >
                             <span className="text-3xl">🧮</span> {/* Emoji för Uppställning (Kalkylator) */}
                             Uppställning
@@ -36,7 +36,7 @@ const Tabs = () => {
                 <Tab as={Fragment}>
                     {({ selected }) => (
                         <button
-                            className={`${selected ? 'bg-warning text-white !outline-none' : ''} flex items-center gap-2 text-2xl font-semibold rounded p-3 py-2 hover:bg-warning hover:text-white`}
+                            className={`${selected ? 'bg-[#66B8D5] text-white !outline-none' : ''} flex items-center gap-2 text-2xl font-semibold rounded p-3 py-2 hover:bg-[#3587a4] hover:text-white`}
                         >
                             <span className="text-3xl">🧩</span> {/* Emoji för Problemlösning */}
                             Problemlösning

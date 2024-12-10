@@ -8,6 +8,7 @@ import Login from '../pages/Login';
 import Mathematics from '../pages/Mathematics';
 import MathematicsMenu from '../pages/MathmaticsMenu';
 import Maze from '../pages/Maze';
+import NaturalScience from '../pages/NaturalScience';
 import SignUp from '../pages/SignUp';
 import StartPageStudent from '../pages/StartPageStudent';
 import StudyTechniques from '../pages/Studytechniques';
@@ -108,6 +109,11 @@ const routes = [
     {
         path: '/studytechniques',
         element: <StudyTechniques />,
+        layout: '',
+    },
+    {
+        path: '/naturalscience',
+        element: <NaturalScience />,
         layout: '',
     },
     {

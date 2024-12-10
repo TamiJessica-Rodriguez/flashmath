@@ -201,14 +201,14 @@ const StartPageStudent: React.FC = () => {
         Naturkunskap: { colorClass: 'bg-yellow-200', emoji: '🌿' },
         Musik: { colorClass: 'bg-pink-200', emoji: '🎵' },
         'Idrott & Hälsa': { colorClass: 'bg-purple-200', emoji: '🏃‍♂️' },
-        Matematik: { colorClass: 'bg-orange-200', emoji: '➗' },
+        Matematik: { colorClass: 'bg-[#3587a4]', emoji: '➗' },
     };
 
     const scheduleNotes: ScheduleNote[] = [
         { title: 'Engelska', colorClass: 'bg-blue-200', startTime: '08:00', endTime: '09:30' },
         { title: 'Svenska', colorClass: 'bg-green-200', startTime: '10:00', endTime: '11:15' },
         { title: 'Musik', colorClass: 'bg-pink-200', startTime: '13:00', endTime: '14:30' },
-        { title: 'Matematik', colorClass: 'bg-orange-200', startTime: '15:00', endTime: '16:30' },
+        { title: 'Matematik', colorClass: 'bg-[#3587a4]', startTime: '15:00', endTime: '16:30' },
     ];
 
     useEffect(() => {

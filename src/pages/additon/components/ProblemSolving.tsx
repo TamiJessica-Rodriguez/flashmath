@@ -193,8 +193,12 @@ const ProblemSolvingComponent = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-orange-100 to-orange-400 p-6 flex flex-col items-center">
-            <p className="text-lg text-center mb-8 text-gray-600">Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar eller lyssna på frågan!</p>
+        <div className="min-h-screen p-6 flex flex-col items-center">
+            <div className="bg-white w-full mx-auto p-6 rounded-lg shadow-md mb-10 mt-5">
+                <p className="text-2xl text-center mb-8 text-black font-extrabold">
+                    Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar eller lyssna på frågan!
+                </p>
+            </div>
 
             {/* Feedback */}
             {feedback && <div className="bg-blue-50 text-blue-700 py-2 px-4 rounded-md mb-4 text-center shadow-md">{feedback}</div>}
@@ -203,7 +207,7 @@ const ProblemSolvingComponent = () => {
                 {/* Problem 1 */}
                 <div className="bg-white p-6 rounded-lg shadow-lg">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-bold">Hur många äpplen finns kvar?</h2>
+                        <h2 className="text-xl font-extrabold">Hur många äpplen finns kvar?</h2>
                         <button
                             onClick={() => playQuestionAudio('Ett träd hade 10 äpplen. En fågel åt upp 3. Hur många äpplen är kvar?')}
                             className="text-blue-500 hover:text-blue-700 text-xl"
@@ -212,7 +216,7 @@ const ProblemSolvingComponent = () => {
                             🔊
                         </button>
                     </div>
-                    <p className="mb-4">Ett träd hade 10 äpplen. En fågel åt upp 3. Hur många äpplen är kvar?</p>
+                    <p className="mb-4 font-extrabold">Ett träd hade 10 äpplen. En fågel åt upp 3. Hur många äpplen är kvar?</p>
                     <img src="/assets/images/Tree.webp" alt="Äppelträd" className="w-full h-40 object-cover rounded-lg mb-4" />
                     <div className="grid grid-cols-2 gap-4">
                         <button onClick={() => handleAnswer(true)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition">
@@ -233,7 +237,7 @@ const ProblemSolvingComponent = () => {
                 {/* Problem 2 */}
                 <div className="bg-white p-6 rounded-lg shadow-lg">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-bold">Hur många grodor är kvar vid dammen?</h2>
+                        <h2 className="text-xl font-extrabold">Hur många grodor är kvar vid dammen?</h2>
                         <button
                             onClick={() => playQuestionAudio('Det fanns 10 grodor vid en damm. Tre hoppade iväg. Hur många är kvar vid dammen?')}
                             className="text-blue-500 hover:text-blue-700 text-xl"
@@ -242,7 +246,7 @@ const ProblemSolvingComponent = () => {
                             🔊
                         </button>
                     </div>
-                    <p className="mb-4">Det fanns 10 grodor vid en damm. Tre hoppade iväg. Hur många är kvar vid dammen?</p>
+                    <p className="mb-4 font-extrabold">Det fanns 10 grodor vid en damm. Tre hoppade iväg. Hur många är kvar vid dammen?</p>
                     <div className="grid grid-cols-5 gap-4">
                         {frogs.map((clicked, index) => (
                             <img
@@ -267,7 +271,7 @@ const ProblemSolvingComponent = () => {
                 {/* Problem 3 */}
                 <div className="bg-white p-6 rounded-lg shadow-lg">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-bold">Hur många bilar står kvar?</h2>
+                        <h2 className="text-xl font-extrabold">Hur många bilar står kvar?</h2>
                         <button
                             onClick={() => playQuestionAudio('Det stod 8 bilar på en parkering. Två körde iväg. Hur många är kvar?')}
                             className="text-blue-500 hover:text-blue-700 text-xl"
@@ -276,7 +280,7 @@ const ProblemSolvingComponent = () => {
                             🔊
                         </button>
                     </div>
-                    <p className="mb-4">Det stod 8 bilar på en parkering. Två körde iväg. Hur många är kvar?</p>
+                    <p className="mb-4 font-extrabold">Det stod 8 bilar på en parkering. Två körde iväg. Hur många är kvar?</p>
                     <div className="grid grid-cols-4 gap-4">
                         {cars.map((clicked, index) => (
                             <img

@@ -1,8 +1,7 @@
-import argon2 from 'argon2';
+import bcrypt from 'bcrypt';
 import mongoose, { type InferSchemaType } from 'mongoose';
 import { z } from 'zod';
 
-// Mongoose-schema för admin
 const AdminSchema = new mongoose.Schema(
     {
         firstname: { type: String, required: true },
@@ -16,15 +15,16 @@ const AdminSchema = new mongoose.Schema(
     }
 );
 
-// Hasha lösenordet innan sparande
+// Hash lösenordet innan det sparas
 AdminSchema.pre('save', async function (next) {
     if (this.isModified('password')) {
-        this.password = await argon2.hash(this.password);
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
     }
     next();
 });
 
-// Valideringsschema med Zod
+// Zod valideringsschema
 const AdminZodSchema = z.object({
     firstname: z.string().min(1, 'Firstname is required'),
     lastname: z.string().min(1, 'Lastname is required'),

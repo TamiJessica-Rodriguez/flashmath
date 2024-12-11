@@ -78,8 +78,13 @@ export const loginUser = async (username: string, password: string) => {
 // };
 
 export const loginAdmin = async (username: string, password: string) => {
-    const response = await axios.post('http://localhost:3000/api/admin/login', { username, password });
-    return response.data;
+    try {
+        const response = await axios.post(`${ADMIN_API_URL}/login`, { username, password }, { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        console.error('Error logging in admin:', error);
+        throw new Error(axios.isAxiosError(error) ? error.response?.data?.message || 'Network error occurred during admin login' : 'Unexpected error occurred during admin login');
+    }
 };
 
 /**

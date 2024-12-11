@@ -1,11 +1,11 @@
-import argon2 from 'argon2';
+import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { AdminModel, AdminZodSchema } from './admin-model';
 
 /** Hämta alla admins */
 export const getAllAdmins = async (req: Request, res: Response) => {
     try {
-        const admins = await AdminModel.find();
+        const admins = await AdminModel.find().select('-password'); // Exkludera lösenord
         res.status(200).json(admins);
     } catch (error) {
         console.error('Error fetching admins:', error);
@@ -30,8 +30,9 @@ export const createAdmin = async (req: Request, res: Response) => {
             return res.status(409).json({ message: 'Användarnamnet finns redan' });
         }
 
-        // Skapa och spara en ny admin
-        const hashedPassword = await argon2.hash(password);
+        // Hasha lösenordet och skapa en ny admin
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
         const newAdmin = new AdminModel({ firstname, lastname, username, password: hashedPassword });
         await newAdmin.save();
 
@@ -45,7 +46,11 @@ export const createAdmin = async (req: Request, res: Response) => {
 /** Uppdatera en admin */
 export const updateAdmin = async (req: Request, res: Response) => {
     try {
-        const updatedAdmin = await AdminModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedAdmin = await AdminModel.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true } // Validera vid uppdatering
+        );
         if (!updatedAdmin) {
             return res.status(404).json({ message: 'Admin hittades inte' });
         }
@@ -73,7 +78,7 @@ export const deleteAdmin = async (req: Request, res: Response) => {
 /** Hämta en admin via ID */
 export const getAdminById = async (req: Request, res: Response) => {
     try {
-        const admin = await AdminModel.findById(req.params.id);
+        const admin = await AdminModel.findById(req.params.id).select('-password'); // Exkludera lösenord
         if (!admin) {
             return res.status(404).json({ message: 'Admin hittades inte' });
         }
@@ -84,20 +89,30 @@ export const getAdminById = async (req: Request, res: Response) => {
     }
 };
 
+/** Logga in som admin */
 export const loginAdmin = async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
     try {
+        // Kontrollera om användaren finns
         const admin = await AdminModel.findOne({ username }).select('+password');
+        console.log('Hittad admin:', admin);
+
         if (!admin) {
+            console.error('Admin hittades inte:', username);
             return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
         }
 
-        const isPasswordValid = await argon2.verify(admin.password, password);
+        // Validera lösenord med bcrypt
+        const isPasswordValid = await bcrypt.compare(password, admin.password);
+        console.log('Lösenordsvalidering:', isPasswordValid);
+
         if (!isPasswordValid) {
+            console.error('Fel lösenord för:', username);
             return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
         }
 
+        // Skicka tillbaka admin-data
         res.status(200).json({
             message: 'Inloggning lyckades',
             user: {
@@ -107,6 +122,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
             },
         });
     } catch (error) {
+        console.error('Fel i loginAdmin:', error);
         res.status(500).json({ message: 'Kunde inte logga in', error });
     }
 };

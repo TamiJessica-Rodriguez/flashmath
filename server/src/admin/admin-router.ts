@@ -7,7 +7,7 @@ export const adminRouter = express.Router();
 // Routes för admins
 adminRouter.get('/', isLoggedIn, isAdmin, getAllAdmins); // Hämta alla admins
 adminRouter.post('/register', createAdmin); // Skapa en ny admin
+adminRouter.post('/login', loginAdmin); // Logga in som admin
 adminRouter.get('/:id', isLoggedIn, isAdmin, getAdminById); // Hämta en admin via ID
 adminRouter.put('/:id', isLoggedIn, isAdmin, updateAdmin); // Uppdatera en admin
 adminRouter.delete('/:id', isLoggedIn, isAdmin, deleteAdmin); // Ta bort en admin
-adminRouter.post('/login', loginAdmin);

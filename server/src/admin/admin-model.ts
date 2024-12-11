@@ -1,13 +1,14 @@
 import bcrypt from 'bcrypt';
-import mongoose, { type InferSchemaType } from 'mongoose';
+import mongoose, { Schema, type InferSchemaType } from 'mongoose';
 import { z } from 'zod';
 
-const AdminSchema = new mongoose.Schema(
+// Mongoose schema för Admin
+const AdminSchema = new Schema(
     {
         firstname: { type: String, required: true },
         lastname: { type: String, required: true },
         username: { type: String, required: true, unique: true },
-        password: { type: String, required: true, select: false },
+        password: { type: String, required: true, select: false }, // Gör lösenordet dolt som standard
         isAdmin: { type: Boolean, default: true },
     },
     {
@@ -15,9 +16,9 @@ const AdminSchema = new mongoose.Schema(
     }
 );
 
-// Hash lösenordet innan det sparas
+// Hasha lösenordet innan sparande
 AdminSchema.pre('save', async function (next) {
-    if (this.isModified('password')) {
+    if (this.isModified('password') && !this.password.startsWith('$2b$')) {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
     }

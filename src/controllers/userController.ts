@@ -57,26 +57,6 @@ export const loginUser = async (username: string, password: string) => {
 /**
  * Log in an admin
  */
-// export const loginAdmin = async (username: string, password: string) => {
-//     try {
-//         const response = await axios.post(
-//             `${ADMIN_API_URL}/login`,
-//             { username, password },
-//             {
-//                 withCredentials: true,
-//             }
-//         );
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error logging in admin:', error);
-//         if (axios.isAxiosError(error)) {
-//             throw new Error(error.response?.data?.message || 'Network error occurred during admin login');
-//         } else {
-//             throw new Error('Unexpected error occurred during admin login');
-//         }
-//     }
-// };
-
 export const loginAdmin = async (username: string, password: string) => {
     try {
         const response = await axios.post(`${ADMIN_API_URL}/login`, { username, password }, { withCredentials: true });

@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
-import { AdminModel, AdminZodSchema } from './admin-model';
+import { AdminModel } from './admin-model';
 
 /** Hämta alla admins */
 export const getAllAdmins = async (req: Request, res: Response) => {
     try {
-        const admins = await AdminModel.find().select('-password'); // Exkludera lösenord
+        const admins = await AdminModel.find().select('-password');
         res.status(200).json(admins);
     } catch (error) {
         console.error('Error fetching admins:', error);
@@ -13,29 +13,30 @@ export const getAllAdmins = async (req: Request, res: Response) => {
     }
 };
 
+export async function hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(password, salt);
+}
+
 /** Skapa en ny admin */
 export const createAdmin = async (req: Request, res: Response) => {
     try {
-        // Validera inkommande data
-        const validationResult = AdminZodSchema.safeParse(req.body);
-        if (!validationResult.success) {
-            return res.status(400).json({ errors: validationResult.error.errors });
-        }
+        const { firstname, lastname, username, password } = req.body;
+        console.log('Inkommande lösenord vid skapande:', password);
 
-        const { firstname, lastname, username, password } = validationResult.data;
-
-        // Kontrollera om användarnamnet redan finns
-        const existingAdmin = await AdminModel.findOne({ username });
-        if (existingAdmin) {
-            return res.status(409).json({ message: 'Användarnamnet finns redan' });
-        }
-
-        // Hasha lösenordet och skapa en ny admin
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const newAdmin = new AdminModel({ firstname, lastname, username, password: hashedPassword });
+        console.log('Hashat lösenord vid skapande:', hashedPassword);
+
+        const newAdmin = new AdminModel({
+            firstname,
+            lastname,
+            username,
+            password, // Skicka bara plain-text-lösenordet här
+        });
         await newAdmin.save();
 
+        await newAdmin.save();
         res.status(201).json({ message: 'Admin skapad framgångsrikt', admin: newAdmin });
     } catch (error) {
         console.error('Error creating admin:', error);
@@ -46,11 +47,7 @@ export const createAdmin = async (req: Request, res: Response) => {
 /** Uppdatera en admin */
 export const updateAdmin = async (req: Request, res: Response) => {
     try {
-        const updatedAdmin = await AdminModel.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true, runValidators: true } // Validera vid uppdatering
-        );
+        const updatedAdmin = await AdminModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!updatedAdmin) {
             return res.status(404).json({ message: 'Admin hittades inte' });
         }
@@ -78,7 +75,7 @@ export const deleteAdmin = async (req: Request, res: Response) => {
 /** Hämta en admin via ID */
 export const getAdminById = async (req: Request, res: Response) => {
     try {
-        const admin = await AdminModel.findById(req.params.id).select('-password'); // Exkludera lösenord
+        const admin = await AdminModel.findById(req.params.id).select('-password');
         if (!admin) {
             return res.status(404).json({ message: 'Admin hittades inte' });
         }
@@ -92,27 +89,24 @@ export const getAdminById = async (req: Request, res: Response) => {
 /** Logga in som admin */
 export const loginAdmin = async (req: Request, res: Response) => {
     const { username, password } = req.body;
-
+    console.log('Inkommande lösenord vid inloggning:', password);
     try {
-        // Kontrollera om användaren finns
         const admin = await AdminModel.findOne({ username }).select('+password');
-        console.log('Hittad admin:', admin);
-
         if (!admin) {
-            console.error('Admin hittades inte:', username);
+            console.error('Admin inte hittad:', username);
             return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
         }
 
-        // Validera lösenord med bcrypt
+        console.log('Hashat lösenord från databasen:', admin.password);
+
         const isPasswordValid = await bcrypt.compare(password, admin.password);
-        console.log('Lösenordsvalidering:', isPasswordValid);
+        console.log('Validering av lösenord:', isPasswordValid);
 
         if (!isPasswordValid) {
-            console.error('Fel lösenord för:', username);
-            return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
+            console.error('Fel lösenord för admin:', username);
+            return res.status(401).json({ message: 'Något är fel med lösenordet' });
         }
 
-        // Skicka tillbaka admin-data
         res.status(200).json({
             message: 'Inloggning lyckades',
             user: {
@@ -126,3 +120,15 @@ export const loginAdmin = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Kunde inte logga in', error });
     }
 };
+
+async function testHashing() {
+    const plainPassword = 'Natalia';
+    const hashedPassword = await bcrypt.hash(plainPassword, 10);
+
+    console.log('Hashat lösenord:', hashedPassword);
+
+    const isValid = await bcrypt.compare(plainPassword, hashedPassword);
+    console.log('Validering av lösenord:', isValid);
+}
+
+testHashing();

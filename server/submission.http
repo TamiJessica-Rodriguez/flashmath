@@ -16,9 +16,11 @@ Content-Type: application/pdf
 
 ###
 
-### Get all submissions
-GET http://localhost:3000/submissions
+### Get all submissionsGET http://localhost:3000/submissions
+GET http://localhost:3000/api/submissions
 Authorization: Bearer <your-token>
+
+
 
 ###
 

@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { z } from 'zod';
-import { UserModel, UserZodSchema } from './user-model';
+import { UserModel, UserZodSchema } from '../users/user-model';
 
 /**
  * Hämta alla användare från databasen.
@@ -163,60 +163,6 @@ export async function hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, salt);
 }
 
-// export const loginUser = async (req: Request, res: Response) => {
-//     const { username, password } = req.body;
-
-//     try {
-//         // Hitta användaren och inkludera lösenordet
-//         const user = await UserModel.findOne({ username }).select('+password');
-//         if (!user) {
-//             return res.status(401).json('Fel användarnamn eller lösenord');
-//         }
-
-//         console.log('User fetched:', user);
-
-//         let isPasswordValid = false;
-
-//         // Försök verifiera lösenordet med bcrypt
-//         isPasswordValid = await bcrypt.compare(password, user.password);
-
-//         if (!isPasswordValid) {
-//             console.log('Bcrypt verification failed, trying argon2...');
-//             // Om bcrypt misslyckas, försök med argon2
-//             try {
-//                 isPasswordValid = await argon2.verify(user.password, password);
-//                 if (isPasswordValid) {
-//                     console.log('Argon2 verification succeeded, rehashing with bcrypt...');
-//                     // Rehash lösenordet med bcrypt och uppdatera användaren i databasen
-//                     const newHashedPassword = await bcrypt.hash(password, 10);
-//                     user.password = newHashedPassword;
-//                     await user.save();
-//                 }
-//             } catch (argonError) {
-//                 console.error('Argon2 verification failed:', argonError);
-//             }
-//         }
-
-//         if (!isPasswordValid) {
-//             return res.status(401).json('Fel lösenord');
-//         }
-
-//         console.log('Password is valid');
-
-//         // Returnera framgångsrikt svar
-//         res.status(200).json({
-//             message: 'Inloggning lyckades',
-//             user: {
-//                 id: user._id,
-//                 username: user.username,
-//             },
-//         });
-//     } catch (error) {
-//         console.error('Error during login:', error);
-//         res.status(500).json({ message: 'Kunde inte logga in' });
-//     }
-// };
-
 export const loginUser = async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
@@ -226,18 +172,22 @@ export const loginUser = async (req: Request, res: Response) => {
             return res.status(401).json('Fel användarnamn eller lösenord');
         }
 
-        let isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json('Fel lösenord');
         }
 
-        // Skicka avatar och annan data tillbaka
+        if (req.session) {
+            req.session._id = user._id;
+        }
+
         res.status(200).json({
             message: 'Inloggning lyckades',
             user: {
                 id: user._id,
                 username: user.username,
-                avatar: user.avatar, // Inkludera avatar här
+                avatar: user.avatar,
+                isAdmin: false, // Markera som ej admin
             },
         });
     } catch (error) {

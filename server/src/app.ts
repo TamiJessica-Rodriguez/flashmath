@@ -2,6 +2,7 @@ import cookieSession from 'cookie-session';
 import cors from 'cors';
 import 'dotenv/config';
 import express, { NextFunction, Request, Response } from 'express';
+import { adminRouter } from './admin/admin-router';
 import { submissionsRouter } from './submissions/submission-router';
 import { userRouter } from './users/user-router';
 
@@ -16,10 +17,12 @@ app.use(express.json());
 
 app.use(
     cookieSession({
-        name: 'login',
-        secret: process.env.COOKIE_SECRET, // Din hemliga nyckel från .env
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 dagar
-        httpOnly: true, // Förhindrar åtkomst till cookien från JavaScript
+        name: 'session',
+        secret: process.env.COOKIE_SECRET || 'default_secret',
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+        sameSite: 'lax', // Prevent CSRF attacks
     })
 );
 
@@ -35,6 +38,7 @@ app.use(
 // Routes
 app.use('/api/users', userRouter);
 app.use('/api/submissions', submissionsRouter);
+app.use('/api/admin', adminRouter);
 
 // (Optional) Test CORS Endpoint
 app.get('/test-cors', (req, res) => {

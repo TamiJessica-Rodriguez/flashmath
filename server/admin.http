@@ -1,0 +1,74 @@
+### GET ALL USERS (ADMIN)
+GET http://localhost:3000/api/users
+Content-Type: application/json
+Authorization: Bearer <JWT_TOKEN>
+
+### GET USER BY ID (ADMIN)
+GET http://localhost:3000/api/users/6639f3bf1cbaaf0363178da5
+Content-Type: application/json
+Authorization: Bearer <JWT_TOKEN>
+
+### CREATE ADMIN
+POST http://localhost:3000/api/admin/register
+Content-Type: application/json
+Authorization: Bearer <JWT_TOKEN>
+
+{
+    "firstname": "Julio",
+    "lastname": "Julio",
+    "username": "JulioJulio",
+    "password": "JulioJulio!"
+}
+
+### LOGIN ADMIN
+POST http://localhost:3000/api/admin/login
+Content-Type: application/json
+
+{
+    "username": "JulioJulio",
+    "password": "JulioJulio"
+}
+
+### UPDATE A USER BY ID (ADMIN)
+PUT http://localhost:3000/api/users/6639f3bf1cbaaf0363178da5
+Content-Type: application/json
+Authorization: Bearer <JWT_TOKEN>
+
+{
+    "firstname": "Updated",
+    "lastname": "User",
+    "username": "updated_user",
+    "password": "updated_password",
+    "image": "" // Optional
+}
+
+### DELETE A USER BY ID (ADMIN)
+DELETE http://localhost:3000/api/users/6639f3bf1cbaaf0363178da5
+Authorization: Bearer <JWT_TOKEN>
+
+### GET ALL POSTS (ADMIN)
+GET http://localhost:3000/api/posts
+Content-Type: application/json
+Authorization: Bearer <JWT_TOKEN>
+
+### GET POST BY ID (ADMIN)
+GET http://localhost:3000/api/posts/6639f57e1cbaaf0363178dc2
+Content-Type: application/json
+Authorization: Bearer <JWT_TOKEN>
+
+### UPDATE A POST BY ID (ADMIN)
+PUT http://localhost:3000/api/posts/6639f5aa1cbaaf0363178dc9
+Content-Type: application/json
+Authorization: Bearer <JWT_TOKEN>
+
+{
+    "title": "Updated Post",
+    "content": "This is an updated post created by admin",
+    "author": "6639f3bf1cbaaf0363178da5", // User ID
+    "imageId": "6638dfa0284f2fd2bd034734", // Optional
+    "publishDate": "2024-05-09T12:00:00.000Z" // Optional
+}
+
+### DELETE A POST BY ID (ADMIN)
+DELETE http://localhost:3000/api/posts/663b7a3462b88f4a7becfe13
+Authorization: Bearer <JWT_TOKEN>

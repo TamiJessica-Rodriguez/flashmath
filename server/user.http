@@ -13,10 +13,10 @@ POST http://localhost:3000/api/users/create
 Content-Type: application/json
 
 {
-    "firstname": "Jessica",
-    "lastname": "Rivero",
-    "username": "Dianita",
-    "password": "Dianita"
+    "firstname": "Alexander",
+    "lastname": "Alexander",
+    "username": "Alexander",
+    "password": "Alexander"
 }
 
 

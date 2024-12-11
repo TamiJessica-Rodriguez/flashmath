@@ -15,9 +15,9 @@ submissionsRouter.post('/', upload.single('file'), (req, res) => {
     res.status(200).json({ message: 'File received successfully' });
 });
 
-submissionsRouter.get('/', getSubmissions);
-submissionsRouter.post('/', isLoggedIn, upload.single('file'), createSubmission); // File upload
-submissionsRouter.delete('/:id', isLoggedIn, deleteSubmission);
-submissionsRouter.put('/:id', isLoggedIn, upload.single('file'), updateSubmission); // Allow file replacement
-submissionsRouter.get('/:id', getSubmissionById);
-submissionsRouter.get('/userSubmissions/:id', getSubmissionsByUserId);
+submissionsRouter.get('/', getSubmissions); // Hämta alla inlämningar
+submissionsRouter.post('/', isLoggedIn, upload.single('file'), createSubmission); // Lägg till en ny inlämning
+submissionsRouter.delete('/:id', isLoggedIn, deleteSubmission); // Ta bort en inlämning
+submissionsRouter.put('/:id', isLoggedIn, upload.single('file'), updateSubmission); // Uppdatera en inlämning
+submissionsRouter.get('/:id', getSubmissionById); // Hämta specifik inlämning
+submissionsRouter.get('/userSubmissions/:id', getSubmissionsByUserId); // Hämta inlämningar för en specifik användare

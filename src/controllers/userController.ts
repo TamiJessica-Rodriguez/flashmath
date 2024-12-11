@@ -9,6 +9,7 @@ interface UserData {
 }
 
 const API_URL = 'http://localhost:3000/api/users';
+const ADMIN_API_URL = 'http://localhost:3000/api/admin';
 const SUBMISSION_API_URL = 'http://localhost:3000/api/submissions';
 
 /**
@@ -23,9 +24,9 @@ export const createUser = async (userData: UserData) => {
     } catch (error) {
         console.error('Error creating user:', error);
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Ett nätverksfel inträffade vid skapandet av användaren');
+            throw new Error(error.response?.data?.message || 'Network error occurred while creating user');
         } else {
-            throw new Error('Ett nätverksfel inträffade vid skapandet av användaren');
+            throw new Error('Unexpected error occurred while creating user');
         }
     }
 };
@@ -44,17 +45,45 @@ export const loginUser = async (username: string, password: string) => {
         );
         return response.data;
     } catch (error) {
-        console.error('Error logging in:', error);
+        console.error('Error logging in user:', error);
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Ett nätverksfel inträffade vid inloggningen');
+            throw new Error(error.response?.data?.message || 'Network error occurred during user login');
         } else {
-            throw new Error('Ett nätverksfel inträffade vid inloggningen');
+            throw new Error('Unexpected error occurred during user login');
         }
     }
 };
 
 /**
- * Log out the current user
+ * Log in an admin
+ */
+// export const loginAdmin = async (username: string, password: string) => {
+//     try {
+//         const response = await axios.post(
+//             `${ADMIN_API_URL}/login`,
+//             { username, password },
+//             {
+//                 withCredentials: true,
+//             }
+//         );
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error logging in admin:', error);
+//         if (axios.isAxiosError(error)) {
+//             throw new Error(error.response?.data?.message || 'Network error occurred during admin login');
+//         } else {
+//             throw new Error('Unexpected error occurred during admin login');
+//         }
+//     }
+// };
+
+export const loginAdmin = async (username: string, password: string) => {
+    const response = await axios.post('http://localhost:3000/api/admin/login', { username, password });
+    return response.data;
+};
+
+/**
+ * Log out the current user or admin
  */
 export const logoutUser = async () => {
     try {
@@ -63,9 +92,9 @@ export const logoutUser = async () => {
     } catch (error) {
         console.error('Error logging out:', error);
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Ett nätverksfel inträffade vid utloggningen');
+            throw new Error(error.response?.data?.message || 'Network error occurred during logout');
         } else {
-            throw new Error('Ett nätverksfel inträffade vid utloggningen');
+            throw new Error('Unexpected error occurred during logout');
         }
     }
 };
@@ -82,9 +111,9 @@ export const getUsers = async () => {
     } catch (error) {
         console.error('Error fetching users:', error);
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Ett nätverksfel inträffade vid hämtning av användare');
+            throw new Error(error.response?.data?.message || 'Network error occurred while fetching users');
         } else {
-            throw new Error('Ett nätverksfel inträffade vid hämtning av användare');
+            throw new Error('Unexpected error occurred while fetching users');
         }
     }
 };
@@ -107,6 +136,6 @@ export const uploadSubmission = async (file: File, title: string) => {
         return response.data;
     } catch (error) {
         console.error('Error uploading submission:', error);
-        throw new Error('Ett oväntat fel inträffade vid uppladdning av inlämning.');
+        throw new Error('Unexpected error occurred during file submission');
     }
 };

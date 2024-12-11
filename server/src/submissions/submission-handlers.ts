@@ -1,22 +1,33 @@
-import type { Request, Response } from 'express';
-import { z } from 'zod';
+import { Request, Response } from 'express';
 import { SubmissionCreateZodSchema, SubmissionModel, SubmissionZodSchema } from './submission-model';
 
 /**
  * Get all submissions from database
  */
 export async function getSubmissions(req: Request, res: Response) {
-    const submissions = await SubmissionModel.find({});
-    res.status(200).json(submissions);
+    try {
+        const submissions = await SubmissionModel.find({});
+        res.status(200).json(submissions);
+    } catch (error) {
+        console.error('Error retrieving submissions:', error);
+        res.status(500).json({ message: 'Error retrieving submissions', error });
+    }
 }
 
 /**
  * Create new submission with validation from zodschema and save to database
  */
-
 export const createSubmission = async (req: Request, res: Response) => {
     try {
-        const validatedData = SubmissionCreateZodSchema.parse(req.body);
+        if (!req.session?._id) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const validatedData = SubmissionCreateZodSchema.safeParse(req.body);
+
+        if (!validatedData.success) {
+            return res.status(400).json(validatedData.error.message);
+        }
 
         const fileData = req.file
             ? {
@@ -27,20 +38,16 @@ export const createSubmission = async (req: Request, res: Response) => {
             : undefined;
 
         const newSubmission = new SubmissionModel({
-            ...validatedData,
-            author: req.session?._id,
+            ...validatedData.data,
+            author: req.session._id,
             file: fileData,
         });
 
         await newSubmission.save();
 
-        res.status(201).send(newSubmission);
+        res.status(201).json(newSubmission);
     } catch (error) {
         console.error('Error creating submission:', error);
-
-        if (error instanceof z.ZodError) {
-            return res.status(400).json(error.message);
-        }
         res.status(500).json('Failed to create submission');
     }
 };
@@ -76,7 +83,7 @@ export async function updateSubmission(req: Request, res: Response) {
                   path: req.file.path,
                   mimetype: req.file.mimetype,
               }
-            : submissionToUpdate.file; // Keep the old file if no new file is uploaded
+            : submissionToUpdate.file;
 
         const updatedSubmission = await SubmissionModel.findByIdAndUpdate(req.params.id, { ...validatedData.data, file: fileData }, { new: true });
 
@@ -94,19 +101,18 @@ export async function deleteSubmission(req: Request, res: Response) {
         if (!req.session) {
             return res.status(401).json('Unauthorized');
         }
-        const submissionId = req.params.id;
 
-        const submissionToDelete = await SubmissionModel.findById(submissionId);
+        const submissionToDelete = await SubmissionModel.findById(req.params.id);
 
         if (!submissionToDelete) {
-            return res.status(404).json(`Submission with id: ${submissionId} not found`);
+            return res.status(404).json(`Submission with id: ${req.params.id} not found`);
         }
 
         if (!req.session.isAdmin && submissionToDelete.author?.toString() !== req.session._id) {
             return res.status(403).json('Only administrators or the author can delete this submission');
         }
 
-        await SubmissionModel.findByIdAndDelete(submissionId);
+        await SubmissionModel.findByIdAndDelete(req.params.id);
 
         res.status(204).json('Submission deleted successfully');
     } catch (error) {

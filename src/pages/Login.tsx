@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../controllers/userController';
+import { loginAdmin, loginUser } from '../controllers/userController';
 
 const Login = () => {
     const [form, setForm] = useState({
         username: '',
         password: '',
+        isAdmin: false, // Lägg till en flagga för admin
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -17,29 +18,80 @@ const Login = () => {
         });
     };
 
+    const handleAdminToggle = () => {
+        setForm((prevForm) => ({
+            ...prevForm,
+            isAdmin: !prevForm.isAdmin,
+        }));
+    };
+
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     setError('');
+
+    //     try {
+    //         let response;
+    //         if (form.isAdmin) {
+    //             // Om det är en admin
+    //             response = await loginAdmin(form.username, form.password);
+    //         } else {
+    //             // Om det är en vanlig användare
+    //             response = await loginUser(form.username, form.password);
+    //         }
+
+    //         console.log('Login successful:', response);
+
+    //         // Spara användardata i localStorage eller global state
+    //         localStorage.setItem('user', JSON.stringify(response.user));
+
+    //         // Navigera baserat på adminstatus
+    //         if (response.user.isAdmin) {
+    //             navigate('/teacherstartpage');
+    //         } else {
+    //             navigate('/startpagestudent');
+    //         }
+    //     } catch (error: any) {
+    //         console.error('Error logging in:', error);
+    //         if (error.response) {
+    //             setError(error.response.data || 'Felaktigt användarnamn eller lösenord');
+    //         } else if (error.request) {
+    //             setError('Ingen respons från servern. Kontrollera din anslutning.');
+    //         } else {
+    //             setError('Ett oväntat fel inträffade. Försök igen senare.');
+    //         }
+    //     }
+    // };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
 
         try {
-            const response = await loginUser(form.username, form.password);
+            let response;
+            if (form.isAdmin) {
+                response = await loginAdmin(form.username, form.password);
+            } else {
+                response = await loginUser(form.username, form.password);
+            }
+
             console.log('Login successful:', response);
 
-            // Save user data to localStorage or global state
+            // Spara användardata i localStorage eller global state
             localStorage.setItem('user', JSON.stringify(response.user));
 
-            // Redirect to startpagestudent after successful login
-            navigate('/startpagestudent');
+            // Dynamisk navigering
+            if (response.user.isAdmin) {
+                navigate('/teacherstartpage'); // För admin
+            } else {
+                navigate('/startpagestudent'); // För vanliga användare
+            }
         } catch (error: any) {
             console.error('Error logging in:', error);
             if (error.response) {
-                // Server responded with a status other than 2xx
-                setError(error.response.data || 'Felaktigt användarnamn eller lösenord');
+                setError(error.response.data.message || 'Felaktigt användarnamn eller lösenord');
             } else if (error.request) {
-                // Request was made but no response received
                 setError('Ingen respons från servern. Kontrollera din anslutning.');
             } else {
-                // Something else caused the error
                 setError('Ett oväntat fel inträffade. Försök igen senare.');
             }
         }
@@ -94,22 +146,19 @@ const Login = () => {
                         />
                     </div>
 
+                    {/* Admin toggle */}
+                    <div className="mb-4 flex items-center">
+                        <input type="checkbox" id="isAdmin" name="isAdmin" checked={form.isAdmin} onChange={handleAdminToggle} className="mr-2" />
+                        <label htmlFor="isAdmin" className="text-gray-700 font-medium">
+                            Logga in som admin
+                        </label>
+                    </div>
+
                     {/* Submit button */}
                     <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none">
                         Logga in
                     </button>
                 </form>
-
-                {/* Forgot password and signup links */}
-                <div className="flex justify-between items-center mt-4">
-                    <button onClick={() => navigate('/forgot-password')} className="text-sm text-blue-500 hover:underline">
-                        Glömt lösenordet?
-                    </button>
-
-                    <button onClick={() => navigate('/signup')} className="text-sm text-blue-500 hover:underline">
-                        Bli medlem
-                    </button>
-                </div>
             </div>
         </div>
     );

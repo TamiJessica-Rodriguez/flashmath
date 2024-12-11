@@ -1,60 +1,49 @@
 import argon2 from 'argon2';
-import type { Request, Response } from 'express';
-import { z } from 'zod';
+import { Request, Response } from 'express';
 import { AdminModel, AdminZodSchema } from './admin-model';
 
-/* Hämta alla admin */
-export async function getAdmin(req: Request, res: Response) {
-    const admin = await AdminModel.find({});
-    res.status(200).json(admin);
-}
-
-// Skapa en ny admin via Frontend
-export const createAdmin = async (req: Request, res: Response) => {
-    const adminData = req.body;
-    const { adminName, password } = adminData;
-    if (!adminName || !password) {
-        return res.status(400).json('Missing adminName or password');
-    }
-
+/** Hämta alla admins */
+export const getAllAdmins = async (req: Request, res: Response) => {
     try {
-        console.log('Received user data:', adminData);
-
-        const validatedData = AdminZodSchema.parse(adminData);
-
-        console.log('Validated admin data:', validatedData);
-
-        const existingAdminInDB = await AdminModel.findOne({
-            adminName: validatedData.username,
-        });
-        if (existingAdminInDB) {
-            console.log('Admin already exists:', existingAdminInDB);
-            return res.status(409).json('Användarnamnet finns redan');
-        }
-
-        const newAdmin = new AdminModel(validatedData);
-        await newAdmin.save();
-
-        console.log('New user created:', newAdmin);
-
-        const admin = await AdminModel.findOne({
-            username: validatedData.username,
-        }).select('-password');
-
-        console.log('Admin sent in response:', admin);
-
-        res.status(201).send(admin);
+        const admins = await AdminModel.find();
+        res.status(200).json(admins);
     } catch (error) {
-        console.error('Error creating admin:', error);
-        if (error instanceof z.ZodError) {
-            return res.status(400).json('Ogiltiga användaruppgifter');
-        }
-        res.status(500).json('Kunde inte registrera användaren');
+        console.error('Error fetching admins:', error);
+        res.status(500).json({ message: 'Failed to fetch admins', error });
     }
 };
 
-/* Updatera befintlig admin */
-export async function updateAdmin(req: Request, res: Response) {
+/** Skapa en ny admin */
+export const createAdmin = async (req: Request, res: Response) => {
+    try {
+        // Validera inkommande data
+        const validationResult = AdminZodSchema.safeParse(req.body);
+        if (!validationResult.success) {
+            return res.status(400).json({ errors: validationResult.error.errors });
+        }
+
+        const { firstname, lastname, username, password } = validationResult.data;
+
+        // Kontrollera om användarnamnet redan finns
+        const existingAdmin = await AdminModel.findOne({ username });
+        if (existingAdmin) {
+            return res.status(409).json({ message: 'Användarnamnet finns redan' });
+        }
+
+        // Skapa och spara en ny admin
+        const hashedPassword = await argon2.hash(password);
+        const newAdmin = new AdminModel({ firstname, lastname, username, password: hashedPassword });
+        await newAdmin.save();
+
+        res.status(201).json({ message: 'Admin skapad framgångsrikt', admin: newAdmin });
+    } catch (error) {
+        console.error('Error creating admin:', error);
+        res.status(500).json({ message: 'Kunde inte skapa admin', error });
+    }
+};
+
+/** Uppdatera en admin */
+export const updateAdmin = async (req: Request, res: Response) => {
     try {
         const updatedAdmin = await AdminModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedAdmin) {
@@ -62,67 +51,62 @@ export async function updateAdmin(req: Request, res: Response) {
         }
         res.status(200).json(updatedAdmin);
     } catch (error) {
-        res.status(500).json({ message: 'Problem att uppdatera en admin', error: error });
-    }
-}
-
-/* Ta bort befintlig admin */
-export async function deleteAdmin(req: Request, res: Response) {
-    try {
-        const deletedAdmin = await AdminModel.findByIdAndDelete(req.params.id);
-        if (!deleteAdmin) {
-            return res.status(404).json({ message: 'Admin hittades inte' });
-        }
-        res.status(200).json({ message: 'Du har tagit bort din admin' });
-    } catch (error) {
-        res.status(500).json({ message: 'Problem att ta bort en admin', error: error });
-    }
-}
-
-/* Hämta befintlig admin med ID */
-export async function getAdminById(req: Request, res: Response) {
-    try {
-        const admin = await AdminModel.findById(req.params.id);
-        if (!admin) {
-            return res.status(404).json({ message: 'Admin hittas inte' });
-        }
-        res.status(200).json(admin);
-    } catch (error) {
-        res.status(500).json({ message: 'Fel vid hämtning av admin', error: error });
-    }
-}
-
-/* Logga in admin */
-export const loginAdmin = async (req: Request, res: Response) => {
-    const { adminName, password } = req.body;
-
-    try {
-        const admin = await AdminModel.findOne({ adminName }).select('+password');
-
-        if (!admin) {
-            return res.status(401).json('Fel admin eller lösenord');
-        }
-
-        const isPasswordValid = await argon2.verify(admin.password, password);
-
-        if (!isPasswordValid) {
-            return res.status(401).json('Fel admin eller lösenord');
-        }
-        req.session!._id = admin._id;
-
-        return res.status(200).json('Du är nu inloggad!');
-    } catch (error) {
-        console.error('Fel vid inloggning:', error);
-        return res.status(500).json({ error: 'Kunde inte logga in' });
+        console.error('Error updating admin:', error);
+        res.status(500).json({ message: 'Kunde inte uppdatera admin', error });
     }
 };
 
-/* Logga ut en admin */
-export const logoutAdmin = async (req: Request, res: Response) => {
+/** Ta bort en admin */
+export const deleteAdmin = async (req: Request, res: Response) => {
     try {
-        res.clearCookie('session');
-        res.status(204).json('Du är nu utloggad');
+        const deletedAdmin = await AdminModel.findByIdAndDelete(req.params.id);
+        if (!deletedAdmin) {
+            return res.status(404).json({ message: 'Admin hittades inte' });
+        }
+        res.status(200).json({ message: 'Admin borttagen' });
     } catch (error) {
-        res.status(500).json({ error: 'Problem att logga ut' });
+        console.error('Error deleting admin:', error);
+        res.status(500).json({ message: 'Kunde inte ta bort admin', error });
+    }
+};
+
+/** Hämta en admin via ID */
+export const getAdminById = async (req: Request, res: Response) => {
+    try {
+        const admin = await AdminModel.findById(req.params.id);
+        if (!admin) {
+            return res.status(404).json({ message: 'Admin hittades inte' });
+        }
+        res.status(200).json(admin);
+    } catch (error) {
+        console.error('Error fetching admin:', error);
+        res.status(500).json({ message: 'Kunde inte hämta admin', error });
+    }
+};
+
+export const loginAdmin = async (req: Request, res: Response) => {
+    const { username, password } = req.body;
+
+    try {
+        const admin = await AdminModel.findOne({ username }).select('+password');
+        if (!admin) {
+            return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
+        }
+
+        const isPasswordValid = await argon2.verify(admin.password, password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
+        }
+
+        res.status(200).json({
+            message: 'Inloggning lyckades',
+            user: {
+                id: admin._id,
+                username: admin.username,
+                isAdmin: true,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Kunde inte logga in', error });
     }
 };

@@ -18,6 +18,7 @@ import SwedishListen from '../pages/swedish/SwedishListen';
 import SwedishMenu from '../pages/swedish/SwedishMenu';
 import SwedishVideos from '../pages/swedish/SwedishVideos';
 import SwedishVR from '../pages/swedish/SwedishVR';
+import CourseMaterials from '../pages/teachers/CourseMaterials';
 import TeacherStartpage from '../pages/teachers/TeacherStartpage';
 import WeeklySchedule from '../pages/WeeklySchedule';
 
@@ -120,6 +121,11 @@ const routes = [
     {
         path: '/teacherstartpage',
         element: <TeacherStartpage />,
+        layout: '',
+    },
+    {
+        path: '/coursematerials',
+        element: <CourseMaterials />,
         layout: '',
     },
     {

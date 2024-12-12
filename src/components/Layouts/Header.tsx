@@ -991,14 +991,122 @@
 
 // export default Header;
 
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
+// import { Link, useLocation, useNavigate } from 'react-router-dom';
+
+// const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
+//     const [user, setUser] = useState<{ username: string; avatar: string } | null>(null);
+//     const [showMenu, setShowMenu] = useState(false);
+//     const navigate = useNavigate();
+//     const location = useLocation();
+
+//     useEffect(() => {
+//         const storedUser = localStorage.getItem('user');
+//         if (storedUser) {
+//             setUser(JSON.parse(storedUser));
+//         }
+//     }, []);
+
+//     const handleLogout = () => {
+//         localStorage.removeItem('user');
+//         navigate('/');
+//     };
+
+//     const handleProfileClick = () => {
+//         navigate('/profile');
+//     };
+
+//     return (
+//         <header className="flex flex-col bg-gray-100 shadow-md">
+//             {/* Main Header */}
+//             <div className="flex justify-between items-center px-4 py-3">
+//                 <div className="flex items-center space-x-4">
+//                     <button onClick={toggleSidebar} className="p-3 bg-gray-200 hover:bg-gray-300 rounded-md text-lg font-bold" aria-label="Toggle Sidebar">
+//                         ☰
+//                     </button>
+//                 </div>
+
+//                 <div className="relative flex items-center space-x-6">
+//                     <Link to="/info" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
+//                         🌍 <span className="ml-2">InfoHyllan</span>
+//                     </Link>
+//                     <Link to="/weeklyschedule" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
+//                         📋 <span className="ml-2">Schema</span>
+//                     </Link>
+//                     <Link to="/teams" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
+//                         👥 <span className="ml-2">Teams</span>
+//                     </Link>
+//                     <Link to="/studytechniques" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
+//                         🤖 <span className="ml-2">Personlig Assistent</span>
+//                     </Link>
+//                     <div className="flex items-center space-x-4">
+//                         <span className="text-lg font-bold text-gray-700">{user?.username}</span>
+//                         <img
+//                             src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
+//                             alt="User Avatar"
+//                             className="w-10 h-10 rounded-full cursor-pointer"
+//                             onClick={() => setShowMenu((prev) => !prev)}
+//                         />
+//                     </div>
+//                     {showMenu && (
+//                         <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10">
+//                             <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-bold text-gray-700 hover:bg-gray-200">
+//                                 Profil
+//                             </button>
+//                             <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-lg font-bold text-red-600 hover:bg-gray-200">
+//                                 Logga ut
+//                             </button>
+//                         </div>
+//                     )}
+//                 </div>
+//             </div>
+
+//             {/* Submenu - Visible on /swedishmenu and /mathematicsmenu */}
+//             {(location.pathname === '/swedishmenu' || location.pathname === '/mathematicsmenu') && (
+//                 <nav className="bg-gray-200 px-4 py-2">
+//                     <ul className="flex space-x-4 text-sm text-gray-600 font-medium">
+//                         <li>
+//                             <Link to="/swedishmenu/kursmaterial" className="hover:text-blue-500 flex items-center">
+//                                 📘 <span className="ml-1">Kursmaterial</span>
+//                             </Link>
+//                         </li>
+//                         <li>
+//                             <Link to="/swedishmenu/kursplan" className="hover:text-blue-500 flex items-center">
+//                                 🗂️ <span className="ml-1">Kursplan</span>
+//                             </Link>
+//                         </li>
+//                         <li>
+//                             <Link to="/swedishmenu/betygskriterier" className="hover:text-blue-500 flex items-center">
+//                                 🏅 <span className="ml-1">Betygskriterier</span>
+//                             </Link>
+//                         </li>
+//                         <li>
+//                             <Link to="/swedishmenu/uppgifter" className="hover:text-blue-500 flex items-center">
+//                                 ✏️ <span className="ml-1">Uppgifter</span>
+//                             </Link>
+//                         </li>
+//                         <li>
+//                             <Link to="/swedishmenu/video" className="hover:text-blue-500 flex items-center">
+//                                 🎥 <span className="ml-1">Video</span>
+//                             </Link>
+//                         </li>
+//                     </ul>
+//                 </nav>
+//             )}
+//         </header>
+//     );
+// };
+
+// export default Header;
+
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
+const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
+    const location = useLocation();
+    const navigate = useNavigate();
     const [user, setUser] = useState<{ username: string; avatar: string } | null>(null);
     const [showMenu, setShowMenu] = useState(false);
-    const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -1016,16 +1124,45 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         navigate('/profile');
     };
 
+    // Kontrollera om vi ska visa den långa headern
+    const isLongHeader = ['/coursematerials', '/teacherstartpage'].includes(location.pathname);
+
+    if (isLongHeader) {
+        // Lång header
+        return (
+            <header className="bg-blue-500 text-white shadow-md">
+                <div className="px-4 py-3 flex justify-between items-center">
+                    <div className="flex items-center space-x-4">
+                        <button onClick={toggleSidebar} className="p-3 bg-blue-600 hover:bg-blue-700 rounded-md text-lg font-bold" aria-label="Toggle Sidebar">
+                            ☰
+                        </button>
+                        <h1 className="text-2xl font-bold">Lång Header</h1>
+                    </div>
+                    <nav className="flex space-x-4">
+                        <Link to="/coursematerials" className="hover:underline">
+                            Kursmaterial
+                        </Link>
+                        <Link to="/teacherstartpage" className="hover:underline">
+                            Lärarsida
+                        </Link>
+                    </nav>
+                </div>
+                <div className="bg-blue-400 px-4 py-2 text-sm">
+                    <p>Ytterligare information eller navigeringsalternativ för denna header.</p>
+                </div>
+            </header>
+        );
+    }
+
+    // Kort header
     return (
         <header className="flex flex-col bg-gray-100 shadow-md">
-            {/* Main Header */}
             <div className="flex justify-between items-center px-4 py-3">
                 <div className="flex items-center space-x-4">
                     <button onClick={toggleSidebar} className="p-3 bg-gray-200 hover:bg-gray-300 rounded-md text-lg font-bold" aria-label="Toggle Sidebar">
                         ☰
                     </button>
                 </div>
-
                 <div className="relative flex items-center space-x-6">
                     <Link to="/info" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
                         🌍 <span className="ml-2">InfoHyllan</span>
@@ -1061,7 +1198,7 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                 </div>
             </div>
 
-            {/* Submenu - Visible on /swedishmenu and /mathematicsmenu */}
+            {/* Submenu - synlig endast på vissa sidor */}
             {(location.pathname === '/swedishmenu' || location.pathname === '/mathematicsmenu') && (
                 <nav className="bg-gray-200 px-4 py-2">
                     <ul className="flex space-x-4 text-sm text-gray-600 font-medium">

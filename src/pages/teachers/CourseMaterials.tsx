@@ -184,6 +184,13 @@ const CourseMaterial = () => {
                                             </div>
                                             <span className="text-xs text-gray-500">{task.date}</span>
                                         </div>
+                                        <div
+                                            className="absolute top-2 right-2 text-blue-500 bg-gray-100 p-2 rounded-md flex items-center space-x-1 cursor-pointer"
+                                            onClick={() => handleAddTaskClick(task.projectId)}
+                                        >
+                                            <IconPlusCircle />
+                                            <span>Lägg till</span>
+                                        </div>
                                         <div className="absolute bottom-2 right-2 flex space-x-2">
                                             <button onClick={() => handleEditTask(task)} className="text-blue-500">
                                                 <IconEdit />

@@ -35,6 +35,12 @@ const CourseMaterial = () => {
         { id: 1, title: 'Föreläsningar', tasks: [] },
         { id: 2, title: 'Dokument', tasks: [] },
         { id: 3, title: 'Böcker', tasks: [] },
+        { id: 4, title: 'Podcasts', tasks: [] },
+        { id: 5, title: 'Ljuböcker', tasks: [] },
+        { id: 7, title: 'Dokumentärer', tasks: [] },
+        { id: 8, title: 'Filmer', tasks: [] },
+        { id: 9, title: 'Spel', tasks: [] },
+        { id: 10, title: 'Virtuell intelligens', tasks: [] },
     ]);
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -148,6 +154,7 @@ const CourseMaterial = () => {
                 <h1 className="text-2xl font-bold">Kursmaterial</h1>
             </div>
 
+            {/* Container for categories */}
             <div className="grid grid-cols-3 gap-4">
                 {categoryList.map((category) => (
                     <div key={category.id} className="panel p-4 bg-gray-100 shadow-md rounded-lg">
@@ -157,7 +164,7 @@ const CourseMaterial = () => {
                                 <IconPlusCircle />
                             </button>
                         </div>
-                        <div className="overflow-auto max-h-[200px]">
+                        <div className="overflow-y-auto max-h-[300px]">
                             <ReactSortable
                                 list={category.tasks}
                                 setList={(newState) => {
@@ -169,13 +176,11 @@ const CourseMaterial = () => {
                                 className="space-y-2"
                             >
                                 {category.tasks.map((task) => (
-                                    <div key={`${category.id}-${task.id}`} className="bg-white shadow rounded-md p-4 relative flex flex-col justify-between">
+                                    <div key={`${category.id}-${task.id}`} className="bg-white shadow rounded-md p-4 relative flex flex-col">
                                         {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-full h-32 object-cover rounded-md mb-2" />}
-                                        <div>
-                                            <h5 className="font-semibold">{task.title}</h5>
-                                            <p className="text-sm">{task.description}</p>
-                                            <span className="text-xs text-gray-500">{task.date}</span>
-                                        </div>
+                                        <h5 className="font-semibold">{task.title}</h5>
+                                        <p className="text-sm">{task.description}</p>
+                                        <span className="text-xs text-gray-500">{task.date}</span>
                                         <div className="absolute bottom-2 right-2 flex space-x-2">
                                             <button onClick={() => handleEditTask(task)} className="text-blue-500">
                                                 <IconEdit />

@@ -26,8 +26,10 @@ export const uploadImage = (req: Request, res: Response) => {
         console.log(`File MIME type: ${info.mimeType}`);
         console.log(`File name: ${info.filename}`);
 
-        if (info.mimeType !== 'image/png' && info.mimeType !== 'image/jpeg') {
-            return res.status(400).json({ message: 'Unsupported image format. Only PNG and JPEG are allowed.' });
+        // Kontrollera om filformatet är stödd (inklusive webp)
+        const supportedMimeTypes = ['image/png', 'image/jpeg', 'image/webp'];
+        if (!supportedMimeTypes.includes(info.mimeType)) {
+            return res.status(400).json({ message: 'Unsupported image format. Only PNG, JPEG, and WEBP are allowed.' });
         }
 
         const uploadStream = getImageBucket().openUploadStream(info.filename, {

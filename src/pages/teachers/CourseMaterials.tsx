@@ -157,7 +157,7 @@ const CourseMaterial = () => {
                                 <IconPlusCircle />
                             </button>
                         </div>
-                        <div className="overflow-x-auto max-h-[200px]">
+                        <div className="overflow-auto max-h-[200px]">
                             <ReactSortable
                                 list={category.tasks}
                                 setList={(newState) => {
@@ -166,19 +166,21 @@ const CourseMaterial = () => {
                                 }}
                                 animation={200}
                                 group={{ name: 'shared', pull: true, put: true }}
-                                className="flex space-x-4"
+                                className="space-y-2"
                             >
                                 {category.tasks.map((task) => (
-                                    <div key={`${category.id}-${task.id}`} className="relative bg-white shadow rounded-md p-4 w-[250px] flex-shrink-0">
+                                    <div key={`${category.id}-${task.id}`} className="bg-white shadow rounded-md p-4 relative flex flex-col justify-between">
                                         {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-full h-32 object-cover rounded-md mb-2" />}
-                                        <h5 className="font-semibold">{task.title}</h5>
-                                        <p className="text-sm">{task.description}</p>
-                                        <span className="text-xs text-gray-500">{task.date}</span>
+                                        <div>
+                                            <h5 className="font-semibold">{task.title}</h5>
+                                            <p className="text-sm">{task.description}</p>
+                                            <span className="text-xs text-gray-500">{task.date}</span>
+                                        </div>
                                         <div className="absolute bottom-2 right-2 flex space-x-2">
-                                            <button onClick={() => handleEditTask(task)} className="text-blue-500 cursor-pointer">
+                                            <button onClick={() => handleEditTask(task)} className="text-blue-500">
                                                 <IconEdit />
                                             </button>
-                                            <button onClick={() => handleDeleteTask(task.id)} className="text-red-500 cursor-pointer">
+                                            <button onClick={() => handleDeleteTask(task.id)} className="text-red-500">
                                                 <IconTrash />
                                             </button>
                                         </div>

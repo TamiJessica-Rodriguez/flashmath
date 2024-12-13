@@ -154,7 +154,6 @@ const CourseMaterial = () => {
                 <h1 className="text-2xl font-bold">Kursmaterial</h1>
             </div>
 
-            {/* Container for categories */}
             <div className="grid grid-cols-3 gap-4">
                 {categoryList.map((category) => (
                     <div key={category.id} className="panel p-4 bg-gray-100 shadow-md rounded-lg">
@@ -176,11 +175,15 @@ const CourseMaterial = () => {
                                 className="space-y-2"
                             >
                                 {category.tasks.map((task) => (
-                                    <div key={`${category.id}-${task.id}`} className="bg-white shadow rounded-md p-4 relative flex flex-col">
-                                        {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-full h-32 object-cover rounded-md mb-2" />}
-                                        <h5 className="font-semibold">{task.title}</h5>
-                                        <p className="text-sm">{task.description}</p>
-                                        <span className="text-xs text-gray-500">{task.date}</span>
+                                    <div key={`${category.id}-${task.id}`} className="bg-white shadow rounded-md p-4 relative flex">
+                                        {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-24 h-24 object-contain rounded-md mb-2 mr-4" />}
+                                        <div className="flex flex-col justify-between">
+                                            <div>
+                                                <h5 className="font-semibold">{task.title}</h5>
+                                                <p className="text-sm">{task.description}</p>
+                                            </div>
+                                            <span className="text-xs text-gray-500">{task.date}</span>
+                                        </div>
                                         <div className="absolute bottom-2 right-2 flex space-x-2">
                                             <button onClick={() => handleEditTask(task)} className="text-blue-500">
                                                 <IconEdit />

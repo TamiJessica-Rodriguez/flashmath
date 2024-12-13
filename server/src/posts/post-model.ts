@@ -2,15 +2,16 @@ import mongoose, { InferSchemaType, SchemaTypes } from 'mongoose';
 import { z } from 'zod';
 
 /**
- * Schema for creating a post with required fields: title, description, and imageId.
+ * Schema for creating a post with required fields.
  */
 const PostSchema = new mongoose.Schema(
     {
-        title: { type: String, required: true }, // Titel är obligatorisk
-        description: { type: String, required: true }, // Beskrivning är obligatorisk
-        imageId: { type: SchemaTypes.ObjectId, required: false }, // Bild är valfri
-        author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Koppling till användaren (user/admin)
-        publishDate: { type: Date, default: Date.now }, // Publiceringsdatum
+        title: { type: String, required: true },
+        description: { type: String, required: true },
+        imageId: { type: SchemaTypes.ObjectId, required: false },
+        author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        publishDate: { type: Date, default: Date.now },
+        projectId: { type: Number, required: true }, // Category ID to group posts
     },
     {
         toJSON: {
@@ -20,7 +21,14 @@ const PostSchema = new mongoose.Schema(
 );
 
 /**
- * Zod schema for validation of posts.
+ * Virtual property for image URL generation.
+ */
+PostSchema.virtual('imageUrl').get(function () {
+    return '/api/images/' + this.imageId;
+});
+
+/**
+ * Zod schema for validating posts.
  */
 const PostZodSchema = z.object({
     _id: z.string().optional(),
@@ -28,6 +36,7 @@ const PostZodSchema = z.object({
     description: z.string().min(1, 'Description is required'),
     imageId: z.string().optional(),
     author: z.string(),
+    projectId: z.number(),
 });
 
 /**
@@ -38,16 +47,6 @@ export const PostCreateZodSchema = PostZodSchema.omit({
     author: true,
 });
 
-/**
- * Virtual property for generating image URLs.
- */
-PostSchema.virtual('imageUrl').get(function () {
-    return '/api/images/' + this.imageId;
-});
-
-/**
- * Mongoose model definition.
- */
-export const PostModel = mongoose.model<Post>('Post', PostSchema);
+export const PostModel = mongoose.model('Post', PostSchema);
 export type Post = InferSchemaType<typeof PostSchema>;
 export { PostZodSchema };

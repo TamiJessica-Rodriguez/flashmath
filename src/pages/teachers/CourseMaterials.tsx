@@ -3,10 +3,10 @@ import { Fragment, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { ReactSortable } from 'react-sortablejs';
 import IconPlusCircle from '../../components/Icon/IconPlusCircle';
-import { createPost, fetchPosts, uploadImage } from '../../controllers/postsController'; // Import intermediary functions
+import { createPost, fetchPosts, uploadImage } from '../../controllers/postsController';
 import { setPageTitle } from '../../store/themeConfigSlice';
 
-interface Project {
+interface Category {
     id: number;
     title: string;
     tasks: Task[];
@@ -14,7 +14,7 @@ interface Project {
 
 interface Task {
     projectId: number;
-    id: number;
+    id: string; // Changed to string for consistency with MongoDB ObjectId
     title: string;
     description?: string;
     imageId?: string;
@@ -29,7 +29,7 @@ const CourseMaterial = () => {
         loadPosts(); // Fetch posts on component mount
     }, [dispatch]);
 
-    const [projectList, setProjectList] = useState<Project[]>([
+    const [categoryList, setCategoryList] = useState<Category[]>([
         { id: 1, title: 'Föreläsningar', tasks: [] },
         { id: 2, title: 'Dokument', tasks: [] },
         { id: 4, title: 'Böcker', tasks: [] },
@@ -43,40 +43,43 @@ const CourseMaterial = () => {
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [currentTask, setCurrentTask] = useState<Task | null>(null);
-    const [currentProjectId, setCurrentProjectId] = useState<number | null>(null);
+    const [currentCategoryId, setCurrentCategoryId] = useState<number | null>(null);
 
-    // Load posts from the backend and populate the project list
+    // Load posts from the backend and populate the category list
     const loadPosts = async () => {
         try {
-            const posts = await fetchPosts(); // Fetch posts via postsController
-            const updatedProjects = [...projectList];
+            const posts = await fetchPosts();
+            const updatedCategories: Category[] = categoryList.map((category) => ({
+                ...category,
+                tasks: [] as Task[], // Reset tasks to avoid duplicates
+            }));
 
-            // Distribute posts into respective projects (example logic)
+            // Distribute posts into their respective categories
             posts.forEach((post: any) => {
-                const projectIndex = updatedProjects.findIndex((project) => project.id === 1); // Example: Place all posts in 'Föreläsningar'
-                if (projectIndex !== -1) {
-                    updatedProjects[projectIndex].tasks.push({
+                const categoryIndex = updatedCategories.findIndex((category) => category.id === post.projectId);
+                if (categoryIndex !== -1) {
+                    updatedCategories[categoryIndex].tasks.push({
                         id: post._id,
                         title: post.title,
                         description: post.description,
                         imageId: post.imageId,
                         date: new Date(post.publishDate).toLocaleDateString(),
-                        projectId: updatedProjects[projectIndex].id,
+                        projectId: post.projectId,
                     });
                 }
             });
 
-            setProjectList(updatedProjects);
+            setCategoryList(updatedCategories);
         } catch (error) {
             console.error('Error fetching posts:', error);
         }
     };
 
-    const handleAddTaskClick = (projectId: number) => {
-        setCurrentProjectId(projectId);
+    const handleAddTaskClick = (categoryId: number) => {
+        setCurrentCategoryId(categoryId);
         setCurrentTask({
-            projectId,
-            id: 0,
+            projectId: categoryId,
+            id: '',
             title: '',
             description: '',
             imageId: undefined,
@@ -89,7 +92,7 @@ const CourseMaterial = () => {
         const file = e.target.files?.[0];
         if (file) {
             try {
-                const imageId = await uploadImage(file); // Use postsController for image upload
+                const imageId = await uploadImage(file);
                 setCurrentTask((prev) => (prev ? { ...prev, imageId } : prev));
             } catch (error) {
                 console.error('Image upload failed:', error);
@@ -105,34 +108,16 @@ const CourseMaterial = () => {
         }
 
         try {
-            // Use postsController to create the post
             const response = await createPost({
                 title: currentTask.title,
                 description: currentTask.description,
                 imageId: currentTask.imageId,
-                projectId: 0,
+                projectId: currentCategoryId || 0, // Use the selected category ID
             });
 
             console.log('Post skapad:', response);
 
-            // Update UI locally
-            const updatedProjects = projectList.map((project) => {
-                if (project.id === currentProjectId) {
-                    const tasks = [...project.tasks];
-                    tasks.push({
-                        projectId: currentProjectId,
-                        id: response._id,
-                        title: response.title,
-                        description: response.description,
-                        imageId: response.imageId,
-                        date: new Date(response.publishDate).toLocaleDateString(),
-                    });
-                    return { ...project, tasks };
-                }
-                return project;
-            });
-
-            setProjectList(updatedProjects);
+            await loadPosts(); // Reload posts to ensure state is consistent
             setIsTaskModalOpen(false);
         } catch (error) {
             console.error('Ett fel inträffade:', error);
@@ -149,26 +134,26 @@ const CourseMaterial = () => {
             <div className="relative pt-5">
                 <div className="perfect-scrollbar h-full -mx-2">
                     <div className="overflow-x-auto flex items-start flex-nowrap gap-5 pb-2 px-2">
-                        {projectList.map((project) => (
-                            <div key={project.id} className="panel w-80 flex-none">
+                        {categoryList.map((category) => (
+                            <div key={category.id} className="panel w-80 flex-none">
                                 <div className="flex justify-between mb-5">
-                                    <h4 className="text-base font-semibold">{project.title}</h4>
-                                    <button onClick={() => handleAddTaskClick(project.id)} className="btn btn-outline-primary">
+                                    <h4 className="text-base font-semibold">{category.title}</h4>
+                                    <button onClick={() => handleAddTaskClick(category.id)} className="btn btn-outline-primary">
                                         <IconPlusCircle />
                                     </button>
                                 </div>
                                 <ReactSortable
-                                    list={project.tasks}
+                                    list={category.tasks}
                                     setList={(newState) => {
-                                        const updatedProjects = projectList.map((p) => (p.id === project.id ? { ...p, tasks: newState } : p));
-                                        setProjectList(updatedProjects);
+                                        const updatedCategories = categoryList.map((c) => (c.id === category.id ? { ...c, tasks: newState } : c));
+                                        setCategoryList(updatedCategories);
                                     }}
                                     animation={200}
                                     group={{ name: 'shared', pull: true, put: true }}
                                     className="connect-sorting-content min-h-[150px]"
                                 >
-                                    {project.tasks.map((task) => (
-                                        <div key={task.id} className="sortable-list p-4 shadow bg-white rounded-md mb-2">
+                                    {category.tasks.map((task) => (
+                                        <div key={`${category.id}-${task.id}`} className="sortable-list p-4 shadow bg-white rounded-md mb-2">
                                             {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-full h-32 object-cover rounded-md mb-2" />}
                                             <h5 className="font-semibold">{task.title}</h5>
                                             <p className="text-sm">{task.description}</p>
@@ -192,7 +177,7 @@ const CourseMaterial = () => {
                         <div className="flex items-center justify-center min-h-screen px-4">
                             <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
                                 <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                                    {currentTask?.id === 0 ? 'Lägg till uppgift' : 'Redigera uppgift'}
+                                    {currentTask?.id ? 'Redigera uppgift' : 'Lägg till uppgift'}
                                 </Dialog.Title>
                                 <div className="mt-4">
                                     <label className="block text-sm font-medium text-gray-700">Titel</label>

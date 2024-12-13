@@ -9,6 +9,5 @@ postsRouter.post('/', createPosts);
 postsRouter.put('/:id', updatePost);
 postsRouter.delete('/:id', deletePost);
 
-// Lägg till bilduppladdning och hämtning om det behövs
 postsRouter.post('/upload', uploadImage);
 postsRouter.get('/image/:id', getImage);

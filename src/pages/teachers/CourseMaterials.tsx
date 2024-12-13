@@ -1,7 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { ReactSortable } from 'react-sortablejs';
 import IconPlusCircle from '../../components/Icon/IconPlusCircle';
 import { createPost, fetchPosts, uploadImage } from '../../controllers/postsController';
 import { setPageTitle } from '../../store/themeConfigSlice';
@@ -14,7 +13,7 @@ interface Category {
 
 interface Task {
     projectId: number;
-    id: string; // Changed to string for consistency with MongoDB ObjectId
+    id: string;
     title: string;
     description?: string;
     imageId?: string;
@@ -45,7 +44,6 @@ const CourseMaterial = () => {
     const [currentTask, setCurrentTask] = useState<Task | null>(null);
     const [currentCategoryId, setCurrentCategoryId] = useState<number | null>(null);
 
-    // Load posts from the backend and populate the category list
     const loadPosts = async () => {
         try {
             const posts = await fetchPosts();
@@ -54,7 +52,6 @@ const CourseMaterial = () => {
                 tasks: [] as Task[], // Reset tasks to avoid duplicates
             }));
 
-            // Distribute posts into their respective categories
             posts.forEach((post: any) => {
                 const categoryIndex = updatedCategories.findIndex((category) => category.id === post.projectId);
                 if (categoryIndex !== -1) {
@@ -112,12 +109,12 @@ const CourseMaterial = () => {
                 title: currentTask.title,
                 description: currentTask.description,
                 imageId: currentTask.imageId,
-                projectId: currentCategoryId || 0, // Use the selected category ID
+                projectId: currentCategoryId || 0,
             });
 
             console.log('Post skapad:', response);
 
-            await loadPosts(); // Reload posts to ensure state is consistent
+            await loadPosts();
             setIsTaskModalOpen(false);
         } catch (error) {
             console.error('Ett fel inträffade:', error);
@@ -132,38 +129,27 @@ const CourseMaterial = () => {
             </div>
 
             <div className="relative pt-5">
-                <div className="perfect-scrollbar h-full -mx-2">
-                    <div className="overflow-x-auto flex items-start flex-nowrap gap-5 pb-2 px-2">
-                        {categoryList.map((category) => (
-                            <div key={category.id} className="panel w-80 flex-none">
-                                <div className="flex justify-between mb-5">
-                                    <h4 className="text-base font-semibold">{category.title}</h4>
-                                    <button onClick={() => handleAddTaskClick(category.id)} className="btn btn-outline-primary">
-                                        <IconPlusCircle />
-                                    </button>
-                                </div>
-                                <ReactSortable
-                                    list={category.tasks}
-                                    setList={(newState) => {
-                                        const updatedCategories = categoryList.map((c) => (c.id === category.id ? { ...c, tasks: newState } : c));
-                                        setCategoryList(updatedCategories);
-                                    }}
-                                    animation={200}
-                                    group={{ name: 'shared', pull: true, put: true }}
-                                    className="connect-sorting-content min-h-[150px]"
-                                >
-                                    {category.tasks.map((task) => (
-                                        <div key={`${category.id}-${task.id}`} className="sortable-list p-4 shadow bg-white rounded-md mb-2">
-                                            {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-full h-32 object-cover rounded-md mb-2" />}
-                                            <h5 className="font-semibold">{task.title}</h5>
-                                            <p className="text-sm">{task.description}</p>
-                                            <span className="text-xs text-gray-500">{task.date}</span>
-                                        </div>
-                                    ))}
-                                </ReactSortable>
+                <div className="flex flex-wrap gap-5">
+                    {categoryList.map((category) => (
+                        <div key={category.id} className="panel w-full sm:w-[calc(33.33%-1rem)] flex-none">
+                            <div className="flex justify-between mb-3">
+                                <h4 className="text-base font-semibold">{category.title}</h4>
+                                <button onClick={() => handleAddTaskClick(category.id)} className="btn btn-outline-primary">
+                                    <IconPlusCircle />
+                                </button>
                             </div>
-                        ))}
-                    </div>
+                            <div className="grid grid-cols-3 gap-4 max-h-80 overflow-y-auto p-2 bg-gray-50 rounded-md">
+                                {category.tasks.map((task) => (
+                                    <div key={`${category.id}-${task.id}`} className="p-4 shadow bg-white rounded-md">
+                                        {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-full h-32 object-cover rounded-md mb-2" />}
+                                        <h5 className="font-semibold text-sm">{task.title}</h5>
+                                        <p className="text-xs">{task.description}</p>
+                                        <span className="text-xs text-gray-500">{task.date}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 

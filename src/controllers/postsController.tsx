@@ -27,7 +27,7 @@ export const uploadImage = async (file: File): Promise<string> => {
 /**
  * Create a new post with title, description, and optional image ID
  */
-export const createPost = async (postData: { title: string; description: string; imageId?: string }) => {
+export const createPost = async (postData: { title: string; description: string; imageId?: string; projectId: number }) => {
     try {
         const response = await axios.post(POSTS_API_URL, postData, {
             withCredentials: true, // Optional if authentication is required
@@ -38,3 +38,49 @@ export const createPost = async (postData: { title: string; description: string;
         throw new Error('Failed to create post');
     }
 };
+
+/**
+ * Fetch all posts
+ */
+export const fetchPosts = async () => {
+    try {
+        const response = await axios.get(POSTS_API_URL, {
+            withCredentials: true, // Optional if authentication is required
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        throw new Error('Failed to fetch posts');
+    }
+};
+
+/**
+ * Update an existing post by ID
+ */
+export const updatePost = async (postId: string, updateData: { title: string; description: string; imageId?: string; projectId: number }) => {
+    try {
+        const response = await axios.put(`${POSTS_API_URL}/${postId}`, updateData, {
+            withCredentials: true, // Optional if authentication is required
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating post with ID ${postId}:`, error);
+        throw new Error('Failed to update post');
+    }
+};
+
+/**
+ * Delete a post by ID
+ */
+export const deletePost = async (postId: string) => {
+    try {
+        const response = await axios.delete(`${POSTS_API_URL}/${postId}`, {
+            withCredentials: true, // Optional if authentication is required
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error deleting post with ID ${postId}:`, error);
+        throw new Error('Failed to delete post');
+    }
+};
+

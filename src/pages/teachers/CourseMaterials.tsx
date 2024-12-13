@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { ReactSortable } from 'react-sortablejs';
 import IconPlusCircle from '../../components/Icon/IconPlusCircle';
-import { createPost, uploadImage } from '../../controllers/postsController'; // Import intermediary functions
+import { createPost, fetchPosts, uploadImage } from '../../controllers/postsController'; // Import intermediary functions
 import { setPageTitle } from '../../store/themeConfigSlice';
 
 interface Project {
@@ -26,17 +26,51 @@ const CourseMaterial = () => {
 
     useEffect(() => {
         dispatch(setPageTitle('Kursmaterial'));
+        loadPosts(); // Fetch posts on component mount
     }, [dispatch]);
 
     const [projectList, setProjectList] = useState<Project[]>([
         { id: 1, title: 'Föreläsningar', tasks: [] },
         { id: 2, title: 'Dokument', tasks: [] },
-        { id: 3, title: 'Böcker', tasks: [] },
+        { id: 4, title: 'Böcker', tasks: [] },
+        { id: 5, title: 'Podcasts', tasks: [] },
+        { id: 6, title: 'Ljudböcker', tasks: [] },
+        { id: 7, title: 'Dokumentärer', tasks: [] },
+        { id: 8, title: 'Filmer', tasks: [] },
+        { id: 9, title: 'Spel', tasks: [] },
+        { id: 10, title: 'Virtuell Intelligens', tasks: [] },
     ]);
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [currentTask, setCurrentTask] = useState<Task | null>(null);
     const [currentProjectId, setCurrentProjectId] = useState<number | null>(null);
+
+    // Load posts from the backend and populate the project list
+    const loadPosts = async () => {
+        try {
+            const posts = await fetchPosts(); // Fetch posts via postsController
+            const updatedProjects = [...projectList];
+
+            // Distribute posts into respective projects (example logic)
+            posts.forEach((post: any) => {
+                const projectIndex = updatedProjects.findIndex((project) => project.id === 1); // Example: Place all posts in 'Föreläsningar'
+                if (projectIndex !== -1) {
+                    updatedProjects[projectIndex].tasks.push({
+                        id: post._id,
+                        title: post.title,
+                        description: post.description,
+                        imageId: post.imageId,
+                        date: new Date(post.publishDate).toLocaleDateString(),
+                        projectId: updatedProjects[projectIndex].id,
+                    });
+                }
+            });
+
+            setProjectList(updatedProjects);
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        }
+    };
 
     const handleAddTaskClick = (projectId: number) => {
         setCurrentProjectId(projectId);
@@ -75,7 +109,8 @@ const CourseMaterial = () => {
             const response = await createPost({
                 title: currentTask.title,
                 description: currentTask.description,
-                imageId: currentTask.imageId, // Use the uploaded image ID
+                imageId: currentTask.imageId,
+                projectId: 0,
             });
 
             console.log('Post skapad:', response);

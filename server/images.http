@@ -1,0 +1,13 @@
+### GET IMAGE
+GET http://localhost:3000/api/images/6638dfa0284f2fd2bd034734
+
+### UPLOAD IMAGE
+POST http://localhost:3000/api/images
+Content-Type: multipart/form-data; boundary=FormRow
+
+--FormRow
+Content-Disposition: form-data; name="file"; filename="Monsters.png"
+Content-Type: image/png
+
+< ./Monsters.png
+--FormRow--

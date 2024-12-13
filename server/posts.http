@@ -1,0 +1,11 @@
+
+###
+POST http://localhost:3000/api/posts
+Content-Type: application/json
+Authorization: Bearer <din-token>
+
+{
+  "title": "Ett nytt inlägg",
+  "description": "Detta är beskrivningen.",
+  "imageId": "6421a7eb11bc3c1234567890"
+}

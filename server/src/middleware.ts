@@ -1,4 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
+import { Session } from 'express-session';
+
+declare module 'express-session' {
+    interface Session {
+        isAdmin?: boolean;
+        _id?: string;
+    }
+}
 
 export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
     if (!req.session || !req.session._id) {

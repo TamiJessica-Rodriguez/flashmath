@@ -1,9 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react';
-import axios from 'axios';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { ReactSortable } from 'react-sortablejs';
 import IconPlusCircle from '../../components/Icon/IconPlusCircle';
+import { createPost, uploadImage } from '../../controllers/postsController'; // Import intermediary functions
 import { setPageTitle } from '../../store/themeConfigSlice';
 
 interface Project {
@@ -17,8 +17,7 @@ interface Task {
     id: number;
     title: string;
     description?: string;
-    fileUrl?: string;
-    imageUrl?: string;
+    imageId?: string;
     date: string;
 }
 
@@ -27,7 +26,7 @@ const CourseMaterial = () => {
 
     useEffect(() => {
         dispatch(setPageTitle('Kursmaterial'));
-    });
+    }, [dispatch]);
 
     const [projectList, setProjectList] = useState<Project[]>([
         { id: 1, title: 'Föreläsningar', tasks: [] },
@@ -36,7 +35,6 @@ const CourseMaterial = () => {
     ]);
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [currentTask, setCurrentTask] = useState<Task | null>(null);
     const [currentProjectId, setCurrentProjectId] = useState<number | null>(null);
 
@@ -47,45 +45,53 @@ const CourseMaterial = () => {
             id: 0,
             title: '',
             description: '',
-            fileUrl: undefined,
-            imageUrl: undefined,
+            imageId: undefined,
             date: '',
         });
         setIsTaskModalOpen(true);
     };
 
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            try {
+                const imageId = await uploadImage(file); // Use postsController for image upload
+                setCurrentTask((prev) => (prev ? { ...prev, imageId } : prev));
+            } catch (error) {
+                console.error('Image upload failed:', error);
+                alert('Failed to upload image');
+            }
+        }
+    };
+
     const handleSaveTask = async () => {
-        if (!currentTask || !currentTask.title || currentProjectId === null) {
+        if (!currentTask || !currentTask.title || !currentTask.description) {
             alert('Vänligen fyll i alla fält.');
             return;
         }
 
         try {
-            // Skapa posten i backend
-            const postData = {
+            // Use postsController to create the post
+            const response = await createPost({
                 title: currentTask.title,
-                content: currentTask.description || '',
-                author: 'admin-id-here', // Ändra detta till rätt admin-ID
-                brand: 'Material',
-                imageId: currentTask.imageUrl,
-                condition: 'new',
-                color: 'N/A',
-                size: 'N/A',
-                publishDate: new Date().toISOString(),
-            };
+                description: currentTask.description,
+                imageId: currentTask.imageId, // Use the uploaded image ID
+            });
 
-            const response = await axios.post('http://localhost:3000/api/posts', postData);
+            console.log('Post skapad:', response);
 
-            console.log('Post skapad:', response.data);
-
-            // Uppdatera projektet lokalt
+            // Update UI locally
             const updatedProjects = projectList.map((project) => {
                 if (project.id === currentProjectId) {
                     const tasks = [...project.tasks];
-                    if (currentTask.id === 0) {
-                        const newTaskId = Math.max(...tasks.map((task) => task.id), 0) + 1;
-                        tasks.push({ ...currentTask, id: newTaskId, date: new Date().toLocaleDateString() });
-                    }
+                    tasks.push({
+                        projectId: currentProjectId,
+                        id: response._id,
+                        title: response.title,
+                        description: response.description,
+                        imageId: response.imageId,
+                        date: new Date(response.publishDate).toLocaleDateString(),
+                    });
                     return { ...project, tasks };
                 }
                 return project;
@@ -99,25 +105,12 @@ const CourseMaterial = () => {
         }
     };
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const fileUrl = URL.createObjectURL(file);
-            setCurrentTask((prev) => (prev ? { ...prev, fileUrl } : prev));
-        }
-    };
-
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setCurrentTask((prev) => (prev ? { ...prev, imageUrl } : prev));
-        }
-    };
-
     return (
         <div>
-            {/* Scrumboard */}
+            <div className="flex justify-between items-center mb-5">
+                <h1 className="text-2xl font-bold">Kursmaterial</h1>
+            </div>
+
             <div className="relative pt-5">
                 <div className="perfect-scrollbar h-full -mx-2">
                     <div className="overflow-x-auto flex items-start flex-nowrap gap-5 pb-2 px-2">
@@ -141,21 +134,13 @@ const CourseMaterial = () => {
                                 >
                                     {project.tasks.map((task) => (
                                         <div key={task.id} className="sortable-list p-4 shadow bg-white rounded-md mb-2">
-                                            {task.imageUrl && <img src={task.imageUrl} alt="Task" className="w-full h-32 object-cover rounded-md mb-2" />}
+                                            {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-full h-32 object-cover rounded-md mb-2" />}
                                             <h5 className="font-semibold">{task.title}</h5>
                                             <p className="text-sm">{task.description}</p>
-                                            {task.fileUrl && (
-                                                <a href={task.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 text-sm">
-                                                    Visa Fil
-                                                </a>
-                                            )}
                                             <span className="text-xs text-gray-500">{task.date}</span>
                                         </div>
                                     ))}
                                 </ReactSortable>
-                                <button onClick={() => handleAddTaskClick(project.id)} className="btn btn-primary mt-3 w-full">
-                                    Lägg till uppgift
-                                </button>
                             </div>
                         ))}
                     </div>
@@ -200,15 +185,6 @@ const CourseMaterial = () => {
                                         className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                     />
                                 </div>
-                                <div className="mt-4">
-                                    <label className="block text-sm font-medium text-gray-700">Ladda upp fil</label>
-                                    <input
-                                        type="file"
-                                        accept="application/pdf"
-                                        onChange={handleFileUpload}
-                                        className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                    />
-                                </div>
                                 <div className="mt-6 flex justify-end space-x-3">
                                     <button type="button" onClick={() => setIsTaskModalOpen(false)} className="btn btn-outline-danger">
                                         Avbryt
@@ -227,4 +203,3 @@ const CourseMaterial = () => {
 };
 
 export default CourseMaterial;
-

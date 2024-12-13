@@ -3,6 +3,8 @@ import cors from 'cors';
 import 'dotenv/config';
 import express, { NextFunction, Request, Response } from 'express';
 import { adminRouter } from './admin/admin-router';
+import { imagesRouter } from './images/images-router';
+import { postsRouter } from './posts/post-router';
 import { submissionsRouter } from './submissions/submission-router';
 import { userRouter } from './users/user-router';
 
@@ -39,6 +41,8 @@ app.use(
 app.use('/api/users', userRouter);
 app.use('/api/submissions', submissionsRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/posts', postsRouter);
+app.use('/api/images', imagesRouter);
 
 // (Optional) Test CORS Endpoint
 app.get('/test-cors', (req, res) => {

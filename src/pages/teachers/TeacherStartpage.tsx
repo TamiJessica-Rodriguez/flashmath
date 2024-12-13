@@ -21,10 +21,12 @@ const TeacherStartpage: React.FC = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    // State för att hantera responsivitet
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 640);
     const [isTablet, setIsTablet] = useState<boolean>(window.innerWidth > 640 && window.innerWidth <= 1024);
     const [showSchedule, setShowSchedule] = useState<boolean>(false);
 
+    // Lista över klasser
     const notesList: Note[] = [
         { id: 3, title: '3A', date: '11/03/2020' },
         { id: 4, title: '3B', date: '11/04/2020' },
@@ -34,6 +36,7 @@ const TeacherStartpage: React.FC = () => {
         { id: 2, title: '4C', date: '11/02/2020' },
     ];
 
+    // Dagligt schema
     const scheduleNotes: ScheduleNote[] = [
         { title: '4B', colorClass: 'bg-gray-200', startTime: '08:00', endTime: '09:30' },
         { title: '4C', colorClass: 'bg-gray-200', startTime: '10:00', endTime: '11:15' },
@@ -42,8 +45,10 @@ const TeacherStartpage: React.FC = () => {
     ];
 
     useEffect(() => {
+        // Sätter sidans titel
         dispatch(setPageTitle('Klasser'));
 
+        // Hanterar responsivitet
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 640);
             setIsTablet(window.innerWidth > 640 && window.innerWidth <= 1024);
@@ -74,10 +79,10 @@ const TeacherStartpage: React.FC = () => {
                 </div>
             )}
 
-            {/* Korten */}
+            {/* Innehåll */}
             <div className="flex flex-grow overflow-hidden">
+                {/* Klasskorten */}
                 <div className="panel flex-1 h-full mr-5">
-                    {/* Titlar */}
                     <div className="px-4">
                         <h1 className="text-2xl font-bold mb-5">Dina klasser</h1>
                     </div>
@@ -88,7 +93,14 @@ const TeacherStartpage: React.FC = () => {
                                 className={`h-48 ${
                                     note.title.includes('3') ? 'bg-[#83b0e1]/50' : 'bg-[#e1ecf7]/75'
                                 } shadow-md rounded-lg flex items-center justify-center text-center cursor-pointer hover:shadow-lg hover:scale-105 transition-transform`}
-                                onClick={() => navigate(`/${note.title.toLowerCase()}menu`)}
+                                onClick={() => {
+                                    // Navigera till olika rutter beroende på klassens titel
+                                    if (note.title === '3A') {
+                                        navigate('/coursematerials');
+                                    } else {
+                                        navigate(`/${note.title.toLowerCase()}menu`);
+                                    }
+                                }}
                             >
                                 <h3 className="text-xl font-bold text-gray-800">{note.title}</h3>
                             </div>

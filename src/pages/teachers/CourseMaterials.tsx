@@ -1,8 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { ReactSortable } from 'react-sortablejs';
+import IconEdit from '../../components/Icon/IconEdit';
 import IconPlusCircle from '../../components/Icon/IconPlusCircle';
-import { createPost, fetchPosts, uploadImage } from '../../controllers/postsController';
+import IconTrash from '../../components/Icon/IconTrash';
+import { createPost, deletePost, fetchPosts, updatePost, uploadImage } from '../../controllers/postsController';
 import { setPageTitle } from '../../store/themeConfigSlice';
 
 interface Category {
@@ -25,19 +28,13 @@ const CourseMaterial = () => {
 
     useEffect(() => {
         dispatch(setPageTitle('Kursmaterial'));
-        loadPosts(); // Fetch posts on component mount
+        loadPosts();
     }, [dispatch]);
 
     const [categoryList, setCategoryList] = useState<Category[]>([
         { id: 1, title: 'Föreläsningar', tasks: [] },
         { id: 2, title: 'Dokument', tasks: [] },
-        { id: 4, title: 'Böcker', tasks: [] },
-        { id: 5, title: 'Podcasts', tasks: [] },
-        { id: 6, title: 'Ljudböcker', tasks: [] },
-        { id: 7, title: 'Dokumentärer', tasks: [] },
-        { id: 8, title: 'Filmer', tasks: [] },
-        { id: 9, title: 'Spel', tasks: [] },
-        { id: 10, title: 'Virtuell Intelligens', tasks: [] },
+        { id: 3, title: 'Böcker', tasks: [] },
     ]);
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -47,9 +44,9 @@ const CourseMaterial = () => {
     const loadPosts = async () => {
         try {
             const posts = await fetchPosts();
-            const updatedCategories: Category[] = categoryList.map((category) => ({
+            const updatedCategories = categoryList.map((category) => ({
                 ...category,
-                tasks: [] as Task[], // Reset tasks to avoid duplicates
+                tasks: [] as Task[],
             }));
 
             posts.forEach((post: any) => {
@@ -85,6 +82,12 @@ const CourseMaterial = () => {
         setIsTaskModalOpen(true);
     };
 
+    const handleEditTask = (task: Task) => {
+        setCurrentTask(task);
+        setCurrentCategoryId(task.projectId);
+        setIsTaskModalOpen(true);
+    };
+
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -105,20 +108,37 @@ const CourseMaterial = () => {
         }
 
         try {
-            const response = await createPost({
-                title: currentTask.title,
-                description: currentTask.description,
-                imageId: currentTask.imageId,
-                projectId: currentCategoryId || 0,
-            });
-
-            console.log('Post skapad:', response);
+            if (currentTask.id) {
+                await updatePost(currentTask.id, {
+                    title: currentTask.title,
+                    description: currentTask.description,
+                    imageId: currentTask.imageId,
+                    projectId: currentTask.projectId,
+                });
+            } else {
+                await createPost({
+                    title: currentTask.title,
+                    description: currentTask.description,
+                    imageId: currentTask.imageId,
+                    projectId: currentCategoryId || 0,
+                });
+            }
 
             await loadPosts();
             setIsTaskModalOpen(false);
         } catch (error) {
             console.error('Ett fel inträffade:', error);
-            alert('Kunde inte skapa posten.');
+            alert('Kunde inte spara posten.');
+        }
+    };
+
+    const handleDeleteTask = async (taskId: string) => {
+        try {
+            await deletePost(taskId);
+            await loadPosts();
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            alert('Kunde inte ta bort posten.');
         }
     };
 
@@ -128,32 +148,48 @@ const CourseMaterial = () => {
                 <h1 className="text-2xl font-bold">Kursmaterial</h1>
             </div>
 
-            <div className="relative pt-5">
-                <div className="flex flex-wrap gap-5">
-                    {categoryList.map((category) => (
-                        <div key={category.id} className="panel w-full sm:w-[calc(33.33%-1rem)] flex-none">
-                            <div className="flex justify-between mb-3">
-                                <h4 className="text-base font-semibold">{category.title}</h4>
-                                <button onClick={() => handleAddTaskClick(category.id)} className="btn btn-outline-primary">
-                                    <IconPlusCircle />
-                                </button>
-                            </div>
-                            <div className="grid grid-cols-3 gap-4 max-h-80 overflow-y-auto p-2 bg-gray-50 rounded-md">
+            <div className="grid grid-cols-3 gap-4">
+                {categoryList.map((category) => (
+                    <div key={category.id} className="panel p-4 bg-gray-100 shadow-md rounded-lg">
+                        <div className="flex justify-between mb-4">
+                            <h4 className="text-base font-semibold">{category.title}</h4>
+                            <button onClick={() => handleAddTaskClick(category.id)} className="btn btn-outline-primary">
+                                <IconPlusCircle />
+                            </button>
+                        </div>
+                        <div className="overflow-x-auto max-h-[200px]">
+                            <ReactSortable
+                                list={category.tasks}
+                                setList={(newState) => {
+                                    const updatedCategories = categoryList.map((c) => (c.id === category.id ? { ...c, tasks: newState } : c));
+                                    setCategoryList(updatedCategories);
+                                }}
+                                animation={200}
+                                group={{ name: 'shared', pull: true, put: true }}
+                                className="flex space-x-4"
+                            >
                                 {category.tasks.map((task) => (
-                                    <div key={`${category.id}-${task.id}`} className="p-4 shadow bg-white rounded-md">
+                                    <div key={`${category.id}-${task.id}`} className="relative bg-white shadow rounded-md p-4 w-[250px] flex-shrink-0">
                                         {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-full h-32 object-cover rounded-md mb-2" />}
-                                        <h5 className="font-semibold text-sm">{task.title}</h5>
-                                        <p className="text-xs">{task.description}</p>
+                                        <h5 className="font-semibold">{task.title}</h5>
+                                        <p className="text-sm">{task.description}</p>
                                         <span className="text-xs text-gray-500">{task.date}</span>
+                                        <div className="absolute bottom-2 right-2 flex space-x-2">
+                                            <button onClick={() => handleEditTask(task)} className="text-blue-500 cursor-pointer">
+                                                <IconEdit />
+                                            </button>
+                                            <button onClick={() => handleDeleteTask(task.id)} className="text-red-500 cursor-pointer">
+                                                <IconTrash />
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
-                            </div>
+                            </ReactSortable>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
 
-            {/* Add/Edit Task Modal */}
             <Transition appear show={isTaskModalOpen} as={Fragment}>
                 <Dialog as="div" className="relative z-10" onClose={() => setIsTaskModalOpen(false)}>
                     <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100">

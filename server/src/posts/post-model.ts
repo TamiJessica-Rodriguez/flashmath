@@ -27,20 +27,18 @@ PostSchema.virtual('imageUrl').get(function () {
     return '/api/images/' + this.imageId;
 });
 
-/**
- * Zod schema for validating posts.
- */
 const PostZodSchema = z.object({
     _id: z.string().optional(),
     title: z.string().min(1, 'Title is required'),
     description: z.string().min(1, 'Description is required'),
     imageId: z.string().optional(),
-    author: z.string(),
+    author: z.string().optional(), // Gör fältet valfritt
     projectId: z.number(),
 });
 
 /**
- * Schema for creating a post without _id and author.
+ * Schema for creating a post without `_id` and `author`.
+ * These are auto-generated or handled in the backend.
  */
 export const PostCreateZodSchema = PostZodSchema.omit({
     _id: true,

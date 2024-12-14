@@ -154,7 +154,7 @@ const CourseMaterial = () => {
                 <h1 className="text-2xl font-bold">Kursmaterial</h1>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categoryList.map((category) => (
                     <div key={category.id} className="panel p-4 bg-gray-100 shadow-md rounded-lg">
                         <div className="flex justify-between mb-4">

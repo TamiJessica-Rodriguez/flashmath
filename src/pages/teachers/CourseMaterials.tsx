@@ -1,5 +1,4 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { ReactSortable } from 'react-sortablejs';
 import IconEdit from '../../components/Icon/IconEdit';
@@ -7,6 +6,7 @@ import IconPlusCircle from '../../components/Icon/IconPlusCircle';
 import IconTrash from '../../components/Icon/IconTrash';
 import { createPost, deletePost, fetchPosts, updatePost, uploadImage } from '../../controllers/postsController';
 import { setPageTitle } from '../../store/themeConfigSlice';
+import DeleteConfirmationModal from '../Components/DeleteConfirmationModal';
 
 interface Category {
     id: number;
@@ -26,26 +26,23 @@ interface Task {
 const CourseMaterial = () => {
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(setPageTitle('Kursmaterial'));
-        loadPosts();
-    }, [dispatch]);
-
     const [categoryList, setCategoryList] = useState<Category[]>([
         { id: 1, title: 'Föreläsningar', tasks: [] },
         { id: 2, title: 'Dokument', tasks: [] },
         { id: 3, title: 'Böcker', tasks: [] },
-        { id: 4, title: 'Podcasts', tasks: [] },
-        { id: 5, title: 'Ljuböcker', tasks: [] },
-        { id: 7, title: 'Dokumentärer', tasks: [] },
-        { id: 8, title: 'Filmer', tasks: [] },
-        { id: 9, title: 'Spel', tasks: [] },
-        { id: 10, title: 'Virtuell intelligens', tasks: [] },
     ]);
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [currentTask, setCurrentTask] = useState<Task | null>(null);
     const [currentCategoryId, setCurrentCategoryId] = useState<number | null>(null);
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+
+    useEffect(() => {
+        dispatch(setPageTitle('Kursmaterial'));
+        loadPosts();
+    }, [dispatch]);
 
     const loadPosts = async () => {
         try {
@@ -94,19 +91,6 @@ const CourseMaterial = () => {
         setIsTaskModalOpen(true);
     };
 
-    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            try {
-                const imageId = await uploadImage(file);
-                setCurrentTask((prev) => (prev ? { ...prev, imageId } : prev));
-            } catch (error) {
-                console.error('Image upload failed:', error);
-                alert('Failed to upload image');
-            }
-        }
-    };
-
     const handleSaveTask = async () => {
         if (!currentTask || !currentTask.title || !currentTask.description) {
             alert('Vänligen fyll i alla fält.');
@@ -133,18 +117,40 @@ const CourseMaterial = () => {
             await loadPosts();
             setIsTaskModalOpen(false);
         } catch (error) {
-            console.error('Ett fel inträffade:', error);
-            alert('Kunde inte spara posten.');
+            console.error('Error saving task:', error);
+            alert('Kunde inte spara uppgiften.');
         }
     };
 
-    const handleDeleteTask = async (taskId: string) => {
-        try {
-            await deletePost(taskId);
-            await loadPosts();
-        } catch (error) {
-            console.error('Error deleting post:', error);
-            alert('Kunde inte ta bort posten.');
+    const handleDeleteTaskClick = (taskId: string) => {
+        setTaskToDelete(taskId);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleDeleteTask = async () => {
+        if (taskToDelete) {
+            try {
+                await deletePost(taskToDelete);
+                await loadPosts();
+                setTaskToDelete(null);
+            } catch (error) {
+                console.error('Error deleting task:', error);
+                alert('Kunde inte radera uppgiften.');
+            }
+        }
+        setIsDeleteModalOpen(false);
+    };
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            try {
+                const imageId = await uploadImage(file);
+                setCurrentTask((prev) => (prev ? { ...prev, imageId } : prev));
+            } catch (error) {
+                console.error('Image upload failed:', error);
+                alert('Kunde inte ladda upp bilden.');
+            }
         }
     };
 
@@ -159,8 +165,9 @@ const CourseMaterial = () => {
                     <div key={category.id} className="panel p-4 bg-gray-100 shadow-md rounded-lg">
                         <div className="flex justify-between mb-4">
                             <h4 className="text-base font-semibold">{category.title}</h4>
-                            <button onClick={() => handleAddTaskClick(category.id)} className="btn btn-outline-primary">
+                            <button onClick={() => handleAddTaskClick(category.id)} className="btn btn-outline-primary flex items-center">
                                 <IconPlusCircle />
+                                <span className="ml-1">Lägg till</span>
                             </button>
                         </div>
                         <div className="overflow-y-auto max-h-[300px]">
@@ -176,26 +183,19 @@ const CourseMaterial = () => {
                             >
                                 {category.tasks.map((task) => (
                                     <div key={`${category.id}-${task.id}`} className="bg-white shadow rounded-md p-4 relative flex">
-                                        {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-24 h-24 object-contain rounded-md mb-2 mr-4" />}
+                                        {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-24 h-24 object-cover rounded-md mr-4" />}
                                         <div className="flex flex-col justify-between">
                                             <div>
-                                                <h5 className="font-semibold">{task.title}</h5>
+                                                <h5 className="font-semibold break-words">{task.title}</h5>
                                                 <p className="text-sm">{task.description}</p>
                                             </div>
                                             <span className="text-xs text-gray-500">{task.date}</span>
-                                        </div>
-                                        <div
-                                            className="absolute top-2 right-2 text-blue-500 bg-gray-100 p-2 rounded-md flex items-center space-x-1 cursor-pointer"
-                                            onClick={() => handleAddTaskClick(task.projectId)}
-                                        >
-                                            <IconPlusCircle />
-                                            <span>Lägg till</span>
                                         </div>
                                         <div className="absolute bottom-2 right-2 flex space-x-2">
                                             <button onClick={() => handleEditTask(task)} className="text-blue-500">
                                                 <IconEdit />
                                             </button>
-                                            <button onClick={() => handleDeleteTask(task.id)} className="text-red-500">
+                                            <button onClick={() => handleDeleteTaskClick(task.id)} className="text-red-500">
                                                 <IconTrash />
                                             </button>
                                         </div>
@@ -207,56 +207,51 @@ const CourseMaterial = () => {
                 ))}
             </div>
 
-            <Transition appear show={isTaskModalOpen} as={Fragment}>
-                <Dialog as="div" className="relative z-10" onClose={() => setIsTaskModalOpen(false)}>
-                    <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100">
-                        <div className="fixed inset-0 bg-black bg-opacity-25" />
-                    </Transition.Child>
-                    <div className="fixed inset-0 overflow-y-auto">
-                        <div className="flex items-center justify-center min-h-screen px-4">
-                            <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
-                                <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                                    {currentTask?.id ? 'Redigera uppgift' : 'Lägg till uppgift'}
-                                </Dialog.Title>
-                                <div className="mt-4">
-                                    <label className="block text-sm font-medium text-gray-700">Titel</label>
-                                    <input
-                                        type="text"
-                                        value={currentTask?.title || ''}
-                                        onChange={(e) => setCurrentTask((prev) => (prev ? { ...prev, title: e.target.value } : prev))}
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                    />
-                                </div>
-                                <div className="mt-4">
-                                    <label className="block text-sm font-medium text-gray-700">Beskrivning</label>
-                                    <textarea
-                                        value={currentTask?.description || ''}
-                                        onChange={(e) => setCurrentTask((prev) => (prev ? { ...prev, description: e.target.value } : prev))}
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                    ></textarea>
-                                </div>
-                                <div className="mt-4">
-                                    <label className="block text-sm font-medium text-gray-700">Ladda upp bild</label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageUpload}
-                                        className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                    />
-                                </div>
-                                <div className="mt-6 flex justify-end space-x-3">
-                                    <button type="button" onClick={() => setIsTaskModalOpen(false)} className="btn btn-outline-danger">
-                                        Avbryt
-                                    </button>
-                                    <button onClick={handleSaveTask} className="btn btn-primary">
-                                        Spara
-                                    </button>
-                                </div>
-                            </Dialog.Panel>
+            {/* Delete Confirmation Modal */}
+            <DeleteConfirmationModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onConfirm={handleDeleteTask} />
+
+            {/* Task Modal */}
+            {isTaskModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-10">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                        <h2 className="text-lg font-bold mb-4">{currentTask?.id ? 'Redigera Uppgift' : 'Lägg till Uppgift'}</h2>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium mb-2">Titel</label>
+                            <input
+                                type="text"
+                                className="w-full border rounded p-2"
+                                value={currentTask?.title || ''}
+                                onChange={(e) => setCurrentTask((prev) => prev && { ...prev, title: e.target.value })}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium mb-2">Beskrivning</label>
+                            <textarea
+                                className="w-full border rounded p-2"
+                                value={currentTask?.description || ''}
+                                onChange={(e) => setCurrentTask((prev) => prev && { ...prev, description: e.target.value })}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium mb-2">Ladda upp bild</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                            />
+                        </div>
+                        <div className="flex justify-end space-x-3">
+                            <button className="btn btn-outline-danger" onClick={() => setIsTaskModalOpen(false)}>
+                                Avbryt
+                            </button>
+                            <button className="btn btn-primary" onClick={handleSaveTask}>
+                                Spara
+                            </button>
                         </div>
                     </div>
-                </Dialog>
-            </Transition>
+                </div>
+            )}
         </div>
     );
 };

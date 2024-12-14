@@ -1130,24 +1130,24 @@ const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
     if (isLongHeader) {
         // Lång header
         return (
-            <header className="bg-blue-500 text-white shadow-md">
+            <header className="bg-blue-700 text-white shadow-md">
                 <div className="px-4 py-3 flex justify-between items-center">
                     <div className="flex items-center space-x-4">
-                        <button onClick={toggleSidebar} className="p-3 bg-blue-600 hover:bg-blue-700 rounded-md text-lg font-bold" aria-label="Toggle Sidebar">
+                        <button onClick={toggleSidebar} className="p-3 bg-blue-800 hover:bg-blue-900 rounded-md text-lg font-bold" aria-label="Toggle Sidebar">
                             ☰
                         </button>
                         <h1 className="text-2xl font-bold">Lång Header</h1>
                     </div>
                     <nav className="flex space-x-4">
-                        <Link to="/coursematerials" className="hover:underline">
+                        <Link to="/coursematerials" className="hover:underline text-white">
                             Kursmaterial
                         </Link>
-                        <Link to="/teacherstartpage" className="hover:underline">
+                        <Link to="/teacherstartpage" className="hover:underline text-white">
                             Lärarsida
                         </Link>
                     </nav>
                 </div>
-                <div className="bg-blue-400 px-4 py-2 text-sm">
+                <div className="bg-blue-600 px-4 py-2 text-sm text-white">
                     <p>Ytterligare information eller navigeringsalternativ för denna header.</p>
                 </div>
             </header>

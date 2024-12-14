@@ -32,7 +32,7 @@ const SwedishVideos = () => {
         try {
             const posts = await fetchPosts();
             const categories = [
-                { id: 1, title: 'Föreläsningar', tasks: [] as Task[] },lectures
+                { id: 1, title: 'Föreläsningar', tasks: [] as Task[] },
                 { id: 6, title: 'Dokumentärer', tasks: [] as Task[] },
                 { id: 7, title: 'Filmer', tasks: [] as Task[] },
             ];

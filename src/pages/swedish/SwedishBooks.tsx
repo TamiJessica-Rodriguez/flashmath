@@ -1,30 +1,55 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchPosts } from '../../controllers/postsController';
 import { setPageTitle } from '../../store/themeConfigSlice';
+import { fetchPosts } from '../../controllers/postsController';
+
+interface Task {
+    id: string;
+    title: string;
+    description?: string;
+    imageId?: string;
+    date: string;
+}
+
+interface Category {
+    id: number;
+    title: string;
+    tasks: Task[];
+}
 
 const SwedishBooks = () => {
     const dispatch = useDispatch();
 
-    const [categoryList, setCategoryList] = useState<any[]>([
-        { id: 1, title: 'Föreläsningar', tasks: [] },
-        { id: 2, title: 'Dokument', tasks: [] },
-        { id: 3, title: 'Böcker', tasks: [] },
-    ]);
+    const [projectList, setProjectList] = useState<Category[]>([]);
 
     useEffect(() => {
-        dispatch(setPageTitle('Swedish Books'));
+        dispatch(setPageTitle('Kursmaterial'));
         loadPosts();
     }, [dispatch]);
 
     const loadPosts = async () => {
         try {
             const posts = await fetchPosts();
-            const updatedCategories = categoryList.map((category) => ({
-                ...category,
-                tasks: posts.filter((post: any) => post.projectId === category.id),
-            }));
-            setCategoryList(updatedCategories);
+            const categories = [
+                { id: 1, title: 'Föreläsningar', tasks: [] as Task[] },
+                { id: 2, title: 'Dokument', tasks: [] as Task[] },
+                { id: 3, title: 'Böcker', tasks: [] as Task[] },
+            ];
+
+            posts.forEach((post: any) => {
+                const category = categories.find((cat) => cat.id === post.projectId);
+                if (category) {
+                    category.tasks.push({
+                        id: post._id,
+                        title: post.title,
+                        description: post.description,
+                        imageId: post.imageId,
+                        date: new Date(post.publishDate).toLocaleDateString(),
+                    });
+                }
+            });
+
+            setProjectList(categories);
         } catch (error) {
             console.error('Error fetching posts:', error);
         }
@@ -32,23 +57,25 @@ const SwedishBooks = () => {
 
     return (
         <div className="flex flex-col gap-5">
-            <h1 className="text-2xl font-bold mb-5">Svenska Böcker och Material</h1>
-            {/* Render categories */}
+            {/* Project List */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {categoryList.map((category) => (
-                    <div key={category.id} className="panel p-4 bg-gray-100 rounded-lg shadow-md">
-                        <h4 className="text-xl font-bold mb-4">{category.title}</h4>
+                {projectList.map((project: Category) => (
+                    <div key={project.id} className="panel p-4 rounded-lg shadow-md bg-green-200">
+                        <h4 className="text-xl font-bold text-gray-800 mb-4">{project.title}</h4>
                         <div className="space-y-4">
-                            {category.tasks.map((task: any) => (
-                                <div key={task.id} className="p-3 rounded-lg bg-white shadow-md flex items-center gap-4">
-                                    {/* Display image for "Böcker" and "Dokument" */}
-                                    {['Böcker', 'Dokument'].includes(category.title) && task.imageId && (
+                            {project.tasks.map((task: Task) => (
+                                <div
+                                    key={task.id}
+                                    className={`p-3 rounded-lg ${['Böcker', 'Dokument', 'Föreläsningar'].includes(project.title) ? 'bg-white shadow-md flex items-center gap-4' : 'bg-gray-100'}`}
+                                >
+                                    {/* Visa bilder för "Böcker", "Dokument", och "Föreläsningar" */}
+                                    {['Böcker', 'Dokument', 'Föreläsningar'].includes(project.title) && task.imageId && (
                                         <img src={`http://localhost:3000/api/images/${task.imageId}`} alt={task.title} className="w-24 h-32 object-cover rounded-md" />
                                     )}
                                     <div>
                                         <h5 className="font-semibold text-lg text-gray-700">{task.title}</h5>
                                         <p className="text-sm text-gray-600">{task.description}</p>
-                                        <p className="text-xs text-gray-500 mt-2">📅 {task.date}</p>
+                                        <p className="text-xs text-gray-500 mt-2">{task.date}</p> {/* Datum utan emoji */}
                                     </div>
                                 </div>
                             ))}

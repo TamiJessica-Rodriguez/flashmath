@@ -30,6 +30,12 @@ const CourseMaterial = () => {
         { id: 1, title: 'Föreläsningar', tasks: [] },
         { id: 2, title: 'Dokument', tasks: [] },
         { id: 3, title: 'Böcker', tasks: [] },
+        { id: 4, title: 'Podcasts', tasks: [] },
+        { id: 5, title: 'Ljudböcker', tasks: [] },
+        { id: 6, title: 'Dokumentärer', tasks: [] },
+        { id: 7, title: 'Filmer', tasks: [] },
+        { id: 8, title: 'Spel', tasks: [] },
+        { id: 9, title: 'Virtuell Intelligens', tasks: [] },
     ]);
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);

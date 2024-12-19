@@ -4,9 +4,7 @@ import jwt from 'jsonwebtoken';
 import { AdminModel } from './admin-model';
 
 const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-    throw new Error('Missing JWT_SECRET in environment variables');
-}
+
 
 /** Hämta alla admins */
 export const getAllAdmins = async (req: Request, res: Response) => {

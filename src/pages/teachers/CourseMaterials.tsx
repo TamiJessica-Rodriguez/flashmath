@@ -162,17 +162,21 @@ const CourseMaterial = () => {
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-5">
-                <h1 className="text-2xl font-bold">Kursmaterial</h1>
-            </div>
+            <h1 className="text-2xl font-bold">Kursmaterial</h1>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categoryList.map((category) => (
-                    <div key={category.id} className="panel p-4 bg-gray-100 shadow-md rounded-lg">
+                    <div key={category.id} className="panel p-4 bg-gray-100 shadow-md rounded-lg" aria-labelledby={`category-title-${category.id}`}>
                         <div className="flex justify-between mb-4">
-                            <h4 className="text-base font-semibold">{category.title}</h4>
-                            <button onClick={() => handleAddTaskClick(category.id)} className="btn btn-outline-primary flex items-center">
-                                <IconPlusCircle />
+                            <h2 id={`category-title-${category.id}`} className="text-lg font-semibold">
+                                {category.title}
+                            </h2>
+                            <button
+                                onClick={() => handleAddTaskClick(category.id)}
+                                className="btn btn-outline-primary flex items-center"
+                                aria-label={`Lägg till en ny uppgift i kategorin ${category.title}`}
+                            >
+                                <IconPlusCircle className="text-blue-700" />
                                 <span className="ml-1">Lägg till</span>
                             </button>
                         </div>
@@ -188,20 +192,22 @@ const CourseMaterial = () => {
                                 className="space-y-2"
                             >
                                 {category.tasks.map((task) => (
-                                    <div key={`${category.id}-${task.id}`} className="bg-white shadow rounded-md p-4 relative flex">
-                                        {task.imageId && <img src={`http://localhost:3000/api/images/${task.imageId}`} alt="Task" className="w-24 h-24 object-cover rounded-md mr-4" />}
+                                    <div key={`${category.id}-${task.id}`} className="bg-white shadow rounded-md p-4 relative flex" role="listitem" aria-label={`Uppgift: ${task.title}`}>
+                                        {task.imageId && (
+                                            <img src={`http://localhost:3000/api/images/${task.imageId}`} alt={`Bild för uppgift: ${task.title}`} className="w-24 h-24 object-cover rounded-md mr-4" />
+                                        )}
                                         <div className="flex flex-col justify-between">
                                             <div>
-                                                <h5 className="font-semibold break-words">{task.title}</h5>
-                                                <p className="text-sm">{task.description}</p>
+                                                <h3 className="font-semibold break-words text-base">{task.title}</h3>
+                                                <p className="text-sm text-gray-700">{task.description}</p>
                                             </div>
                                             <span className="text-xs text-gray-500">{task.date}</span>
                                         </div>
                                         <div className="absolute bottom-2 right-2 flex space-x-2">
-                                            <button onClick={() => handleEditTask(task)} className="text-blue-500">
+                                            <button onClick={() => handleEditTask(task)} className="text-blue-700" aria-label={`Redigera uppgift: ${task.title}`}>
                                                 <IconEdit />
                                             </button>
-                                            <button onClick={() => handleDeleteTaskClick(task.id)} className="text-red-500">
+                                            <button onClick={() => handleDeleteTaskClick(task.id)} className="text-red-700" aria-label={`Radera uppgift: ${task.title}`}>
                                                 <IconTrash />
                                             </button>
                                         </div>
@@ -218,40 +224,57 @@ const CourseMaterial = () => {
 
             {/* Task Modal */}
             {isTaskModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-10">
+                <div className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-10" role="dialog" aria-modal="true" aria-labelledby="task-modal-title">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                        <h2 className="text-lg font-bold mb-4">{currentTask?.id ? 'Redigera Uppgift' : 'Lägg till Uppgift'}</h2>
+                        <h2 id="task-modal-title" className="text-lg font-bold mb-4">
+                            {currentTask?.id ? 'Redigera Uppgift' : 'Lägg till Uppgift'}
+                        </h2>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">Titel</label>
+                            <label htmlFor="task-title" className="block text-sm font-medium mb-2">
+                                Titel
+                            </label>
                             <input
+                                id="task-title"
                                 type="text"
                                 className="w-full border rounded p-2"
                                 value={currentTask?.title || ''}
                                 onChange={(e) => setCurrentTask((prev) => prev && { ...prev, title: e.target.value })}
+                                aria-required="true"
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">Beskrivning</label>
+                            <label htmlFor="task-description" className="block text-sm font-medium mb-2">
+                                Beskrivning
+                            </label>
                             <textarea
+                                id="task-description"
                                 className="w-full border rounded p-2"
                                 value={currentTask?.description || ''}
                                 onChange={(e) => setCurrentTask((prev) => prev && { ...prev, description: e.target.value })}
+                                aria-required="true"
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">Ladda upp bild</label>
+                            <label htmlFor="task-image" className="block text-sm font-medium mb-2">
+                                Ladda upp bild
+                            </label>
                             <input
+                                id="task-image"
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageUpload}
                                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                aria-describedby="image-upload-instructions"
                             />
+                            <small id="image-upload-instructions" className="text-gray-600 text-xs">
+                                Välj en bild att ladda upp för uppgiften.
+                            </small>
                         </div>
                         <div className="flex justify-end space-x-3">
-                            <button className="btn btn-outline-danger" onClick={() => setIsTaskModalOpen(false)}>
+                            <button className="btn btn-outline-danger" onClick={() => setIsTaskModalOpen(false)} aria-label="Avbryt och stäng dialogrutan">
                                 Avbryt
                             </button>
-                            <button className="btn btn-primary" onClick={handleSaveTask}>
+                            <button className="btn btn-primary" onClick={handleSaveTask} aria-label="Spara uppgiften">
                                 Spara
                             </button>
                         </div>

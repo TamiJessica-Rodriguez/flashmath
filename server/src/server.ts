@@ -9,7 +9,7 @@ async function main() {
 
         // Starta servern
         app.listen(3000, () => {
-            console.log('Server is running on http://localhost:3000');
+            console.log('Server is running on http://localhost:3001');
         });
     } catch (error) {
         console.error('Error connecting to database or starting server:', error);

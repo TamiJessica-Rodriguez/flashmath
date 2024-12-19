@@ -10,7 +10,7 @@ interface DeleteConfirmationModalProps {
 const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm }: DeleteConfirmationModalProps) => {
     return (
         <Transition appear show={isOpen} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={onClose}>
+            <Dialog as="div" className="relative z-10" onClose={onClose} role="dialog" aria-labelledby="delete-modal-title" aria-describedby="delete-modal-description">
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -35,15 +35,17 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm }: DeleteConfirmat
                             leaveTo="opacity-0 scale-95"
                         >
                             <Dialog.Panel className="panel border-0 p-6 rounded-lg overflow-hidden w-full max-w-sm bg-white dark:bg-[#121c2c] text-black dark:text-white">
-                                <Dialog.Title className="text-lg font-bold text-center">Är du säker?</Dialog.Title>
-                                <div className="mt-4 text-center text-gray-600 dark:text-gray-300">
+                                <Dialog.Title id="delete-modal-title" className="text-lg font-bold text-center">
+                                    Är du säker?
+                                </Dialog.Title>
+                                <div id="delete-modal-description" className="mt-4 text-center text-gray-600 dark:text-gray-300">
                                     <p>Vill du verkligen radera denna uppgift?</p>
                                 </div>
                                 <div className="flex justify-end space-x-3 mt-6">
-                                    <button onClick={onClose} className="btn btn-outline-danger">
+                                    <button onClick={onClose} className="btn btn-outline-danger" aria-label="Avbryt raderingen">
                                         Avbryt
                                     </button>
-                                    <button onClick={onConfirm} className="btn btn-primary">
+                                    <button onClick={onConfirm} className="btn btn-primary" aria-label="Bekräfta raderingen">
                                         Radera
                                     </button>
                                 </div>

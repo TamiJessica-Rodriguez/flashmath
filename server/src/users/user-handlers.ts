@@ -1,42 +1,43 @@
 import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { z } from 'zod';
 import { UserModel, UserZodSchema } from '../users/user-model';
 
-// const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 const JWT_SECRET = process.env.JWT_SECRET;
-/**
- * Hämta alla användare från databasen.
- */
-export const getUsers = async (req: Request, res: Response) => {
+if (!JWT_SECRET) {
+    throw new Error('Missing JWT_SECRET in environment variables');
+}
+
+/** Hämta alla användare från databasen. */
+export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const users = await UserModel.find();
-        console.log('Fetched users:', users);
         res.status(200).json(users);
     } catch (error) {
-        console.error('Error fetching users:', error);
-        res.status(500).json({ message: 'Kunde inte hämta användare' });
+        next(error);
     }
 };
 
-/**
- * Skapa en ny användare.
- */
-export const createUser = async (req: Request, res: Response): Promise<void> => {
+/** Skapa en ny användare. */
+export const createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        // Validate incoming data
         const validatedData = UserZodSchema.parse(req.body);
 
+        // Check if the username already exists
         const existingUser = await UserModel.findOne({ username: validatedData.username });
         if (existingUser) {
             res.status(409).json({ message: 'Användarnamnet finns redan' });
             return;
         }
 
+        // Create a new user
         const newUser = new UserModel(validatedData);
         await newUser.save();
 
+        // Send a successful response
         res.status(201).json({
             message: 'Användare skapad',
             user: {
@@ -48,30 +49,34 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
         });
     } catch (error) {
         if (error instanceof z.ZodError) {
+            // Validation error
             res.status(400).json({
                 message: 'Ogiltiga användaruppgifter',
                 errors: error.errors,
             });
-            return;
+        } else {
+            // Pass other errors to the error-handling middleware
+            next(error);
         }
-        console.error('Error creating user:', error);
-        res.status(500).json({ message: 'Kunde inte skapa användare' });
     }
 };
 
-export const deleteUser = async (req: Request, res: Response) => {
+/** Ta bort en användare */
+export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { id } = req.params;
 
-        // Kontrollera om ID är ett giltigt MongoDB ObjectId
+        // Validate if the ID is a valid MongoDB ObjectId
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: 'Ogiltigt ID' });
+            res.status(400).json({ message: 'Ogiltigt ID' });
+            return;
         }
 
         const deletedUser = await UserModel.findByIdAndDelete(id);
 
         if (!deletedUser) {
-            return res.status(404).json({ message: 'Användaren hittades inte' });
+            res.status(404).json({ message: 'Användaren hittades inte' });
+            return;
         }
 
         res.status(200).json({
@@ -83,40 +88,47 @@ export const deleteUser = async (req: Request, res: Response) => {
             },
         });
     } catch (error) {
-        console.error('Error deleting user:', error);
-        res.status(500).json({ message: 'Kunde inte ta bort användaren' });
+        // Pass any unexpected errors to the next middleware
+        next(error);
     }
 };
 
-/**
- * Uppdatera en användares användarnamn och/eller lösenord.
- */
-export const updateUser = async (req: Request, res: Response) => {
+/** Uppdatera en användares användarnamn och/eller lösenord. */
+export const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { id } = req.params;
 
+        // Validate the ID
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: 'Ogiltigt ID' });
+            res.status(400).json({ message: 'Ogiltigt ID' });
+            return;
         }
 
+        // Define schema for validation
         const updateSchema = z.object({
             username: z.string().min(3).optional(),
             password: z.string().min(6).optional(),
         });
 
+        // Validate request body
         const validatedData = updateSchema.parse(req.body);
 
+        // Hash password if it's being updated
         if (validatedData.password) {
             const salt = await bcrypt.genSalt(10);
             validatedData.password = await bcrypt.hash(validatedData.password, salt);
         }
 
+        // Update the user in the database
         const updatedUser = await UserModel.findByIdAndUpdate(id, { $set: validatedData }, { new: true, runValidators: true });
 
+        // If no user is found
         if (!updatedUser) {
-            return res.status(404).json({ message: 'Användaren hittades inte' });
+            res.status(404).json({ message: 'Användaren hittades inte' });
+            return;
         }
 
+        // Send success response
         res.status(200).json({
             message: 'Användare uppdaterad',
             user: {
@@ -126,43 +138,45 @@ export const updateUser = async (req: Request, res: Response) => {
             },
         });
     } catch (error) {
+        // Pass unexpected errors to Express error-handling middleware
         if (error instanceof z.ZodError) {
-            return res.status(400).json({ message: 'Ogiltiga uppgifter', errors: error.errors });
+            res.status(400).json({ message: 'Ogiltiga uppgifter', errors: error.errors });
+            return;
         }
-        res.status(500).json({ message: 'Kunde inte uppdatera användaren' });
+
+        next(error);
     }
 };
-
-// Hashar ett lösenord
-export async function hashPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt(10);
-    return bcrypt.hash(password, salt);
-}
-
-export const loginUser = async (req: Request, res: Response) => {
-    const { username, password } = req.body;
-
+/** Logga in som användare */
+export const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        const { username, password } = req.body;
+
+        // Check if user exists
         const user = await UserModel.findOne({ username }).select('+password');
         if (!user) {
-            return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
+            res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
+            return;
         }
 
+        // Validate password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Fel lösenord' });
+            res.status(401).json({ message: 'Fel lösenord' });
+            return;
         }
 
-        // Skapa JWT-token
+        // Generate JWT token
         const token = jwt.sign(
-            { id: user._id, username: user.username, isAdmin: user.isAdmin }, // Payload
-            JWT_SECRET as string,
-            { expiresIn: '1h' } // Giltighetstid
+            { id: user._id, username: user.username, isAdmin: user.isAdmin },
+            JWT_SECRET,
+            { expiresIn: '1h' } // Token validity
         );
 
+        // Respond with token and user details
         res.status(200).json({
             message: 'Inloggning lyckades',
-            token, // Skicka tillbaka JWT-token
+            token,
             user: {
                 id: user._id,
                 username: user.username,
@@ -171,11 +185,16 @@ export const loginUser = async (req: Request, res: Response) => {
             },
         });
     } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).json({ message: 'Kunde inte logga in' });
+        // Pass unexpected errors to the error-handling middleware
+        next(error);
     }
 };
 
-export const logoutUser = (req: Request, res: Response) => {
-    res.status(200).json({ message: 'Utloggning lyckades' });
+/** Logga ut som användare */
+export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.status(200).json({ message: 'Utloggning lyckades' });
+    } catch (error) {
+        next(error);
+    }
 };

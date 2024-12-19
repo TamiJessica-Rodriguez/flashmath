@@ -1,37 +1,41 @@
 import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { AdminModel } from './admin-model';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET is missing in environment variables');
+}
 
-/** Hämta alla admins */
-export const getAllAdmins = async (req: Request, res: Response) => {
+/** Fetch all admins */
+export const getAllAdmins = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const admins = await AdminModel.find().select('-password');
         res.status(200).json(admins);
     } catch (error) {
         console.error('Error fetching admins:', error);
-        res.status(500).json({ message: 'Kunde inte hämta admins', error });
+        next(error); // Forward error to the error-handling middleware
     }
 };
 
-/** Skapa en ny admin */
-export const createAdmin = async (req: Request, res: Response) => {
+/** Create a new admin */
+export const createAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { firstname, lastname, username, password } = req.body;
 
-        // Kontrollera om användarnamnet redan finns
+        // Check if the username already exists
         const existingAdmin = await AdminModel.findOne({ username });
         if (existingAdmin) {
-            return res.status(409).json({ message: 'Användarnamnet finns redan' });
+            res.status(409).json({ message: 'Username already exists' });
+            return;
         }
 
-        // Hasha lösenord
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Skapa ny admin
+        // Create a new admin
         const newAdmin = new AdminModel({
             firstname,
             lastname,
@@ -40,96 +44,102 @@ export const createAdmin = async (req: Request, res: Response) => {
         });
         await newAdmin.save();
 
-        res.status(201).json({ message: 'Admin skapad framgångsrikt', admin: { firstname, lastname, username } });
+        res.status(201).json({
+            message: 'Admin successfully created',
+            admin: { firstname, lastname, username },
+        });
     } catch (error) {
         console.error('Error creating admin:', error);
-        res.status(500).json({ message: 'Kunde inte skapa admin', error });
+        next(error); // Pass the error to the global error handler
     }
 };
 
-/** Uppdatera en admin */
-export const updateAdmin = async (req: Request, res: Response) => {
+/** Update an admin */
+export const updateAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { id } = req.params;
 
-        // Om lösenord uppdateras, hash det
+        // If the password is being updated, hash it
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, 10);
         }
 
         const updatedAdmin = await AdminModel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
         if (!updatedAdmin) {
-            return res.status(404).json({ message: 'Admin hittades inte' });
+            res.status(404).json({ message: 'Admin not found' });
+            return;
         }
-        res.status(200).json({ message: 'Admin uppdaterad', admin: updatedAdmin });
+
+        res.status(200).json({ message: 'Admin updated successfully', admin: updatedAdmin });
     } catch (error) {
         console.error('Error updating admin:', error);
-        res.status(500).json({ message: 'Kunde inte uppdatera admin', error });
+        next(error); // Forward the error to the global error handler
     }
 };
 
-/** Ta bort en admin */
-export const deleteAdmin = async (req: Request, res: Response) => {
+/** Delete an admin */
+export const deleteAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { id } = req.params;
 
         const deletedAdmin = await AdminModel.findByIdAndDelete(id);
         if (!deletedAdmin) {
-            return res.status(404).json({ message: 'Admin hittades inte' });
+            res.status(404).json({ message: 'Admin not found' });
+            return;
         }
-        res.status(200).json({ message: 'Admin borttagen' });
+
+        res.status(200).json({ message: 'Admin deleted successfully' });
     } catch (error) {
         console.error('Error deleting admin:', error);
-        res.status(500).json({ message: 'Kunde inte ta bort admin', error });
+        next(error); // Forward the error to the global error handler
     }
 };
 
-/** Hämta en admin via ID */
-export const getAdminById = async (req: Request, res: Response) => {
+/** Get an admin by ID */
+export const getAdminById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { id } = req.params;
 
         const admin = await AdminModel.findById(id).select('-password');
         if (!admin) {
-            return res.status(404).json({ message: 'Admin hittades inte' });
+            res.status(404).json({ message: 'Admin not found' });
+            return;
         }
+
         res.status(200).json(admin);
     } catch (error) {
-        console.error('Error fetching admin:', error);
-        res.status(500).json({ message: 'Kunde inte hämta admin', error });
+        console.error('Error fetching admin by ID:', error);
+        next(error); // Forward the error to the global error handler
     }
 };
 
-/** Logga in som admin */
-export const loginAdmin = async (req: Request, res: Response) => {
-    const { username, password } = req.body;
-
+/** Admin login */
+/** Log in as admin */
+export const loginAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        const { username, password } = req.body;
+
+        // Find admin by username and include password in the result
         const admin = await AdminModel.findOne({ username }).select('+password');
         if (!admin) {
-            return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
+            res.status(401).json({ message: 'Incorrect username or password' });
+            return;
         }
 
+        // Compare provided password with hashed password
         const isPasswordValid = await bcrypt.compare(password, admin.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Fel lösenord' });
+            res.status(401).json({ message: 'Incorrect password' });
+            return;
         }
 
-        // Kontrollera att JWT_SECRET är definierad
-        if (!JWT_SECRET) {
-            return res.status(500).json({ message: 'JWT hemlig nyckel saknas' });
-        }
+        // Generate a JWT token
+        const token = jwt.sign({ id: admin._id, username: admin.username, isAdmin: admin.isAdmin }, JWT_SECRET, { expiresIn: '1h' });
 
-        // Skapa JWT-token
-        const token = jwt.sign(
-            { id: admin._id, username: admin.username, isAdmin: admin.isAdmin },
-            JWT_SECRET,
-            { expiresIn: '1h' } // Tokenens giltighetstid
-        );
-
+        // Respond with the token and user details
         res.status(200).json({
-            message: 'Inloggning lyckades',
-            token, // Returnera token till frontend
+            message: 'Login successful',
+            token,
             user: {
                 id: admin._id,
                 username: admin.username,
@@ -138,6 +148,6 @@ export const loginAdmin = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.error('Error logging in admin:', error);
-        res.status(500).json({ message: 'Kunde inte logga in', error });
+        next(error); // Pass the error to the global error handler
     }
 };

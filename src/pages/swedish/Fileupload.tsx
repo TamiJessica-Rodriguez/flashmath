@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { uploadSubmission } from '../../controllers/userController'; // Ändra sökvägen om det behövs
+import { uploadSubmission } from '../../controllers/userController';
 
 const FileUploadPreview = () => {
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);

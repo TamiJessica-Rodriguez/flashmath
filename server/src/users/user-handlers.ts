@@ -5,7 +5,8 @@ import mongoose from 'mongoose';
 import { z } from 'zod';
 import { UserModel, UserZodSchema } from '../users/user-model';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
+// const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 /**
  * Hämta alla användare från databasen.
  */

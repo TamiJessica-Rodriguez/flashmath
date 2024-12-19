@@ -58,20 +58,31 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-cover bg-center flex items-center justify-center" style={{ backgroundImage: "url('/assets/images/ocean.webp')" }}>
+        <div className="min-h-screen bg-cover bg-center flex items-center justify-center" style={{ backgroundImage: "url('/assets/images/ocean.webp')" }} aria-label="Login Page">
             <div
                 className="w-full max-w-md mx-auto rounded shadow-md p-8"
                 style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent background
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Increased opacity for better contrast
                     backdropFilter: 'blur(8px)', // Optional blur effect
                 }}
+                aria-labelledby="login-title"
             >
-                <h1 className="text-2xl font-bold text-center mb-4">Logga in</h1>
+                <h1 id="login-title" className="text-2xl font-bold text-center mb-4">
+                    Logga in
+                </h1>
 
                 {/* Error message display */}
-                {error && <div className="text-red-600 mb-4">{error}</div>}
+                {error && (
+                    <div className="text-red-600 mb-4" role="alert">
+                        {error}
+                    </div>
+                )}
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} aria-describedby="login-description">
+                    <p id="login-description" className="sr-only">
+                        Fyll i ditt användarnamn och lösenord för att logga in.
+                    </p>
+
                     {/* Username input */}
                     <div className="mb-4">
                         <label htmlFor="username" className="block text-gray-700 font-medium mb-2">
@@ -86,6 +97,7 @@ const Login = () => {
                             className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                             placeholder="Ange ditt användarnamn"
                             required
+                            aria-required="true"
                         />
                     </div>
 
@@ -103,30 +115,31 @@ const Login = () => {
                             className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                             placeholder="Ange ditt lösenord"
                             required
+                            aria-required="true"
                         />
                     </div>
 
                     {/* Admin toggle */}
                     <div className="mb-4 flex items-center">
-                        <input type="checkbox" id="isAdmin" name="isAdmin" checked={form.isAdmin} onChange={handleAdminToggle} className="mr-2" />
+                        <input type="checkbox" id="isAdmin" name="isAdmin" checked={form.isAdmin} onChange={handleAdminToggle} className="mr-2" aria-checked={form.isAdmin} />
                         <label htmlFor="isAdmin" className="text-gray-700 font-medium">
                             Logga in som admin
                         </label>
                     </div>
 
                     {/* Submit button */}
-                    <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none">
+                    <button type="submit" className="w-full bg-blue-700 text-white py-2 px-4 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-700" aria-label="Logga in">
                         Logga in
                     </button>
                 </form>
 
                 {/* Forgot password and signup links */}
                 <div className="flex justify-between items-center mt-4">
-                    <button onClick={() => navigate('/forgot-password')} className="text-sm text-blue-500 hover:underline">
+                    <button onClick={() => navigate('/forgot-password')} className="text-sm text-blue-700 hover:underline" aria-label="Navigate to Forgot Password Page">
                         Glömt lösenordet?
                     </button>
 
-                    <button onClick={() => navigate('/signup')} className="text-sm text-blue-500 hover:underline">
+                    <button onClick={() => navigate('/signup')} className="text-sm text-blue-700 hover:underline" aria-label="Navigate to Signup Page">
                         Bli medlem
                     </button>
                 </div>

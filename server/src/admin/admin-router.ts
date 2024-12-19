@@ -1,13 +1,13 @@
 import express from 'express';
-import { isAdmin, isLoggedIn } from '../middleware';
+import { authenticateToken, isAdmin } from '../middleware';
 import { createAdmin, deleteAdmin, getAdminById, getAllAdmins, loginAdmin, updateAdmin } from './admin-handlers';
 
 export const adminRouter = express.Router();
 
 // Routes för admins
-adminRouter.get('/', isLoggedIn, isAdmin, getAllAdmins); // Hämta alla admins
-adminRouter.post('/register', createAdmin); // Skapa en ny admin
+adminRouter.get('/', authenticateToken, isAdmin, getAllAdmins); // Hämta alla admins
+adminRouter.post('/register', authenticateToken, isAdmin, createAdmin); // Skapa en ny admin (endast admin kan skapa andra admins)
 adminRouter.post('/login', loginAdmin); // Logga in som admin
-adminRouter.get('/:id', isLoggedIn, isAdmin, getAdminById); // Hämta en admin via ID
-adminRouter.put('/:id', isLoggedIn, isAdmin, updateAdmin); // Uppdatera en admin
-adminRouter.delete('/:id', isLoggedIn, isAdmin, deleteAdmin); // Ta bort en admin
+adminRouter.get('/:id', authenticateToken, isAdmin, getAdminById); // Hämta en admin via ID
+adminRouter.put('/:id', authenticateToken, isAdmin, updateAdmin); // Uppdatera en admin
+adminRouter.delete('/:id', authenticateToken, isAdmin, deleteAdmin); // Ta bort en admin

@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 import { SubmissionCreateZodSchema, SubmissionModel, SubmissionZodSchema } from './submission-model';
 
-/**
- * Get all submissions from database
- */
+/** Hämta alla inlämningar */
 export async function getSubmissions(req: Request, res: Response) {
     try {
         const submissions = await SubmissionModel.find({});
@@ -14,17 +12,15 @@ export async function getSubmissions(req: Request, res: Response) {
     }
 }
 
-/**
- * Create new submission with validation from zodschema and save to database
- */
+/** Skapa en ny inlämning */
 export const createSubmission = async (req: Request, res: Response) => {
     try {
-        if (!req.session?._id) {
+        // Kontrollera om användaren är autentiserad
+        if (!req.user?.id) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
         const validatedData = SubmissionCreateZodSchema.safeParse(req.body);
-
         if (!validatedData.success) {
             return res.status(400).json(validatedData.error.message);
         }
@@ -39,7 +35,7 @@ export const createSubmission = async (req: Request, res: Response) => {
 
         const newSubmission = new SubmissionModel({
             ...validatedData.data,
-            author: req.session._id,
+            author: req.user.id, // Koppla inlämningen till den autentiserade användaren
             file: fileData,
         });
 
@@ -52,27 +48,21 @@ export const createSubmission = async (req: Request, res: Response) => {
     }
 };
 
-/**
- * Update a submission
- */
+/** Uppdatera en inlämning */
 export async function updateSubmission(req: Request, res: Response) {
     try {
-        if (!req.session || !req.session._id) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
         const submissionToUpdate = await SubmissionModel.findById(req.params.id);
 
         if (!submissionToUpdate) {
             return res.status(404).json(`Submission with id: ${req.params.id} not found`);
         }
 
-        if (!submissionToUpdate.author || (submissionToUpdate.author.toString() !== req.session._id && !req.session.isAdmin)) {
+        // Kontrollera om användaren är ägare eller admin
+        if (submissionToUpdate.author.toString() !== req.user?.id && !req.user?.isAdmin) {
             return res.status(403).json(`Only the author or administrators can update this submission`);
         }
 
         const validatedData = SubmissionZodSchema.safeParse(req.body);
-
         if (!validatedData.success) {
             return res.status(400).json(validatedData.error.message);
         }
@@ -93,22 +83,17 @@ export async function updateSubmission(req: Request, res: Response) {
     }
 }
 
-/**
- * Delete a submission
- */
+/** Ta bort en inlämning */
 export async function deleteSubmission(req: Request, res: Response) {
     try {
-        if (!req.session) {
-            return res.status(401).json('Unauthorized');
-        }
-
         const submissionToDelete = await SubmissionModel.findById(req.params.id);
 
         if (!submissionToDelete) {
             return res.status(404).json(`Submission with id: ${req.params.id} not found`);
         }
 
-        if (!req.session.isAdmin && submissionToDelete.author?.toString() !== req.session._id) {
+        // Kontrollera om användaren är ägare eller admin
+        if (submissionToDelete.author.toString() !== req.user?.id && !req.user?.isAdmin) {
             return res.status(403).json('Only administrators or the author can delete this submission');
         }
 
@@ -121,9 +106,7 @@ export async function deleteSubmission(req: Request, res: Response) {
     }
 }
 
-/**
- * Get a submission by id
- */
+/** Hämta en inlämning via ID */
 export async function getSubmissionById(req: Request, res: Response) {
     try {
         const submission = await SubmissionModel.findById(req.params.id);
@@ -137,9 +120,7 @@ export async function getSubmissionById(req: Request, res: Response) {
     }
 }
 
-/**
- * Get all submissions from a user
- */
+/** Hämta alla inlämningar från en användare */
 export async function getSubmissionsByUserId(req: Request, res: Response) {
     try {
         const userId = req.params.id;

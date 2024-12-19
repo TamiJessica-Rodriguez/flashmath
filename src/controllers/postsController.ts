@@ -1,23 +1,20 @@
-import axios from 'axios';
-
-const POSTS_API_URL = 'http://localhost:3000/api/posts';
-const IMAGES_API_URL = 'http://localhost:3000/api/images';
+// post-api.ts
+import axiosInstance from './axios-config';
 
 /**
- * Upload an image and return its ID
+ * Ladda upp en bild och returnera dess ID
  */
 export const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('file', file);
 
     try {
-        const response = await axios.post(IMAGES_API_URL, formData, {
+        const response = await axiosInstance.post('/images', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
-            withCredentials: true, // Optional if authentication is required
         });
-        return response.data.imageId; // Assuming the backend returns the imageId
+        return response.data.imageId; // Returnera bildens ID
     } catch (error) {
         console.error('Error uploading image:', error);
         throw new Error('Failed to upload image');
@@ -25,13 +22,11 @@ export const uploadImage = async (file: File): Promise<string> => {
 };
 
 /**
- * Create a new post with title, description, and optional image ID
+ * Skapa ett nytt inlägg
  */
 export const createPost = async (postData: { title: string; description: string; imageId?: string; projectId: number }) => {
     try {
-        const response = await axios.post(POSTS_API_URL, postData, {
-            withCredentials: true, // Optional if authentication is required
-        });
+        const response = await axiosInstance.post('/posts', postData);
         return response.data;
     } catch (error) {
         console.error('Error creating post:', error);
@@ -40,13 +35,11 @@ export const createPost = async (postData: { title: string; description: string;
 };
 
 /**
- * Fetch all posts
+ * Hämta alla inlägg
  */
 export const fetchPosts = async () => {
     try {
-        const response = await axios.get(POSTS_API_URL, {
-            withCredentials: true, // Optional if authentication is required
-        });
+        const response = await axiosInstance.get('/posts');
         return response.data;
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -55,13 +48,11 @@ export const fetchPosts = async () => {
 };
 
 /**
- * Update an existing post by ID
+ * Uppdatera ett inlägg
  */
 export const updatePost = async (postId: string, updateData: { title: string; description: string; imageId?: string; projectId: number }) => {
     try {
-        const response = await axios.put(`${POSTS_API_URL}/${postId}`, updateData, {
-            withCredentials: true, // Optional if authentication is required
-        });
+        const response = await axiosInstance.put(`/posts/${postId}`, updateData);
         return response.data;
     } catch (error) {
         console.error(`Error updating post with ID ${postId}:`, error);
@@ -70,17 +61,14 @@ export const updatePost = async (postId: string, updateData: { title: string; de
 };
 
 /**
- * Delete a post by ID
+ * Ta bort ett inlägg
  */
 export const deletePost = async (postId: string) => {
     try {
-        const response = await axios.delete(`${POSTS_API_URL}/${postId}`, {
-            withCredentials: true, // Optional if authentication is required
-        });
+        const response = await axiosInstance.delete(`/posts/${postId}`);
         return response.data;
     } catch (error) {
         console.error(`Error deleting post with ID ${postId}:`, error);
         throw new Error('Failed to delete post');
     }
 };
-

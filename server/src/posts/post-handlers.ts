@@ -3,11 +3,7 @@ import mongoose from 'mongoose';
 import { z } from 'zod';
 import { PostModel, PostZodSchema } from './post-model';
 
-/**
- * Logga varje steg för att identifiera var felet inträffar.
- */
-
-// Hämta alla poster
+/** Hämta alla poster */
 export async function getPosts(req: Request, res: Response) {
     try {
         console.log('Fetching all posts...');
@@ -20,7 +16,7 @@ export async function getPosts(req: Request, res: Response) {
     }
 }
 
-// Skapa en ny post
+/** Skapa en ny post */
 export const createPosts = async (req: Request, res: Response) => {
     try {
         console.log('Request body:', req.body);
@@ -32,7 +28,7 @@ export const createPosts = async (req: Request, res: Response) => {
             title,
             description,
             imageId,
-            author: req.session?._id,
+            author: req.user?.id, // Hämtar användar-ID från JWT
             projectId,
         });
 
@@ -61,27 +57,20 @@ export const createPosts = async (req: Request, res: Response) => {
     }
 };
 
-// Uppdatera en post
+/** Uppdatera en post */
 export async function updatePost(req: Request, res: Response) {
     try {
-        console.log('Checking user session...');
-        if (!req.session || !req.session._id) {
-            console.warn('Unauthorized request: No user session found.');
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
         const postId = req.params.id;
         console.log(`Finding post with ID: ${postId}...`);
+
         const postToUpdate = await PostModel.findById(postId);
 
         if (!postToUpdate) {
-            console.warn(`Post with ID ${postId} not found.`);
             return res.status(404).json({ message: `Post with ID ${postId} not found` });
         }
 
         console.log('Validating user permissions...');
-        if (postToUpdate.author.toString() !== req.session._id && !req.session.isAdmin) {
-            console.warn('User does not have permission to update this post.');
+        if (postToUpdate.author.toString() !== req.user?.id && !req.user?.isAdmin) {
             return res.status(403).json({ message: 'Forbidden' });
         }
 
@@ -89,7 +78,6 @@ export async function updatePost(req: Request, res: Response) {
         const validatedData = PostZodSchema.safeParse(req.body);
 
         if (!validatedData.success) {
-            console.error('Validation failed:', validatedData.error.errors);
             return res.status(400).json(validatedData.error.errors);
         }
 
@@ -97,11 +85,9 @@ export async function updatePost(req: Request, res: Response) {
         const updatedPost = await PostModel.findByIdAndUpdate(postId, validatedData.data, { new: true });
 
         if (!updatedPost) {
-            console.warn(`Post with ID ${postId} not found after update.`);
             return res.status(404).json({ message: `Post with ID ${postId} not found` });
         }
 
-        console.log('Post updated successfully:', updatedPost);
         res.status(200).json(updatedPost);
     } catch (error) {
         console.error('Error updating post:', error);
@@ -109,26 +95,20 @@ export async function updatePost(req: Request, res: Response) {
     }
 }
 
-// Radera en post
+/** Radera en post */
 export async function deletePost(req: Request, res: Response) {
     try {
-        if (!req.session) {
-            console.warn('Unauthorized request: No user session found.');
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
         const postId = req.params.id;
         console.log(`Finding post with ID: ${postId} to delete...`);
+
         const postToDelete = await PostModel.findById(postId);
 
         if (!postToDelete) {
-            console.warn(`Post with ID ${postId} not found.`);
             return res.status(404).json({ message: `Post with ID ${postId} not found` });
         }
 
         console.log('Validating user permissions...');
-        if (!req.session.isAdmin && postToDelete.author.toString() !== req.session._id) {
-            console.warn('User does not have permission to delete this post.');
+        if (postToDelete.author.toString() !== req.user?.id && !req.user?.isAdmin) {
             return res.status(403).json({ message: 'Forbidden' });
         }
 

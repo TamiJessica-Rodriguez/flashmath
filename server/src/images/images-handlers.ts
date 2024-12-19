@@ -2,19 +2,20 @@ import busboy from 'busboy';
 import { Request, Response } from 'express';
 import { Types } from 'mongoose';
 import sharp from 'sharp';
-import { PostModel } from '../posts/post-model'; // Importera din postmodell
+import { PostModel } from '../posts/post-model';
 import { getImageBucket } from './images-model';
 
 export const getImage = async (req: Request, res: Response) => {
     const id = new Types.ObjectId(req.params.id);
     const imageBucket = getImageBucket();
 
-    // Hämta bildens metadata så att vi kan sätta content-type till rätt värde.
+    // Hämta bildens metadata
     const imageData = await imageBucket.find({ _id: id }).next();
-    if (!imageData) return res.status(404).json('Image does not exist');
+    if (!imageData) return res.status(404).json({ message: 'Image does not exist' });
+
     res.setHeader('Content-Type', imageData.metadata?.contentType);
 
-    // Skicka bilden som ett svar till klienten
+    // Skicka bilden
     imageBucket.openDownloadStream(id).pipe(res);
 };
 
@@ -23,25 +24,22 @@ export const uploadImage = (req: Request, res: Response) => {
 
     bb.on('file', (fieldname, file, info) => {
         console.log(`Receiving file with field name: ${fieldname}`);
-        console.log(`File MIME type: ${info.mimeType}`);
-        console.log(`File name: ${info.filename}`);
 
-        // Kontrollera om filformatet är stödd (inklusive webp)
         const supportedMimeTypes = ['image/png', 'image/jpeg', 'image/webp'];
         if (!supportedMimeTypes.includes(info.mimeType)) {
             return res.status(400).json({ message: 'Unsupported image format. Only PNG, JPEG, and WEBP are allowed.' });
         }
 
-        const uploadStream = getImageBucket().openUploadStream(info.filename, {
-            metadata: { contentType: info.mimeType },
-        });
+        // Koppla användaren som laddar upp bilden
+        const metadata = {
+            contentType: info.mimeType,
+            uploadedBy: req.user?.id, // Kopplar uppladdningen till användaren
+        };
+
+        const uploadStream = getImageBucket().openUploadStream(info.filename, { metadata });
 
         const transformer = sharp()
-            .resize({
-                width: 100,
-                height: 100,
-                fit: 'cover',
-            })
+            .resize({ width: 100, height: 100, fit: 'cover' })
             .on('error', (err) => {
                 console.error('Sharp error:', err);
                 res.status(500).json({ message: 'Error processing image', error: err.message });
@@ -71,7 +69,8 @@ export const uploadImage = (req: Request, res: Response) => {
 export const createPostsWithImage = async (req: Request, res: Response) => {
     try {
         const { title, content, size, color, brand, imageUrl } = req.body;
-        // Skapa en ny post i databasen med bildens URL
+
+        // Skapa en ny post kopplad till användaren
         const newPost = new PostModel({
             title,
             content,
@@ -79,6 +78,7 @@ export const createPostsWithImage = async (req: Request, res: Response) => {
             color,
             brand,
             imageUrl,
+            author: req.user?.id, // Kopplar posten till användaren
         });
         await newPost.save();
         res.status(201).json(newPost);

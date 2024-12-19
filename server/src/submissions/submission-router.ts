@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { isLoggedIn } from '../middleware';
+import { authenticateToken } from '../middleware';
 import { createSubmission, deleteSubmission, getSubmissionById, getSubmissions, getSubmissionsByUserId, updateSubmission } from './submission-handlers';
 
 export const submissionsRouter = express.Router();
@@ -8,16 +8,20 @@ export const submissionsRouter = express.Router();
 // Configure Multer for file uploads
 const upload = multer({ dest: 'uploads/' });
 
-// Log incoming file upload
-submissionsRouter.post('/', upload.single('file'), (req, res) => {
-    console.log('Request Body:', req.body);
-    console.log('Uploaded File:', req.file);
-    res.status(200).json({ message: 'File received successfully' });
-});
+// Hämta alla inlämningar (endast autentiserade användare)
+submissionsRouter.get('/', authenticateToken, getSubmissions);
 
-submissionsRouter.get('/', getSubmissions); // Hämta alla inlämningar
-submissionsRouter.post('/', isLoggedIn, upload.single('file'), createSubmission); // Lägg till en ny inlämning
-submissionsRouter.delete('/:id', isLoggedIn, deleteSubmission); // Ta bort en inlämning
-submissionsRouter.put('/:id', isLoggedIn, upload.single('file'), updateSubmission); // Uppdatera en inlämning
-submissionsRouter.get('/:id', getSubmissionById); // Hämta specifik inlämning
-submissionsRouter.get('/userSubmissions/:id', getSubmissionsByUserId); // Hämta inlämningar för en specifik användare
+// Lägg till en ny inlämning (endast autentiserade användare)
+submissionsRouter.post('/', authenticateToken, upload.single('file'), createSubmission);
+
+// Uppdatera en inlämning (endast autentiserade användare)
+submissionsRouter.put('/:id', authenticateToken, upload.single('file'), updateSubmission);
+
+// Ta bort en inlämning (endast autentiserade användare)
+submissionsRouter.delete('/:id', authenticateToken, deleteSubmission);
+
+// Hämta specifik inlämning
+submissionsRouter.get('/:id', authenticateToken, getSubmissionById);
+
+// Hämta inlämningar för en specifik användare
+submissionsRouter.get('/userSubmissions/:id', authenticateToken, getSubmissionsByUserId);

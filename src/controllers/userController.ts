@@ -1,110 +1,66 @@
-import axios from 'axios';
+import axiosInstance from './axios-config';
+import { removeToken, setToken } from './axios-helper';
 
 interface UserData {
     firstname: string;
     lastname: string;
     username: string;
     password: string;
-    avatar: string;
+    avatar?: string;
 }
 
-const API_URL = 'http://localhost:3000/api/users';
-const ADMIN_API_URL = 'http://localhost:3000/api/admin';
-const SUBMISSION_API_URL = 'http://localhost:3000/api/submissions';
-
 /**
- * Create a new user
+ * Skapa en ny användare
  */
 export const createUser = async (userData: UserData) => {
     try {
-        const response = await axios.post(`${API_URL}/create`, userData, {
-            withCredentials: true, // Include cookies for authentication if needed
-        });
+        const response = await axiosInstance.post('/users/create', userData);
         return response.data;
     } catch (error) {
         console.error('Error creating user:', error);
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Network error occurred while creating user');
-        } else {
-            throw new Error('Unexpected error occurred while creating user');
-        }
+        throw new Error('Failed to create user');
     }
 };
 
 /**
- * Log in a user
+ * Logga in en användare
  */
 export const loginUser = async (username: string, password: string) => {
     try {
-        const response = await axios.post(
-            `${API_URL}/login`,
-            { username, password },
-            {
-                withCredentials: true,
-            }
-        );
+        const response = await axiosInstance.post('/users/login', { username, password });
+        const { token } = response.data;
+        setToken(token); // Spara token i localStorage
         return response.data;
     } catch (error) {
         console.error('Error logging in user:', error);
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Network error occurred during user login');
-        } else {
-            throw new Error('Unexpected error occurred during user login');
-        }
+        throw new Error('Failed to log in');
     }
 };
 
 /**
- * Log in an admin
+ * Logga in en admin
  */
 export const loginAdmin = async (username: string, password: string) => {
     try {
-        const response = await axios.post(`${ADMIN_API_URL}/login`, { username, password }, { withCredentials: true });
+        const response = await axiosInstance.post('/admin/login', { username, password });
+        const { token } = response.data;
+        setToken(token); // Spara token i localStorage
         return response.data;
     } catch (error) {
         console.error('Error logging in admin:', error);
-        throw new Error(axios.isAxiosError(error) ? error.response?.data?.message || 'Network error occurred during admin login' : 'Unexpected error occurred during admin login');
+        throw new Error('Failed to log in as admin');
     }
 };
 
 /**
- * Log out the current user or admin
+ * Logga ut användaren
  */
-export const logoutUser = async () => {
-    try {
-        const response = await axios.post(`${API_URL}/logout`, {}, { withCredentials: true });
-        return response.data;
-    } catch (error) {
-        console.error('Error logging out:', error);
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Network error occurred during logout');
-        } else {
-            throw new Error('Unexpected error occurred during logout');
-        }
-    }
+export const logoutUser = () => {
+    removeToken(); // Ta bort token från localStorage
 };
 
 /**
- * Fetch all users
- */
-export const getUsers = async () => {
-    try {
-        const response = await axios.get(API_URL, {
-            withCredentials: true,
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Network error occurred while fetching users');
-        } else {
-            throw new Error('Unexpected error occurred while fetching users');
-        }
-    }
-};
-
-/**
- * Upload a file submission
+ * Ladda upp en inlämning
  */
 export const uploadSubmission = async (file: File, title: string) => {
     const formData = new FormData();
@@ -112,15 +68,14 @@ export const uploadSubmission = async (file: File, title: string) => {
     formData.append('title', title);
 
     try {
-        const response = await axios.post(SUBMISSION_API_URL, formData, {
+        const response = await axiosInstance.post('/submissions', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
-            withCredentials: true,
         });
         return response.data;
     } catch (error) {
         console.error('Error uploading submission:', error);
-        throw new Error('Unexpected error occurred during file submission');
+        throw new Error('Failed to upload submission');
     }
 };

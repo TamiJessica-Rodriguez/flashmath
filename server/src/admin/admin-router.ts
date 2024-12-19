@@ -2,6 +2,7 @@ import express from 'express';
 import { authenticateToken, isAdmin } from '../middleware';
 import { createAdmin, deleteAdmin, getAdminById, getAllAdmins, loginAdmin, updateAdmin } from './admin-handlers';
 
+
 export const adminRouter = express.Router();
 
 // Routes för admins

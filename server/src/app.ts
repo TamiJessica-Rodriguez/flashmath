@@ -29,7 +29,7 @@ app.use('/api/posts', postsRouter);
 app.use('/api/images', imagesRouter);
 
 // (Optional) Test CORS Endpoint
-app.get('/test-cors', (req, res) => {
+app.get('/test-cors', (req: Request, res: Response) => {
     res.json({ message: 'CORS fungerar!' });
 });
 

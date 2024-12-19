@@ -5,21 +5,27 @@ import sharp from 'sharp';
 import { PostModel } from '../posts/post-model';
 import { getImageBucket } from './images-model';
 
-export const getImage = async (req: Request, res: Response) => {
-    const id = new Types.ObjectId(req.params.id);
-    const imageBucket = getImageBucket();
+export const getImage = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = new Types.ObjectId(req.params.id);
+        const imageBucket = getImageBucket();
 
-    // Hämta bildens metadata
-    const imageData = await imageBucket.find({ _id: id }).next();
-    if (!imageData) return res.status(404).json({ message: 'Image does not exist' });
+        const imageData = await imageBucket.find({ _id: id }).next();
+        if (!imageData) {
+            res.status(404).json({ message: 'Image does not exist' });
+            return;
+        }
 
-    res.setHeader('Content-Type', imageData.metadata?.contentType);
+        res.setHeader('Content-Type', imageData.metadata?.contentType);
 
-    // Skicka bilden
-    imageBucket.openDownloadStream(id).pipe(res);
+        imageBucket.openDownloadStream(id).pipe(res);
+    } catch (error) {
+        console.error('Error fetching image:', error);
+        res.status(500).json({ message: 'Error fetching image', error: (error as Error).message });
+    }
 };
 
-export const uploadImage = (req: Request, res: Response) => {
+export const uploadImage = async (req: Request, res: Response): Promise<void> => {
     const bb = busboy({ headers: req.headers });
 
     bb.on('file', (fieldname, file, info) => {
@@ -27,13 +33,13 @@ export const uploadImage = (req: Request, res: Response) => {
 
         const supportedMimeTypes = ['image/png', 'image/jpeg', 'image/webp'];
         if (!supportedMimeTypes.includes(info.mimeType)) {
-            return res.status(400).json({ message: 'Unsupported image format. Only PNG, JPEG, and WEBP are allowed.' });
+            res.status(400).json({ message: 'Unsupported image format. Only PNG, JPEG, and WEBP are allowed.' });
+            return;
         }
 
-        // Koppla användaren som laddar upp bilden
         const metadata = {
             contentType: info.mimeType,
-            uploadedBy: req.user?.id, // Kopplar uppladdningen till användaren
+            uploadedBy: req.user?.id, // Linking the upload to the user
         };
 
         const uploadStream = getImageBucket().openUploadStream(info.filename, { metadata });

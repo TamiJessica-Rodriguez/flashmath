@@ -4,7 +4,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import { adminRouter } from './admin/admin-router';
 import { imagesRouter } from './images/images-router';
 import { postsRouter } from './posts/post-router';
-import { submissionsRouter } from './submissions/submission-router';
+import { submissionRouter } from './submissions/submission-router'; // Correct import
 import { userRouter } from './users/user-router';
 
 const app = express();
@@ -23,7 +23,7 @@ app.use(
 
 // Routes
 app.use('/api/users', userRouter);
-app.use('/api/submissions', submissionsRouter);
+app.use('/api/submissions', submissionRouter); // Correct name used
 app.use('/api/admin', adminRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/images', imagesRouter);

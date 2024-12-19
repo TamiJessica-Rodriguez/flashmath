@@ -1,16 +1,26 @@
 import express from 'express';
 import { getImage, uploadImage } from '../images/images-handlers';
 import { authenticateToken, isAdmin } from '../middleware';
+import { asyncHandler } from '../utils/asyncHandler';
 import { createPosts, deletePost, getPosts, updatePost } from './post-handlers';
 
 export const postsRouter = express.Router();
 
 // Skydda alla routes med autentisering
-postsRouter.get('/', authenticateToken, getPosts); // Endast inloggade användare
-postsRouter.post('/', authenticateToken, createPosts); // Endast inloggade användare kan skapa poster
-postsRouter.put('/:id', authenticateToken, updatePost); // Endast inloggade användare kan uppdatera poster
-postsRouter.delete('/:id', authenticateToken, isAdmin, deletePost); // Endast admin kan ta bort poster
+postsRouter.get('/', authenticateToken, asyncHandler(getPosts));
+postsRouter.post('/', authenticateToken, asyncHandler(createPosts));
+postsRouter.put('/:id', authenticateToken, asyncHandler(updatePost));
+postsRouter.delete('/:id', authenticateToken, isAdmin, asyncHandler(deletePost));
 
 // Hantering av bilder
-postsRouter.post('/upload', authenticateToken, uploadImage); // Endast inloggade användare
-postsRouter.get('/image/:id', getImage); // Öppen route
+postsRouter.post(
+    '/upload',
+    authenticateToken,
+    asyncHandler(async (req, res, next) => {
+        // Wrap uploadImage in an async handler
+        uploadImage(req, res);
+        next();
+    })
+);
+
+postsRouter.get('/image/:id', asyncHandler(getImage));

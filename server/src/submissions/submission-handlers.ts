@@ -1,28 +1,13 @@
-import { Request, Response } from 'express';
-import { SubmissionCreateZodSchema, SubmissionModel, SubmissionZodSchema } from './submission-model';
+import { NextFunction, Request, Response } from 'express';
+import mongoose from 'mongoose';
+import { SubmissionCreateZodSchema, SubmissionModel, SubmissionUpdateZodSchema } from './submission-model';
 
-/** Hämta alla inlämningar */
-export async function getSubmissions(req: Request, res: Response) {
+/** Create a new submission */
+export const createSubmission = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const submissions = await SubmissionModel.find({});
-        res.status(200).json(submissions);
-    } catch (error) {
-        console.error('Error retrieving submissions:', error);
-        res.status(500).json({ message: 'Error retrieving submissions', error });
-    }
-}
-
-/** Skapa en ny inlämning */
-export const createSubmission = async (req: Request, res: Response) => {
-    try {
-        // Kontrollera om användaren är autentiserad
-        if (!req.user?.id) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
         const validatedData = SubmissionCreateZodSchema.safeParse(req.body);
         if (!validatedData.success) {
-            return res.status(400).json(validatedData.error.message);
+            return res.status(400).json({ message: validatedData.error.message });
         }
 
         const fileData = req.file
@@ -35,36 +20,30 @@ export const createSubmission = async (req: Request, res: Response) => {
 
         const newSubmission = new SubmissionModel({
             ...validatedData.data,
-            author: req.user.id, // Koppla inlämningen till den autentiserade användaren
+            author: req.user?.id,
             file: fileData,
         });
 
         await newSubmission.save();
-
         res.status(201).json(newSubmission);
     } catch (error) {
         console.error('Error creating submission:', error);
-        res.status(500).json('Failed to create submission');
+        next(error);
     }
 };
 
-/** Uppdatera en inlämning */
-export async function updateSubmission(req: Request, res: Response) {
+/** Update an existing submission */
+export const updateSubmission = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const submissionToUpdate = await SubmissionModel.findById(req.params.id);
+        const { id } = req.params;
 
-        if (!submissionToUpdate) {
-            return res.status(404).json(`Submission with id: ${req.params.id} not found`);
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid submission ID' });
         }
 
-        // Kontrollera om användaren är ägare eller admin
-        if (submissionToUpdate.author.toString() !== req.user?.id && !req.user?.isAdmin) {
-            return res.status(403).json(`Only the author or administrators can update this submission`);
-        }
-
-        const validatedData = SubmissionZodSchema.safeParse(req.body);
+        const validatedData = SubmissionUpdateZodSchema.safeParse(req.body);
         if (!validatedData.success) {
-            return res.status(400).json(validatedData.error.message);
+            return res.status(400).json({ message: validatedData.error.message });
         }
 
         const fileData = req.file
@@ -73,65 +52,73 @@ export async function updateSubmission(req: Request, res: Response) {
                   path: req.file.path,
                   mimetype: req.file.mimetype,
               }
-            : submissionToUpdate.file;
+            : undefined;
 
-        const updatedSubmission = await SubmissionModel.findByIdAndUpdate(req.params.id, { ...validatedData.data, file: fileData }, { new: true });
+        const updatedSubmission = await SubmissionModel.findByIdAndUpdate(id, { ...validatedData.data, ...(fileData && { file: fileData }) }, { new: true, runValidators: true });
+
+        if (!updatedSubmission) {
+            return res.status(404).json({ message: 'Submission not found' });
+        }
 
         res.status(200).json(updatedSubmission);
     } catch (error) {
-        res.status(500).json({ message: 'Error updating submission', error });
+        console.error('Error updating submission:', error);
+        next(error);
     }
-}
+};
 
-/** Ta bort en inlämning */
-export async function deleteSubmission(req: Request, res: Response) {
+/** Delete a submission */
+export const deleteSubmission = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const submissionToDelete = await SubmissionModel.findById(req.params.id);
+        const { id } = req.params;
 
-        if (!submissionToDelete) {
-            return res.status(404).json(`Submission with id: ${req.params.id} not found`);
+        const submission = await SubmissionModel.findById(id);
+        if (!submission) {
+            return res.status(404).json({ message: 'Submission not found' });
         }
 
-        // Kontrollera om användaren är ägare eller admin
-        if (submissionToDelete.author.toString() !== req.user?.id && !req.user?.isAdmin) {
-            return res.status(403).json('Only administrators or the author can delete this submission');
+        if (submission.author.toString() !== req.user?.id && !req.user?.isAdmin) {
+            return res.status(403).json({ message: 'Not authorized to delete this submission' });
         }
 
-        await SubmissionModel.findByIdAndDelete(req.params.id);
-
-        res.status(204).json('Submission deleted successfully');
+        await SubmissionModel.findByIdAndDelete(id);
+        res.status(204).send();
     } catch (error) {
         console.error('Error deleting submission:', error);
-        res.status(500).json('Error deleting submission');
+        next(error);
     }
-}
+};
 
-/** Hämta en inlämning via ID */
-export async function getSubmissionById(req: Request, res: Response) {
+/** Get a submission by ID */
+export const getSubmissionById = async (req: Request, res: Response) => {
     try {
-        const submission = await SubmissionModel.findById(req.params.id);
-        if (submission) {
-            return res.status(200).json(submission);
-        } else {
-            return res.status(404).json(`Submission with id ${req.params.id} was not found`);
+        const { id } = req.params;
+
+        const submission = await SubmissionModel.findById(id);
+        if (!submission) {
+            return res.status(404).json({ message: 'Submission not found' });
         }
+
+        res.status(200).json(submission);
     } catch (error) {
-        res.status(500).json({ message: 'Error retrieving the submission', error });
+        console.error('Error retrieving submission:', error);
+        res.status(500).json({ message: 'Error retrieving submission', error });
     }
-}
+};
 
-/** Hämta alla inlämningar från en användare */
-export async function getSubmissionsByUserId(req: Request, res: Response) {
+/** Get submissions by user ID */
+export const getSubmissionsByUserId = async (req: Request, res: Response) => {
     try {
-        const userId = req.params.id;
-        const submissions = await SubmissionModel.find({ author: userId });
+        const { id } = req.params;
 
+        const submissions = await SubmissionModel.find({ author: id });
         if (submissions.length === 0) {
             return res.status(404).json({ message: 'No submissions found for this user' });
         }
+
         res.status(200).json(submissions);
     } catch (error) {
         console.error('Error retrieving submissions:', error);
         res.status(500).json({ message: 'Error retrieving submissions', error });
     }
-}
+};

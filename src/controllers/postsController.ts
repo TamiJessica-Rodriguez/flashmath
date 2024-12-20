@@ -1,4 +1,3 @@
-// post-api.ts
 import axiosInstance from './axios-config';
 
 /**

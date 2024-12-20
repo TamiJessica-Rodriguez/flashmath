@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node dist/server.js",
         "dev": "tsx src/server.ts",
-        "build": "npm install && npm run build"
+        "build": "tsc"
     },
     "dependencies": {
         "@types/cookie-session": "^2.0.49",

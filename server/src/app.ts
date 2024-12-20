@@ -13,16 +13,22 @@ const app = express();
 app.use(express.json());
 
 // Middleware: CORS
-app.use(
-    cors({
-        origin: [
-            'http://localhost:5173', // För utveckling lokalt
-            'http://flashmath-ofnk1nb80-jessicarodriguezs-projects.vercel.app', // Din frontend-URL på Vercel
-        ],
-        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Tillåtna HTTP-metoder
-        credentials: true, // Tillåt cookies eller autentisering via headers
-    })
-);
+cors({
+    origin: (origin, callback) => {
+        const allowedOrigins = [
+            'http://localhost:5173', // För utveckling
+            /^https:\/\/flashmath-.*\.vercel\.app$/, // Matcha alla Vercel-subdomäner
+        ];
+
+        if (!origin || allowedOrigins.some((allowed) => (typeof allowed === 'string' ? allowed === origin : allowed.test(origin)))) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+});
 
 // Routes
 app.use('/api/users', userRouter);

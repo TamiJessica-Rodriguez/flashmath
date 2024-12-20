@@ -17,7 +17,7 @@ app.use(
     cors({
         origin: [
             'http://localhost:5173', // För utveckling lokalt
-            'http://flashmath-ofnk1nb80-jessicarodriguezs-projects.vercel.app', // Din frontend-URL på Vercel
+            'https://flashmath-tawny.vercel.app', // Din frontend-URL på Vercel
         ],
         methods: ['GET', 'POST', 'PUT', 'DELETE'], // Tillåtna HTTP-metoder
         credentials: true, // Tillåt cookies eller autentisering via headers

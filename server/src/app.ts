@@ -15,7 +15,7 @@ app.use(express.json());
 // Middleware: CORS
 app.use(
     cors({
-        origin: 'http://localhost:5173', // Din frontend-URL
+        origin: ['http://localhost:5173', 'https://flashmath-tawny.vercel.app'], // Din frontend-URL
         methods: ['GET', 'POST', 'PUT', 'DELETE'], // Tillåtna HTTP-metoder
         credentials: true, // Tillåt cookies eller autentisering via headers
     })

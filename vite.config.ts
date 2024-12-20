@@ -25,12 +25,15 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            // Forward all requests from /api to your backend
+            // Proxy används endast lokalt
             '/api': {
                 target: 'http://localhost:3000', // Backend server
                 changeOrigin: true,
                 secure: false,
             },
         },
+    },
+    build: {
+        outDir: 'dist', // Byggutmatning
     },
 });

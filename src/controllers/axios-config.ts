@@ -2,10 +2,10 @@ import axios from 'axios';
 import { getToken } from './axios-helper';
 
 const axiosInstance = axios.create({
-    baseURL: 'https://flashmath-production.up.railway.app/api', // Railway backend API base URL
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`, // Dynamisk bas-URL från .env
 });
 
-// Add Authorization header with token for every request
+// Lägg till Authorization-header med token i varje begäran
 axiosInstance.interceptors.request.use((config) => {
     const token = getToken();
     if (token) {

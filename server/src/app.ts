@@ -12,7 +12,7 @@ const app = express();
 // Middleware: Parse incoming JSON
 app.use(express.json());
 
-// Middleware: CORS
+
 cors({
     origin: (origin, callback) => {
         const allowedOrigins = [

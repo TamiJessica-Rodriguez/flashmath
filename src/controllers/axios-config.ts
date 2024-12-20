@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getToken } from './axios-helper';
 
 const axiosInstance = axios.create({
-    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`, // Dynamisk bas-URL från .env
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`, 
 });
 
 // Lägg till Authorization-header med token i varje begäran

@@ -15,10 +15,11 @@ interface UserData {
 export const createUser = async (userData: UserData) => {
     try {
         const response = await axiosInstance.post('/users/create', userData);
+        console.log('User created successfully:', response.data);
         return response.data;
-    } catch (error) {
-        console.error('Error creating user:', error);
-        throw new Error('Failed to create user');
+    } catch (error: any) {
+        console.error('Error creating user:', error.response || error.message || error);
+        throw new Error(error.response?.data?.message || 'Failed to create user');
     }
 };
 
@@ -28,12 +29,13 @@ export const createUser = async (userData: UserData) => {
 export const loginUser = async (username: string, password: string) => {
     try {
         const response = await axiosInstance.post('/users/login', { username, password });
+        console.log('User logged in successfully:', response.data);
         const { token } = response.data;
         setToken(token); // Spara token i localStorage
         return response.data;
-    } catch (error) {
-        console.error('Error logging in user:', error);
-        throw new Error('Failed to log in');
+    } catch (error: any) {
+        console.error('Error logging in user:', error.response || error.message || error);
+        throw new Error(error.response?.data?.message || 'Failed to log in');
     }
 };
 
@@ -43,12 +45,13 @@ export const loginUser = async (username: string, password: string) => {
 export const loginAdmin = async (username: string, password: string) => {
     try {
         const response = await axiosInstance.post('/admin/login', { username, password });
+        console.log('Admin logged in successfully:', response.data);
         const { token } = response.data;
         setToken(token); // Spara token i localStorage
         return response.data;
-    } catch (error) {
-        console.error('Error logging in admin:', error);
-        throw new Error('Failed to log in as admin');
+    } catch (error: any) {
+        console.error('Error logging in admin:', error.response || error.message || error);
+        throw new Error(error.response?.data?.message || 'Failed to log in as admin');
     }
 };
 
@@ -56,7 +59,12 @@ export const loginAdmin = async (username: string, password: string) => {
  * Logga ut användaren
  */
 export const logoutUser = () => {
-    removeToken(); // Ta bort token från localStorage
+    try {
+        removeToken(); // Ta bort token från localStorage
+        console.log('User logged out successfully');
+    } catch (error: any) {
+        console.error('Error logging out user:', error.message || error);
+    }
 };
 
 /**
@@ -73,9 +81,10 @@ export const uploadSubmission = async (file: File, title: string) => {
                 'Content-Type': 'multipart/form-data',
             },
         });
+        console.log('Submission uploaded successfully:', response.data);
         return response.data;
-    } catch (error) {
-        console.error('Error uploading submission:', error);
-        throw new Error('Failed to upload submission');
+    } catch (error: any) {
+        console.error('Error uploading submission:', error.response || error.message || error);
+        throw new Error(error.response?.data?.message || 'Failed to upload submission');
     }
 };

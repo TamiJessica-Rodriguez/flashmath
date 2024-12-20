@@ -9,3 +9,6 @@ export const setToken = (token: string): void => {
 export const removeToken = (): void => {
     localStorage.removeItem('token'); // Tar bort JWT-token från localStorage
 };
+
+// Testa om token sparas och hämtas korrekt
+console.log('Token in localStorage:', getToken());

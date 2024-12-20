@@ -13,10 +13,11 @@ export const uploadImage = async (file: File): Promise<string> => {
                 'Content-Type': 'multipart/form-data',
             },
         });
+        console.log('Image uploaded successfully:', response.data);
         return response.data.imageId; // Returnera bildens ID
-    } catch (error) {
-        console.error('Error uploading image:', error);
-        throw new Error('Failed to upload image');
+    } catch (error: any) {
+        console.error('Error uploading image:', error.response || error.message || error);
+        throw new Error(error.response?.data?.message || 'Failed to upload image');
     }
 };
 
@@ -26,10 +27,11 @@ export const uploadImage = async (file: File): Promise<string> => {
 export const createPost = async (postData: { title: string; description: string; imageId?: string; projectId: number }) => {
     try {
         const response = await axiosInstance.post('/posts', postData);
+        console.log('Post created successfully:', response.data);
         return response.data;
-    } catch (error) {
-        console.error('Error creating post:', error);
-        throw new Error('Failed to create post');
+    } catch (error: any) {
+        console.error('Error creating post:', error.response || error.message || error);
+        throw new Error(error.response?.data?.message || 'Failed to create post');
     }
 };
 
@@ -39,10 +41,11 @@ export const createPost = async (postData: { title: string; description: string;
 export const fetchPosts = async () => {
     try {
         const response = await axiosInstance.get('/posts');
+        console.log('Posts fetched successfully:', response.data);
         return response.data;
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        throw new Error('Failed to fetch posts');
+    } catch (error: any) {
+        console.error('Error fetching posts:', error.response || error.message || error);
+        throw new Error(error.response?.data?.message || 'Failed to fetch posts');
     }
 };
 
@@ -52,10 +55,11 @@ export const fetchPosts = async () => {
 export const updatePost = async (postId: string, updateData: { title: string; description: string; imageId?: string; projectId: number }) => {
     try {
         const response = await axiosInstance.put(`/posts/${postId}`, updateData);
+        console.log(`Post with ID ${postId} updated successfully:`, response.data);
         return response.data;
-    } catch (error) {
-        console.error(`Error updating post with ID ${postId}:`, error);
-        throw new Error('Failed to update post');
+    } catch (error: any) {
+        console.error(`Error updating post with ID ${postId}:`, error.response || error.message || error);
+        throw new Error(error.response?.data?.message || `Failed to update post with ID ${postId}`);
     }
 };
 
@@ -65,9 +69,10 @@ export const updatePost = async (postId: string, updateData: { title: string; de
 export const deletePost = async (postId: string) => {
     try {
         const response = await axiosInstance.delete(`/posts/${postId}`);
+        console.log(`Post with ID ${postId} deleted successfully:`, response.data);
         return response.data;
-    } catch (error) {
-        console.error(`Error deleting post with ID ${postId}:`, error);
-        throw new Error('Failed to delete post');
+    } catch (error: any) {
+        console.error(`Error deleting post with ID ${postId}:`, error.response || error.message || error);
+        throw new Error(error.response?.data?.message || `Failed to delete post with ID ${postId}`);
     }
 };

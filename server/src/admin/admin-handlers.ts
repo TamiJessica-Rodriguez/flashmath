@@ -113,7 +113,7 @@ export const getAdminById = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
-/** Admin login */
+
 /** Log in as admin */
 export const loginAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {

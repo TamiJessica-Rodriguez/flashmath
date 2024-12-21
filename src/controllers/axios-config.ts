@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { getToken } from './axios-helper';
 
+// Skapa en Axios-instans
 const axiosInstance = axios.create({
-    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`, 
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`, // Base URL för din backend
 });
 
-// Lägg till Authorization-header med token i varje begäran
+// Lägg till en interceptor för att inkludera token i Authorization-headern
 axiosInstance.interceptors.request.use((config) => {
     const token = getToken();
     if (token) {
@@ -14,7 +15,7 @@ axiosInstance.interceptors.request.use((config) => {
     return config;
 });
 
-// Testa bas-URL och grundläggande anslutning
+// Testa bas-URL och logga eventuella fel vid grundläggande anslutning
 console.log('API Base URL:', axiosInstance.defaults.baseURL);
 
 axiosInstance

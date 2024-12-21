@@ -14,7 +14,7 @@ export const uploadImage = async (file: File): Promise<string> => {
             },
         });
         console.log('Image uploaded successfully:', response.data);
-        return response.data.imageId; // Returnera bildens ID
+        return response.data.imageId;
     } catch (error: any) {
         console.error('Error uploading image:', error.response || error.message || error);
         throw new Error(error.response?.data?.message || 'Failed to upload image');

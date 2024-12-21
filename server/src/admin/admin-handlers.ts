@@ -3,11 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { AdminModel } from './admin-model';
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET is missing in environment variables');
-}
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 /** Fetch all admins */
 export const getAllAdmins = async (req: Request, res: Response, next: NextFunction) => {
@@ -113,7 +109,6 @@ export const getAdminById = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
-
 /** Log in as admin */
 export const loginAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -134,6 +129,9 @@ export const loginAdmin = async (req: Request, res: Response, next: NextFunction
         }
 
         // Generate a JWT token
+        if (!JWT_SECRET) {
+            throw new Error('JWT_SECRET is not defined');
+        }
         const token = jwt.sign({ id: admin._id, username: admin.username, isAdmin: admin.isAdmin }, JWT_SECRET, { expiresIn: '1h' });
 
         // Respond with the token and user details

@@ -15,21 +15,9 @@ app.use(express.json());
 // Middleware: CORS
 app.use(
     cors({
-        origin: (origin, callback) => {
-            const allowedOrigins = [
-                'http://localhost:5173', // Local frontend during development
-                'https://flashmath-h2ch.vercel.app', // Production frontend
-                'https://flashmath-production-ba32.up.railway.app', // Production backend
-            ];
-
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true); // Allow the origin
-            } else {
-                callback(new Error('Not allowed by CORS')); // Block other origins
-            }
-        },
+        origin: 'http://localhost:5173',
         methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-        credentials: true, // Allow cookies and credentials
+        credentials: true, // Allow cookies/authentication
     })
 );
 

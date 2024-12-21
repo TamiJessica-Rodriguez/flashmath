@@ -12,23 +12,25 @@ const app = express();
 // Middleware: Parse incoming JSON
 app.use(express.json());
 
+// Middleware: CORS
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            const allowedOrigins = [
+                'http://localhost:5173', // För utveckling
+                'https://din-produktions-url.vercel.app', // Produktionsfrontend
+            ];
 
-cors({
-    origin: (origin, callback) => {
-        const allowedOrigins = [
-            'http://localhost:5173', // För utveckling
-            /^https:\/\/flashmath-.*\.vercel\.app$/, // Matcha alla Vercel-subdomäner
-        ];
-
-        if (!origin || allowedOrigins.some((allowed) => (typeof allowed === 'string' ? allowed === origin : allowed.test(origin)))) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-});
+            if (!origin || allowedOrigins.some((allowed: string | RegExp) => (typeof allowed === 'string' ? allowed === origin : allowed.test(origin)))) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Tillåtna metoder
+        credentials: true, // Tillåt cookies/autentisering via headers
+    })
+);
 
 // Routes
 app.use('/api/users', userRouter);
@@ -48,5 +50,4 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({ error: 'Ett oväntat fel har uppstått' });
 });
 
-// Export app
 export { app };

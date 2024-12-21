@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 
-// Declare a type for `req.user` (for better TypeScript support)
+// Deklarera en typ för `req.user` (för bättre TypeScript-stöd)
 declare module 'express-serve-static-core' {
     interface Request {
         user?: {
@@ -12,54 +12,53 @@ declare module 'express-serve-static-core' {
     }
 }
 
-// Load the secret key from environment variables
+// Läs in den hemliga nyckeln från miljövariabler
 const JWT_SECRET = process.env.JWT_SECRET;
+
 if (!JWT_SECRET) {
-    throw new Error('Missing JWT_SECRET in environment variables');
+    throw new Error('JWT_SECRET är inte definierad i miljövariablerna');
 }
 
 /**
- * Middleware to verify JWT token.
+ * Middleware för att verifiera JWT-token.
  */
-export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
+export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Extract token from Authorization header
+    const token = authHeader?.split(' ')[1]; // Extrahera token från Authorization-headern
 
     if (!token) {
-        res.status(401).json({ message: 'No token provided' });
-        return; // Ensure no further execution
+        return res.status(401).json({ message: 'Ingen token skickades' });
     }
 
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, JWT_SECRET, (err: VerifyErrors | null, decoded: JwtPayload | undefined | string) => {
         if (err) {
-            res.status(403).json({ message: 'Invalid or expired token' });
-            return; // Ensure no further execution
+            return res.status(403).json({ message: 'Ogiltig eller förfallen token' });
         }
 
-        // Save the decoded payload to req.user
-        req.user = decoded as { id: string; username: string; isAdmin?: boolean };
-        next(); // Proceed to the next middleware or route handler
+        // Kontrollera att decoded faktiskt innehåller de förväntade egenskaperna
+        if (decoded && typeof decoded === 'object') {
+            req.user = decoded as { id: string; username: string; isAdmin?: boolean };
+        }
+        next();
     });
 };
 
 /**
- * Middleware to check if the user is logged in.
+ * Middleware för att kontrollera om användaren är inloggad.
  */
-export const isLoggedIn = (req: Request, res: Response, next: NextFunction): void => {
+export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
-        res.status(401).json({ message: 'You are not logged in' });
-        return; // Ensure no further execution
+        return res.status(401).json({ message: 'Du är inte inloggad' });
     }
-    next(); // Proceed to the next middleware or route handler
+    next();
 };
 
 /**
- * Middleware to check if the user is an admin.
+ * Middleware för att kontrollera om användaren är admin.
  */
-export const isAdmin = (req: Request, res: Response, next: NextFunction): void => {
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
     if (!req.user?.isAdmin) {
-        res.status(403).json({ message: 'Access restricted to administrators only' });
-        return; // Ensure no further execution
+        return res.status(403).json({ message: 'Endast administratörer har tillgång' });
     }
-    next(); // Proceed to the next middleware or route handler
+    next();
 };

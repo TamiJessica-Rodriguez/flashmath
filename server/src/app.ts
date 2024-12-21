@@ -17,18 +17,19 @@ app.use(
     cors({
         origin: (origin, callback) => {
             const allowedOrigins = [
-                'http://localhost:5173', // För utveckling
-                'https://flashmath-h2ch.vercel.app', // Produktionsfrontend
+                'http://localhost:5173', // Local frontend during development
+                'https://flashmath-h2ch.vercel.app', // Production frontend
+                'https://flashmath-production-ba32.up.railway.app', // Production backend
             ];
 
-            if (!origin || allowedOrigins.some((allowed: string | RegExp) => (typeof allowed === 'string' ? allowed === origin : allowed.test(origin)))) {
-                callback(null, true);
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true); // Allow the origin
             } else {
-                callback(new Error('Not allowed by CORS'));
+                callback(new Error('Not allowed by CORS')); // Block other origins
             }
         },
-        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Tillåtna metoder
-        credentials: true, // Tillåt cookies/autentisering via headers
+        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+        credentials: true, // Allow cookies and credentials
     })
 );
 

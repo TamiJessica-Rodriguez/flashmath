@@ -18,7 +18,7 @@ app.use(
         origin: (origin, callback) => {
             const allowedOrigins = [
                 'http://localhost:5173', // För utveckling
-                'https://din-produktions-url.vercel.app', // Produktionsfrontend
+                'https://flashmath-h2ch.vercel.app', // Produktionsfrontend
             ];
 
             if (!origin || allowedOrigins.some((allowed: string | RegExp) => (typeof allowed === 'string' ? allowed === origin : allowed.test(origin)))) {

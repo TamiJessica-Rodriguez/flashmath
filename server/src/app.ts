@@ -60,28 +60,34 @@ import { userRouter } from './users/user-router';
 
 const app = express();
 
+// Middleware för att parsa JSON-data
 app.use(express.json());
 
+// CORS-konfiguration
 app.use(
     cors({
-        origin: ['http://localhost:3000', 'https://flashmath-h2ch.vercel.app', 'https://famous-axolotl-da8219.netlify.app', 'https://flashmath-15.onrender.com'],
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        origin: ['http://localhost:3000', 'https://flashmath-h2ch.vercel.app', 'https://famous-axolotl-da8219.netlify.app'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Lägg till OPTIONS om du vill stödja det
         credentials: true,
     })
 );
 
+// Hantera preflight-förfrågningar
 app.options('*', cors());
 
+// Definiera API-rutter
 app.use('/api/users', userRouter);
 app.use('/api/submissions', submissionRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/images', imagesRouter);
 
+// Testa CORS-funktionalitet
 app.get('/test-cors', (req: Request, res: Response) => {
     res.json({ message: 'CORS fungerar!' });
 });
 
+// Global felhantering
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error('Error:', err.stack || err);
     res.status(500).json({ error: 'Ett oväntat fel har uppstått' });

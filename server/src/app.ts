@@ -23,7 +23,7 @@ app.use(express.json());
 
 app.use(
     cors({
-        origin: ['http://localhost:3000', 'https://your-frontend.vercel.app'], // Tillåt localhost och Vercel-URL
+        origin: ['http://localhost:3000', 'https://flashmath-h2ch.vercel.app'], // Tillåt localhost och Vercel-URL
         methods: ['GET', 'POST', 'PUT', 'DELETE'], // Tillåtna metoder
         credentials: true, // Tillåt credentials (cookies etc.)
     })

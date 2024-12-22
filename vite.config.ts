@@ -49,25 +49,7 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
-    server: {
-        proxy: {
-            // Proxy används endast lokalt
-            '/api': {
-                target: 'http://localhost:3000', // Backend server
-                changeOrigin: true,
-                secure: false,
-            },
-        },
-    },
     build: {
-        outDir: 'dist', // Produktionens output-katalog
-        rollupOptions: {
-            output: {
-                // Optimera namn för produktion
-                entryFileNames: '[name].[hash].js',
-                chunkFileNames: '[name].[hash].js',
-                assetFileNames: '[name].[hash].[ext]',
-            },
-        },
+        outDir: 'dist', // Output Directory för byggda filer
     },
 });

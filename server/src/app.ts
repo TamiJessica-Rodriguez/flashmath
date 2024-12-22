@@ -13,11 +13,19 @@ const app = express();
 app.use(express.json());
 
 // Middleware: CORS
+// app.use(
+//     cors({
+//         origin: 'http://localhost:5173',
+//         methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+//         credentials: true, // Allow cookies/authentication
+//     })
+// );
+
 app.use(
     cors({
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-        credentials: true, // Allow cookies/authentication
+        origin: ['http://localhost:3000', 'https://your-frontend.vercel.app'], // Tillåt localhost och Vercel-URL
+        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Tillåtna metoder
+        credentials: true, // Tillåt credentials (cookies etc.)
     })
 );
 

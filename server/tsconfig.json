@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2020", // Generera modern JavaScript
-    "module": "ES2020", // Generera ES Modules
-    "moduleResolution": "Node", // Ladda moduler som Node.js gör
-    "outDir": "dist", // Sätt output-katalog
-    "rootDir": "src", // Sätt källkatalog
+    "target": "ES2020", 
+    "module": "CommonJS", // Node.js expects CommonJS modules
+    "moduleResolution": "Node",
+    "outDir": "./dist", // Ensure the output directory is clear
+    "rootDir": "./src", // Source files are under src
     "strict": true,
-    "esModuleInterop": true, // Tillåt interop mellan CommonJS och ES Modules
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true // Hoppa över typkontroll i beroenden
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

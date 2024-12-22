@@ -49,6 +49,52 @@
 
 // export { app };
 
+// import cors from 'cors';
+// import 'dotenv/config';
+// import express, { NextFunction, Request, Response } from 'express';
+// import { adminRouter } from './admin/admin-router';
+// import { imagesRouter } from './images/images-router';
+// import { postsRouter } from './posts/post-router';
+// import { submissionRouter } from './submissions/submission-router';
+// import { userRouter } from './users/user-router';
+
+// const app = express();
+
+// // Middleware för att parsa JSON-data
+// app.use(express.json());
+
+// // CORS-konfiguration
+// app.use(
+//     cors({
+//         origin: ['http://localhost:3000', 'https://flashmath-h2ch.vercel.app', 'https://famous-axolotl-da8219.netlify.app'],
+//         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Lägg till OPTIONS om du vill stödja det
+//         credentials: true,
+//     })
+// );
+
+// // Hantera preflight-förfrågningar
+// app.options('*', cors());
+
+// // Definiera API-rutter
+// app.use('/api/users', userRouter);
+// app.use('/api/submissions', submissionRouter);
+// app.use('/api/admin', adminRouter);
+// app.use('/api/posts', postsRouter);
+// app.use('/api/images', imagesRouter);
+
+// // Testa CORS-funktionalitet
+// app.get('/test-cors', (req: Request, res: Response) => {
+//     res.json({ message: 'CORS fungerar!' });
+// });
+
+// // Global felhantering
+// app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+//     console.error('Error:', err.stack || err);
+//     res.status(500).json({ error: 'Ett oväntat fel har uppstått' });
+// });
+
+// export { app };
+
 import cors from 'cors';
 import 'dotenv/config';
 import express, { NextFunction, Request, Response } from 'express';
@@ -67,7 +113,7 @@ app.use(express.json());
 app.use(
     cors({
         origin: ['http://localhost:3000', 'https://flashmath-h2ch.vercel.app', 'https://famous-axolotl-da8219.netlify.app'],
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Lägg till OPTIONS om du vill stödja det
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         credentials: true,
     })
 );
@@ -81,6 +127,20 @@ app.use('/api/submissions', submissionRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/images', imagesRouter);
+
+// Root route för att hantera GET-förfrågningar till "/"
+app.get('/', (req: Request, res: Response) => {
+    res.json({
+        message: 'Välkommen till FlashMath API!',
+        endpoints: {
+            users: '/api/users',
+            submissions: '/api/submissions',
+            admin: '/api/admin',
+            posts: '/api/posts',
+            images: '/api/images',
+        },
+    });
+});
 
 // Testa CORS-funktionalitet
 app.get('/test-cors', (req: Request, res: Response) => {

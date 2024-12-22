@@ -60,38 +60,28 @@ import { userRouter } from './users/user-router';
 
 const app = express();
 
-// Middleware: Parse incoming JSON
 app.use(express.json());
 
-// Middleware: CORS
 app.use(
     cors({
-        origin: [
-            'http://localhost:3000', // Lokal utveckling
-            'https://flashmath-h2ch.vercel.app', // Vercel-URL
-            'https://famous-axolotl-da8219.netlify.app', // Netlify-URL
-        ],
-        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Tillåtna HTTP-metoder
-        credentials: true, // Tillåt cookies och autentisering
+        origin: ['http://localhost:3000', 'https://flashmath-h2ch.vercel.app', 'https://famous-axolotl-da8219.netlify.app', 'https://flashmath-15.onrender.com'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        credentials: true,
     })
 );
 
-// Hantera preflight-förfrågningar
 app.options('*', cors());
 
-// Routes
 app.use('/api/users', userRouter);
 app.use('/api/submissions', submissionRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/images', imagesRouter);
 
-// (Optional) Test CORS Endpoint
 app.get('/test-cors', (req: Request, res: Response) => {
     res.json({ message: 'CORS fungerar!' });
 });
 
-// Error Handling Middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error('Error:', err.stack || err);
     res.status(500).json({ error: 'Ett oväntat fel har uppstått' });

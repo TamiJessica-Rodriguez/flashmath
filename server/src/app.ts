@@ -23,9 +23,13 @@ app.use(express.json());
 
 app.use(
     cors({
-        origin: ['http://localhost:3000', 'https://flashmath-h2ch.vercel.app'], // Tillåt localhost och Vercel-URL
-        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Tillåtna metoder
-        credentials: true, // Tillåt credentials (cookies etc.)
+        origin: [
+            'http://localhost:3000', // Lokal utveckling
+            'https://flashmath-h2ch.vercel.app', // Vercel-URL
+            'https://6767f4006d04b07d9f3a23ed--famous-axolotl-da8219.netlify.app', // Netlify-URL
+        ],
+        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Tillåtna HTTP-metoder
+        credentials: true, // Tillåt cookies och autentisering
     })
 );
 

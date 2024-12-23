@@ -213,11 +213,11 @@ const SwedishMenu = () => {
             >
                 <Tab.List className="mt-4 flex w-full justify-between border-b border-gray-200 dark:border-gray-700">
                     {[
-                        { emoji: '📖', text: 'Läsa' },
-                        { emoji: '🎧', text: 'Lyssna' },
-                        { emoji: '📹', text: 'Video' },
-                        { emoji: '🎮', text: 'Spela' },
-                        { emoji: '🥽', text: 'Upplev' },
+                        { image: 'assets/images/boyreading.png', text: 'Läsa', style: 'w-20 h-20' },
+                        { image: 'assets/images/boylistening.png', text: 'Lyssna', style: 'w-20 h-20' },
+                        { image: 'assets/images/flattv.png', text: 'Video', style: 'w-24 h-16' },
+                        { image: 'assets/images/controlgame.png', text: 'Spela', style: 'w-20 h-20 object-contain' }, // Hela bilden visas
+                        { image: 'assets/images/girlVR.png', text: 'Upplev', style: 'w-20 h-20' },
                     ].map((tab, idx) => (
                         <Tab as={Fragment} key={idx}>
                             {({ selected }) => (
@@ -226,9 +226,7 @@ const SwedishMenu = () => {
                                         selected ? 'text-primary border-primary' : 'text-gray-600 border-transparent'
                                     } hover:text-blue-500 hover:scale-110`}
                                 >
-                                    <span className="text-5xl" style={{ filter: 'brightness(1.2) saturate(1.5)' }}>
-                                        {tab.emoji}
-                                    </span>
+                                    <img src={tab.image} alt={tab.text} className={`${tab.style} mb-2`} />
                                     <span className="mt-2 text-base font-bold">{tab.text}</span>
                                 </button>
                             )}

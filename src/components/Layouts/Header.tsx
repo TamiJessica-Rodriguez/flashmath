@@ -1150,6 +1150,39 @@ const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
                 <div className="bg-blue-600 px-4 py-2 text-sm text-white">
                     <p>Ytterligare information eller navigeringsalternativ för denna header.</p>
                 </div>
+
+                {/* Submenu - synlig endast på vissa sidor */}
+                {(location.pathname === '/swedishmenu' || location.pathname === '/mathematicsmenu') && (
+                    <nav className="bg-gray-200 px-4 py-2" aria-label="Submenu">
+                        <ul className="flex space-x-4 text-sm text-gray-600 font-medium">
+                            <li>
+                                <Link to="/swedishmenu/kursmaterial" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Kursmaterial">
+                                    📘 <span className="ml-1">Kursmaterial</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/swedishmenu/kursplan" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Kursplan">
+                                    🗂️ <span className="ml-1">Kursplan</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/swedishmenu/betygskriterier" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Betygskriterier">
+                                    🏅 <span className="ml-1">Betygskriterier</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/swedishmenu/uppgifter" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Uppgifter">
+                                    ✏️ <span className="ml-1">Uppgifter</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/swedishmenu/video" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Video">
+                                    🎥 <span className="ml-1">Video</span>
+                                </Link>
+                            </li>
+                        </ul>
+                    </nav>
+                )}
             </header>
         );
     }
@@ -1205,39 +1238,6 @@ const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
                     )}
                 </div>
             </div>
-
-            {/* Submenu - synlig endast på vissa sidor */}
-            {(location.pathname === '/swedishmenu' || location.pathname === '/mathematicsmenu') && (
-                <nav className="bg-gray-200 px-4 py-2" aria-label="Submenu">
-                    <ul className="flex space-x-4 text-sm text-gray-600 font-medium">
-                        <li>
-                            <Link to="/swedishmenu/kursmaterial" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Kursmaterial">
-                                📘 <span className="ml-1">Kursmaterial</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/swedishmenu/kursplan" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Kursplan">
-                                🗂️ <span className="ml-1">Kursplan</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/swedishmenu/betygskriterier" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Betygskriterier">
-                                🏅 <span className="ml-1">Betygskriterier</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/swedishmenu/uppgifter" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Uppgifter">
-                                ✏️ <span className="ml-1">Uppgifter</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/swedishmenu/video" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Video">
-                                🎥 <span className="ml-1">Video</span>
-                            </Link>
-                        </li>
-                    </ul>
-                </nav>
-            )}
         </header>
     );
 };

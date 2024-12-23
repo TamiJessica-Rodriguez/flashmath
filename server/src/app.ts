@@ -112,7 +112,7 @@ import { userRouter } from './users/user-router';
 
 const app = express();
 
-// Middleware för att parsa JSON-data
+
 app.use(express.json());
 
 // CORS-konfiguration

@@ -700,16 +700,15 @@ import { useEffect, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { IRootState } from '../../store';
 import { toggleSidebar } from '../../store/themeConfigSlice';
 
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState<string>('');
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
-    const semidark = useSelector((state: IRootState) => state.themeConfig.semidark);
-    const location = useLocation();
     const dispatch = useDispatch();
+    const isSidebarVisible = themeConfig.sidebar; // Redux-tillstånd för sidomenyns synlighet
 
     const toggleMenu = (menu: string) => {
         setCurrentMenu((prev) => (prev === menu ? '' : menu));
@@ -731,27 +730,26 @@ const Sidebar = () => {
         }
     }, []);
 
-    useEffect(() => {
-        if (window.innerWidth < 1024 && themeConfig.sidebar) {
-            dispatch(toggleSidebar());
-        }
-    }, [location, dispatch, themeConfig.sidebar]);
-
     return (
-        <div className={semidark ? 'dark' : ''}>
-            <nav className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-md z-50 transition-all duration-300 ${semidark ? 'text-white-dark' : ''}`}>
-                <div className="bg-white dark:bg-black h-full">
+        <div>
+            {/* Sidebar är dold som standard och visas endast om `isSidebarVisible` är true */}
+            <nav
+                className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] bg-blue-100/50 shadow-md z-50 transition-all duration-300 ${
+                    isSidebarVisible ? 'translate-x-0' : '-translate-x-full'
+                }`}
+            >
+                <div className="h-full">
                     {/* Header */}
                     <div className="flex justify-between items-center px-4 py-3">
                         <NavLink to="/" className="main-logo flex items-center shrink-0">
                             🌌
-                            <span className="text-2xl ml-2 font-semibold dark:text-white-light">ORION</span>
+                            <span className="text-2xl ml-2 font-semibold text-blue-900">ORION</span>
                         </NavLink>
 
                         <button
                             type="button"
-                            className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-500/10 dark:hover:bg-dark-light/10 dark:text-white-light transition"
-                            onClick={() => dispatch(toggleSidebar())}
+                            className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-blue-200 text-blue-700 transition"
+                            onClick={() => dispatch(toggleSidebar())} // Döljer sidomenyn
                         >
                             🔽
                         </button>
@@ -762,26 +760,50 @@ const Sidebar = () => {
                         <ul className="font-semibold space-y-0.5 p-4 py-0">
                             {/* Dashboard Menu */}
                             <li className="menu nav-item">
-                                <button type="button" className={`nav-link group w-full ${currentMenu === 'dashboard' ? 'active' : ''}`} onClick={() => toggleMenu('dashboard')}>
+                                <button
+                                    type="button"
+                                    className={`nav-link group w-full flex justify-between items-center ${currentMenu === 'dashboard' ? 'active' : ''}`}
+                                    onClick={() => toggleMenu('dashboard')}
+                                >
                                     <div className="flex items-center">
                                         📊
-                                        <span className="pl-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">Dashboard</span>
+                                        <span className="pl-3 text-blue-900 group-hover:text-blue-700">Dashboard</span>
                                     </div>
-                                    <div className={currentMenu !== 'dashboard' ? 'rotate-90' : ''}>🔽</div>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className={`w-4 h-4 transform transition-transform ${currentMenu === 'dashboard' ? 'rotate-180' : ''}`}
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6" />
+                                    </svg>
                                 </button>
                             </li>
 
                             {/* Apps Menu */}
                             <li className="menu nav-item">
-                                <button type="button" className={`nav-link group w-full ${currentMenu === 'apps' ? 'active' : ''}`} onClick={() => toggleMenu('apps')}>
+                                <button
+                                    type="button"
+                                    className={`nav-link group w-full flex justify-between items-center ${currentMenu === 'apps' ? 'active' : ''}`}
+                                    onClick={() => toggleMenu('apps')}
+                                >
                                     <div className="flex items-center">
                                         📱
-                                        <span className="pl-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">Apps</span>
+                                        <span className="pl-3 text-blue-900 group-hover:text-blue-700">Apps</span>
                                     </div>
-                                    <div className={currentMenu !== 'apps' ? 'rotate-90' : ''}>🔽</div>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className={`w-4 h-4 transform transition-transform ${currentMenu === 'apps' ? 'rotate-180' : ''}`}
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6" />
+                                    </svg>
                                 </button>
                                 <AnimateHeight duration={300} height={currentMenu === 'apps' ? 'auto' : 0}>
-                                    <ul className="sub-menu text-gray-500">
+                                    <ul className="sub-menu text-blue-700">
                                         {/* Notes Navigation */}
                                         <li>
                                             <NavLink to="/notes" className="group">
@@ -796,7 +818,7 @@ const Sidebar = () => {
                                             <NavLink to="/apps/calendar" className="group">
                                                 <div className="flex items-center">
                                                     📅
-                                                    <span className="pl-3">Calendar</span>
+                                                    <span className="pl-3">Kalender</span>
                                                 </div>
                                             </NavLink>
                                         </li>

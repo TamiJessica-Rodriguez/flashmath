@@ -1103,10 +1103,11 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
-    const location = useLocation();
     const navigate = useNavigate();
+    const location = useLocation();
     const [user, setUser] = useState<{ username: string; avatar: string } | null>(null);
-    const [showMenu, setShowMenu] = useState(false);
+    const [showMenu, setShowMenu] = useState(false); // State för profilmeny
+    const [showClassDropdown, setShowClassDropdown] = useState(false); // State för klass-dropdown
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -1124,120 +1125,116 @@ const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
         navigate('/profile');
     };
 
-    // Kontrollera om vi ska visa den långa headern
-    const isLongHeader = ['/coursematerials', '/teacherstartpage'].includes(location.pathname);
+    const isTeacherPage = ['/teacherstartpage', '/coursematerials'].includes(location.pathname);
+    const menuLinks = isTeacherPage ? (
+        <>
+            <Link to="/info" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200" aria-label="Navigate to InfoHyllan">
+                InfoHyllan
+            </Link>
+            <Link to="/apps/calendar" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200" aria-label="Navigate to Calendar">
+                Kalender
+            </Link>
+            <Link to="/coursematerials" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200" aria-label="Navigate to Course Materials">
+                Kursmaterial
+            </Link>
+            <Link to="/assignments" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200" aria-label="Navigate to Assignments">
+                Uppgifter
+            </Link>
+            <Link to="/studentmonitoring" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200" aria-label="Navigate to Student Monitoring">
+                Elevkoll
+            </Link>
+            <Link to="/teams" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200" aria-label="Navigate to Teams">
+                Teams
+            </Link>
+        </>
+    ) : (
+        <>
+            <Link to="/info" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200" aria-label="Navigate to InfoHyllan">
+                InfoHyllan
+            </Link>
+            <Link to="/weeklyschedule" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200" aria-label="Navigate to Weekly Schedule">
+                Schema
+            </Link>
+            <Link to="/studytechniques" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200" aria-label="Navigate to Study Techniques">
+                Personlig Assistent
+            </Link>
+        </>
+    );
 
-    if (isLongHeader) {
-        // Lång header
-        return (
-            <header className="bg-blue-700 text-white shadow-md" aria-label="Main header">
-                <div className="px-4 py-3 flex justify-between items-center">
-                    <div className="flex items-center space-x-4">
-                        <button onClick={toggleSidebar} className="p-3 bg-blue-800 hover:bg-blue-900 rounded-md text-lg font-bold" aria-label="Toggle Sidebar">
-                            ☰
-                        </button>
-                        <h1 className="text-2xl font-bold">Lång Header</h1>
-                    </div>
-                    <nav className="flex space-x-4" aria-label="Main navigation">
-                        <Link to="/coursematerials" className="hover:underline text-white">
-                            Kursmaterial
-                        </Link>
-                        <Link to="/teacherstartpage" className="hover:underline text-white">
-                            Lärarsida
-                        </Link>
-                    </nav>
-                </div>
-                <div className="bg-blue-600 px-4 py-2 text-sm text-white">
-                    <p>Ytterligare information eller navigeringsalternativ för denna header.</p>
-                </div>
-
-                {/* Submenu - synlig endast på vissa sidor */}
-                {(location.pathname === '/swedishmenu' || location.pathname === '/mathematicsmenu') && (
-                    <nav className="bg-gray-200 px-4 py-2" aria-label="Submenu">
-                        <ul className="flex space-x-4 text-sm text-gray-600 font-medium">
-                            <li>
-                                <Link to="/swedishmenu/kursmaterial" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Kursmaterial">
-                                    📘 <span className="ml-1">Kursmaterial</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/swedishmenu/kursplan" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Kursplan">
-                                    🗂️ <span className="ml-1">Kursplan</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/swedishmenu/betygskriterier" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Betygskriterier">
-                                    🏅 <span className="ml-1">Betygskriterier</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/swedishmenu/uppgifter" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Uppgifter">
-                                    ✏️ <span className="ml-1">Uppgifter</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/swedishmenu/video" className="hover:text-blue-500 flex items-center" aria-label="Navigate to Video">
-                                    🎥 <span className="ml-1">Video</span>
-                                </Link>
-                            </li>
-                        </ul>
-                    </nav>
-                )}
-            </header>
-        );
-    }
-
-    // Kort header
     return (
-        <header className="flex flex-col bg-gray-100 shadow-md" aria-label="Main header">
-            <div className="flex justify-between items-center px-4 py-3">
-                <div className="flex items-center space-x-4">
-                    <button onClick={toggleSidebar} className="p-3 bg-gray-200 hover:bg-gray-300 rounded-md text-lg font-bold" aria-label="Toggle Sidebar">
-                        ☰
-                    </button>
-                </div>
-                <div className="relative flex items-center space-x-6">
-                    <Link to="/info" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold" aria-label="Navigate to InfoHyllan">
-                        🌍 <span className="ml-2">InfoHyllan</span>
-                    </Link>
-                    <Link to="/weeklyschedule" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold" aria-label="Navigate to Weekly Schedule">
-                        📋 <span className="ml-2">Schema</span>
-                    </Link>
-                    <Link to="/teams" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold" aria-label="Navigate to Teams">
-                        👥 <span className="ml-2">Teams</span>
-                    </Link>
-                    <Link to="/studytechniques" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold" aria-label="Navigate to Personal Assistant">
-                        🤖 <span className="ml-2">Personlig Assistent</span>
-                    </Link>
-                    <div className="flex items-center space-x-4">
-                        <span className="text-lg font-bold text-gray-700" aria-label="Logged in user">
-                            {user?.username}
-                        </span>
-                        <img
-                            src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
-                            alt="User Avatar"
-                            className="w-10 h-10 rounded-full cursor-pointer"
-                            onClick={() => setShowMenu((prev) => !prev)}
-                            aria-label="Toggle user menu"
-                        />
-                    </div>
+        <header className="bg-blue-100/50 shadow-md">
+            {/* Huvudheader */}
+            <div className="py-3 px-6 flex justify-between items-center">
+                {/* Sidebar Toggle Button */}
+                <button onClick={toggleSidebar} className="p-2 bg-blue-200 hover:bg-blue-300 rounded-md text-base font-bold text-black" aria-label="Toggle Sidebar">
+                    ☰
+                </button>
+
+                {/* Title as Text */}
+                <span
+                    className="text-2xl font-serif font-bold text-black tracking-wider shadow-none"
+                    style={{
+                        letterSpacing: '0.05em',
+                    }}
+                >
+                    KUNSKAPSPLATSEN
+                </span>
+
+                {/* Profile Section */}
+                <div className="flex items-center space-x-3 relative">
+                    <span
+                        className="text-base font-medium cursor-pointer hover:underline"
+                        onClick={() => setShowMenu((prev) => !prev)} // Toggle profilmeny
+                        aria-label="Toggle user menu"
+                    >
+                        {user?.username || 'Användare'}
+                    </span>
+                    <img
+                        src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
+                        alt="User Avatar"
+                        className="w-8 h-8 rounded-full cursor-pointer border-2 border-blue-400 hover:border-blue-600 transition duration-200"
+                        onClick={() => setShowMenu((prev) => !prev)} // Toggle profilmeny
+                    />
                     {showMenu && (
-                        <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10" role="menu" aria-label="User menu">
-                            <button
-                                onClick={handleProfileClick}
-                                className="block w-full text-left px-4 py-3 text-lg font-bold text-gray-700 hover:bg-gray-200"
-                                role="menuitem"
-                                aria-label="Navigate to Profile"
-                            >
+                        <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10 text-blue-900" role="menu" aria-label="User menu">
+                            <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-medium hover:bg-blue-100" role="menuitem" aria-label="Navigate to Profile">
                                 Profil
                             </button>
-                            <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-lg font-bold text-red-600 hover:bg-gray-200" role="menuitem" aria-label="Log out">
+                            <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-lg font-medium text-red-600 hover:bg-blue-100" role="menuitem" aria-label="Log out">
                                 Logga ut
                             </button>
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* Undermeny */}
+            <nav className="bg-white shadow-sm py-2 px-6 flex justify-between items-center">
+                <div className="flex space-x-4">{menuLinks}</div>
+                <div className="relative">
+                    {/* Class Dropdown Button */}
+                    <button
+                        className="bg-blue-200 text-black py-2 px-4 rounded-full text-sm font-medium hover:bg-blue-300 transition duration-200"
+                        onClick={() => setShowClassDropdown((prev) => !prev)}
+                        aria-label="Toggle class dropdown"
+                    >
+                        Religion 3A
+                    </button>
+                    {showClassDropdown && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10 text-blue-900">
+                            <Link to="/classes/math" className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-blue-100" aria-label="Navigate to Math Class">
+                                Matematik 3A
+                            </Link>
+                            <Link to="/classes/english" className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-blue-100" aria-label="Navigate to English Class">
+                                Engelska 3B
+                            </Link>
+                            <Link to="/classes/history" className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-blue-100" aria-label="Navigate to History Class">
+                                Historia 3C
+                            </Link>
+                        </div>
+                    )}
+                </div>
+            </nav>
         </header>
     );
 };

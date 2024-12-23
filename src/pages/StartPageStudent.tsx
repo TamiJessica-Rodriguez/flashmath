@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AnimateHeight from 'react-animate-height';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setPageTitle } from '../store/themeConfigSlice';
@@ -27,6 +28,7 @@ const StartPageStudent: React.FC = () => {
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 640);
     const [isTablet, setIsTablet] = useState<boolean>(window.innerWidth > 640 && window.innerWidth <= 1024);
     const [showSchedule, setShowSchedule] = useState<boolean>(false);
+    const [scheduleHeight, setScheduleHeight] = useState<'auto' | 0>(0);
 
     const notesList: Note[] = [
         { id: 1, user: 'Mohanned', thumb: 'profile-5.jpeg', title: 'Engelska', date: '11/01/2020', tag: 'personal' },
@@ -38,19 +40,19 @@ const StartPageStudent: React.FC = () => {
     ];
 
     const courseDetails: Record<string, { colorClass: string; emoji: string }> = {
-        Engelska: { colorClass: 'bg-blue-200', emoji: '🇬🇧' },
-        Svenska: { colorClass: 'bg-green-200', emoji: '📚' },
-        Naturkunskap: { colorClass: 'bg-yellow-200', emoji: '🌿' },
-        Musik: { colorClass: 'bg-pink-200', emoji: '🎵' },
-        'Idrott & Hälsa': { colorClass: 'bg-purple-200', emoji: '🏃‍♂️' },
-        Matematik: { colorClass: 'bg-[#3587a4]', emoji: '➗' },
+        Engelska: { colorClass: 'bg-blue-300', emoji: '🇬🇧' },
+        Svenska: { colorClass: 'bg-blue-200', emoji: '📚' },
+        Naturkunskap: { colorClass: 'bg-blue-100', emoji: '🌿' },
+        Musik: { colorClass: 'bg-blue-400', emoji: '🎵' },
+        'Idrott & Hälsa': { colorClass: 'bg-blue-500', emoji: '🏃‍♂️' },
+        Matematik: { colorClass: 'bg-blue-600', emoji: '➗' },
     };
 
     const scheduleNotes: ScheduleNote[] = [
         { title: 'Engelska', colorClass: 'bg-blue-200', startTime: '08:00', endTime: '09:30' },
-        { title: 'Svenska', colorClass: 'bg-green-200', startTime: '10:00', endTime: '11:15' },
-        { title: 'Musik', colorClass: 'bg-pink-200', startTime: '13:00', endTime: '14:30' },
-        { title: 'Matematik', colorClass: 'bg-[#3587a4]', startTime: '15:00', endTime: '16:30' },
+        { title: 'Svenska', colorClass: 'bg-blue-300', startTime: '10:00', endTime: '11:15' },
+        { title: 'Musik', colorClass: 'bg-blue-400', startTime: '13:00', endTime: '14:30' },
+        { title: 'Matematik', colorClass: 'bg-blue-500', startTime: '15:00', endTime: '16:30' },
     ];
 
     useEffect(() => {
@@ -69,22 +71,31 @@ const StartPageStudent: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-5 relative sm:h-screen h-screen overflow-hidden bg-white">
-            {/* Mobil länk till schemat */}
+            {/* Bild ovanför korten */}
+            <div className="w-full h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden">
+                <img src="/assets/images/blastartpage.webp" alt="Banner" className="w-full h-full object-cover" />
+            </div>
+
+            {/* Mobil knapp för schema */}
             {isMobile && (
-                <button onClick={() => setShowSchedule(!showSchedule)} className="w-full text-center bg-blue-500 text-white py-2 rounded-md shadow-md">
+                <button
+                    onClick={() => {
+                        setShowSchedule(!showSchedule);
+                        setScheduleHeight(showSchedule ? 0 : 'auto');
+                    }}
+                    className="w-full text-center bg-blue-500 text-white py-2 rounded-md shadow-md"
+                >
                     {showSchedule ? 'Dölj Schema' : 'Visa Schema'}
                 </button>
             )}
 
-            {/* Rullgardin för schema */}
-            {isMobile && showSchedule && (
-                <div className="absolute top-0 left-0 w-full bg-white shadow-lg z-10 p-4" onClick={() => setShowSchedule(false)}>
-                    <div className="mb-4">
-                        <h3 className="text-lg font-bold">Idag: Tisdag</h3>
-                    </div>
+            {/* Schema */}
+            <AnimateHeight duration={300} height={scheduleHeight} className="bg-white">
+                <div className="p-4">
+                    <h3 className="text-lg font-bold">Idag: Tisdag</h3>
                     <ScheduleColumn notes={scheduleNotes} />
                 </div>
-            )}
+            </AnimateHeight>
 
             {/* Titlar */}
             <div className="px-4">
@@ -93,7 +104,7 @@ const StartPageStudent: React.FC = () => {
             </div>
 
             {/* Korten */}
-            <div className="flex gap-5 flex-grow overflow-auto">
+            <div className="flex flex-grow overflow-auto gap-6 px-4">
                 <div className="panel flex-1 h-full">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         {notesList.map((note) => {
@@ -101,9 +112,9 @@ const StartPageStudent: React.FC = () => {
                             return (
                                 <div
                                     key={note.id}
-                                    className={`panel p-6 h-64 relative cursor-pointer ${
+                                    className={`relative p-6 h-64 cursor-pointer rounded-lg shadow-lg ${
                                         details?.colorClass || 'bg-gray-100'
-                                    } shadow-lg rounded-lg transition-transform duration-500 ease-in-out group hover:scale-105`}
+                                    } transition-transform duration-300 ease-in-out group hover:scale-105`}
                                     onClick={() => {
                                         if (note.title === 'Svenska') {
                                             navigate('/swedishmenu');
@@ -112,22 +123,15 @@ const StartPageStudent: React.FC = () => {
                                         }
                                     }}
                                 >
-                                    {['Musik', 'Svenska'].includes(note.title) && <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">1</div>}
-                                    <div className="text-center mb-2">
-                                        <h3 className="font-bold text-2xl sm:text-4xl">{note.title}</h3>
-                                    </div>
-                                    <div
-                                        className={`absolute ${isMobile || isTablet ? 'flex justify-center items-center top-0 bottom-0 left-0 right-0' : 'top-2 right-2'} ${
-                                            isMobile ? 'text-8xl' : isTablet ? 'text-8xl' : 'text-9xl'
-                                        }`}
-                                    >
-                                        {details?.emoji || '📝'}
+                                    <div className={`absolute inset-0 flex items-center justify-center ${isMobile || isTablet ? 'text-7xl' : 'text-8xl'} font-bold`}>{details?.emoji || '📝'}</div>
+                                    <div className="relative z-10 text-center">
+                                        <h3 className="font-bold text-xl sm:text-2xl">{note.title}</h3>
                                     </div>
                                     <div className="absolute bottom-2 left-2 flex items-center">
                                         <img className="w-12 h-12 rounded-full object-cover mr-3" src={`/assets/images/${note.thumb}`} alt={note.user} />
                                         <div>
                                             <h5 className="font-semibold text-lg">Lärare: {note.user}</h5>
-                                            <p className="text-sm text-gray-500">Uppdaterad senast: {note.date}</p>
+                                            <p className="text-sm text-black">Uppdaterad senast: {note.date}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -136,7 +140,7 @@ const StartPageStudent: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Dagligt schema för tablet- och desktop-vy */}
+                {/* Schema för tablet/desktop */}
                 {!isMobile && (
                     <div className="w-64 flex-shrink-0">
                         <div className="mb-4 flex justify-between items-center">

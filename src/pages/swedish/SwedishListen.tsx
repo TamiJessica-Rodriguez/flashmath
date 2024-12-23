@@ -62,7 +62,7 @@ const SwedishListen = () => {
             {/* Project List */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {projectList.map((project: Category) => (
-                    <div key={project.id} className="panel p-4 rounded-lg shadow-md bg-green-200">
+                    <div key={project.id} className="panel p-4 rounded-lg shadow-md  bg-blue-100/50">
                         <h4 className="text-xl font-bold text-gray-800 mb-4">{project.title}</h4>
                         <div className="space-y-4">
                             {project.tasks.map((task: Task) => (

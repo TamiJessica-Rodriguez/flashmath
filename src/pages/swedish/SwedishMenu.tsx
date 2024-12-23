@@ -71,8 +71,8 @@ const SwedishMenu = () => {
                     {[
                         { image: 'assets/images/boyreading.png', text: 'Läsa', style: 'w-20 h-20' },
                         { image: 'assets/images/boylistening.png', text: 'Lyssna', style: 'w-20 h-20' },
-                        { image: 'assets/images/flattv.png', text: 'Video', style: 'w-24 h-16' },
-                        { image: 'assets/images/controlgame.png', text: 'Spela', style: 'w-20 h-20 object-contain' }, // Hela bilden visas
+                        { image: 'assets/images/flattv.png', text: 'Video', style: 'w-25 h-20' }, // Anpassad höjd för att matcha
+                        { image: 'assets/images/controlgame.png', text: 'Spela', style: 'w-20 h-20 object-contain' },
                         { image: 'assets/images/girlVR.png', text: 'Upplev', style: 'w-20 h-20' },
                     ].map((tab, idx) => (
                         <Tab as={Fragment} key={idx}>

@@ -1,5 +1,9 @@
 # KUNSKAPSPLATSEN
 
+### Live Demo
+
+Du kan besöka projektet här: [KUNSKAPSPLATSEN Live Demo](https://frabjous-crumble-5798cb.netlify.app/)
+
 ### Description
 
 The platform is a versatile learning tool designed to support both students and teachers. Teachers can upload assignments, which students can easily access and complete. An internal library provides a centralized resource hub with factual information and previously uploaded content. The platform also offers features to view lessons, schedules, and subject overviews, ensuring a structured and organized approach to education. All essential tools are integrated into a single, user-friendly system.
@@ -70,4 +74,4 @@ The platform is a versatile learning tool designed to support both students and 
 
 - [x] Host projektet och gör det tillgängligt för visning i en webbläsare eller simulator.
 
-#### Problem? 
+

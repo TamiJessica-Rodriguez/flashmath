@@ -43,7 +43,7 @@ The platform is a versatile learning tool designed to support both students and 
 - [x] Utveckla med ett modernt JavaScript-ramverk.
 - [x] Använd en databas för lagring och hämtning av data.
 - [x] Implementera state-hantering och skapa dynamiska komponenter med reaktivitet och interaktivitet.
-- [] Följa WCAG 2.1-standarder och använda semantisk HTML.
+- [x] Följa WCAG 2.1-standarder och använda semantisk HTML.
 
 **Webbapplikation:**
 
@@ -68,6 +68,6 @@ The platform is a versatile learning tool designed to support both students and 
 
 #### Deploy
 
-- [] Host projektet och gör det tillgängligt för visning i en webbläsare eller simulator.
+- [x] Host projektet och gör det tillgängligt för visning i en webbläsare eller simulator.
 
 #### Problem? 

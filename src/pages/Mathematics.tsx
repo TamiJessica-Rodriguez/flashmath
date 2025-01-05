@@ -23,28 +23,28 @@ const Main = () => {
     const cards = [
         {
             title: 'Addition',
-            image: './assets/images/mathFun.webp',
+            image: './assets/images/addition3.webp',
             description: 'Lär dig lägga till siffror på ett roligt sätt.',
             date: '25 Nov 2024',
             author: 'John Doe',
         },
         {
             title: 'Subtraktion',
-            image: '/assets/images/mathorange.webp',
+            image: '/assets/images/minus.webp',
             description: 'Utforska subtraktion och bli en mästare på att räkna bakåt.',
             date: '22 Nov 2024',
             author: 'Jane Smith',
         },
         {
             title: 'Multiplikation',
-            image: '/assets/images/mathpurple.webp',
+            image: '/assets/images/times.webp',
             description: 'Öva multiplikationstabeller med spännande utmaningar.',
             date: '20 Nov 2024',
             author: 'Alice Brown',
         },
         {
             title: 'Labyrint',
-            image: '/assets/images/labyrinth.jpeg',
+            image: '/assets/images/startPage.webp',
             description: 'Navigera genom labyrinter och lös matematikgåtor.',
             date: '18 Nov 2024',
             author: 'Bob Green',

@@ -1,70 +1,73 @@
-# Getting Started with Create React App
+# KUNSKAPSPLATSEN
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Description
 
-## Available Scripts
+The platform is a versatile learning tool designed to support both students and teachers. Teachers can upload assignments, which students can easily access and complete. An internal library provides a centralized resource hub with factual information and previously uploaded content. The platform also offers features to view lessons, schedules, and subject overviews, ensuring a structured and organized approach to education. All essential tools are integrated into a single, user-friendly system.
 
-In the project directory, you can run:
+### Technologies
 
-### `npm start`
+- **React**
+- **TypeScript**
+- **Vristo UI Kit**
+- **Zod**
+- **bcrypt**
+- **JWT**
+- **LocalStorage**
+- **React-hook-form**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Backend**:
+  - **MongoDb**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Installation backend
 
-### `npm test`
+- `cd server`
+- `npm install`
+- `npm run dev`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Installation frontend
 
-### `npm run build`
+- `cd flashmath`
+- `npm run dev`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Checklista för godkänt
+- [x] Utför en noggrann målgruppsanalys.
+- [x] Använd ett projekthanteringsverktyg, som Trello eller Kanban, för att strukturera arbetet.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Design och Prototyping
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- [x] Skapa wireframes och en prototyp i Figma som följer UX/UI-principer.
+- [x] Säkerställ att designen är responsiv för minst två olika skärmstorlekar och följer WCAG 2.1-standarder.
 
-### `npm run eject`
+#### Applikationsutveckling
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- [x] Utveckla med ett modernt JavaScript-ramverk.
+- [x] Använd en databas för lagring och hämtning av data.
+- [x] Implementera state-hantering och skapa dynamiska komponenter med reaktivitet och interaktivitet.
+- [] Följa WCAG 2.1-standarder och använda semantisk HTML.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+**Webbapplikation:**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- [x] Produkten är responsiv och fungerar korrekt på minst två skärmstorlekar (mobil och dator).
+- [x] Gränssnittet är användarvänligt och anpassar sig efter enheterna.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**Native mobilapplikation:**
 
-## Learn More
+- [x] Produkten anpassas till olika skärmstorlekar och enhetsorienteringar (porträtt och landskap).
+- [x] Gränssnittet fungerar sömlöst på smartphones och surfplattor med korrekt layout och användarvänlighet.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### Versionshantering
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [x] Använd Git för versionshantering och hosta ett repo på GitHub.
 
-### Code Splitting
+#### Slutrapport
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- [x] Skriv en rapport (2–3 sidor) som inkluderar:
+  - Abstract på engelska.
+  - Val av tech stack och motiveringar.
+  - Dokumentation av arbetsprocess, planering och research.
 
-### Analyzing the Bundle Size
+#### Deploy
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- [] Host projektet och gör det tillgängligt för visning i en webbläsare eller simulator.
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### Problem? 

@@ -734,9 +734,7 @@ const Sidebar = () => {
         <div>
             {/* Sidebar är dold som standard och visas endast om `isSidebarVisible` är true */}
             <nav
-                className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] bg-blue-100/50 shadow-md z-50 transition-all duration-300 ${
-                    isSidebarVisible ? 'translate-x-0' : '-translate-x-full'
-                }`}
+                className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] bg-white shadow-md z-50 transition-all duration-300 ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'}`}
             >
                 <div className="h-full">
                     {/* Header */}
@@ -748,7 +746,7 @@ const Sidebar = () => {
 
                         <button
                             type="button"
-                            className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-blue-200 text-blue-700 transition"
+                            className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-200 text-gray-700 transition"
                             onClick={() => dispatch(toggleSidebar())} // Döljer sidomenyn
                         >
                             🔽

@@ -152,7 +152,7 @@ import { Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import IconHeart from '../components/Icon/IconHeart'; // Importera din hjärta-komponent
+import IconHeart from '../components/Icon/IconHeart';
 
 interface Item {
     id: number;
@@ -235,21 +235,25 @@ const Info = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br to-gray-800 flex flex-col gap-10 p-6">
-            {/* Top Image with Black Overlay for Text and Search */}
+        <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-800 flex flex-col gap-10 p-6">
             <div className="relative w-full h-[550px] mb-6">
                 <img src="/assets/images/topImageInfo.webp" alt="Top Image" className="w-full h-full object-cover rounded-lg shadow-lg bg-white" />
                 <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center text-center text-white p-6">
                     <h1 className="text-4xl font-bold mb-4">Välkommen till InfoHyllan!</h1>
                     <p className="text-lg mb-6">Utforska material för att lära dig och ha kul samtidigt.</p>
 
-                    {/* Search Field */}
+                    {/* Sökfält med etikett */}
+                    <label htmlFor="search" className="sr-only">
+                        Sök efter material
+                    </label>
                     <input
+                        id="search"
                         type="text"
                         placeholder="Sök efter bilder, videos, böcker eller spel..."
                         className="w-full max-w-md p-3 rounded-lg border border-gray-500 shadow focus:outline-none focus:ring focus:border-primary bg-gray-100 text-gray-700"
                         value={searchTerm}
                         onChange={handleSearch}
+                        aria-label="Sök efter material" // För extra tillgänglighet
                     />
                 </div>
             </div>
@@ -265,6 +269,7 @@ const Info = () => {
                                         selected ? 'text-primary border-primary' : 'text-gray-600 border-transparent'
                                     } hover:text-blue-500 hover:scale-110`}
                                     onClick={() => toggleCategory(tab.text)}
+                                    aria-label={`Välj kategori: ${tab.text}`}
                                 >
                                     <img src={tab.image} alt={tab.text} className={`${tab.style} mb-2`} />
                                     <span className="mt-2 text-base font-bold">{tab.text}</span>
@@ -303,7 +308,11 @@ const Info = () => {
                                                         <h3 className="text-lg font-semibold text-gray-700">{item.title}</h3>
 
                                                         {/* Hjärtikon nere till höger */}
-                                                        <button onClick={() => toggleFavorite(item)} className="absolute bottom-3 right-3 p-2 bg-white rounded-full shadow">
+                                                        <button
+                                                            onClick={() => toggleFavorite(item)}
+                                                            className="absolute bottom-3 right-3 p-2 bg-white rounded-full shadow"
+                                                            aria-label={isFavorite(item) ? `Ta bort ${item.title} från favoriter` : `Lägg till ${item.title} till favoriter`}
+                                                        >
                                                             <IconHeart
                                                                 className={`w-6 h-6 ${isFavorite(item) ? 'text-red-500' : 'text-gray-400'}`}
                                                                 fill={isFavorite(item)} // Fyll hjärtat om det är favorit

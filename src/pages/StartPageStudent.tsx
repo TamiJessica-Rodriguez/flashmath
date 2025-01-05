@@ -73,9 +73,9 @@ const StartPageStudent: React.FC = () => {
     return (
         <div className="flex flex-col gap-5 relative sm:h-screen h-screen overflow-hidden bg-white">
             {/* Bild ovanför korten */}
-            <div className="w-full h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden">
+            {/* <div className="w-full h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                 <img src="/assets/images/blastartpage.webp" alt="Banner" className="w-full h-full object-cover" />
-            </div>
+            </div> */}
 
             {/* Mobil knapp för schema */}
             {isMobile && (
@@ -97,10 +97,10 @@ const StartPageStudent: React.FC = () => {
             )}
 
             {/* Titlar */}
-            <div className="px-4">
+            {/* <div className="px-4">
                 <h1 className="text-2xl font-bold">Mina kurser</h1>
                 <h2 className="text-lg font-bold text-gray-600 mt-1">Mina uppdateringar (2)</h2>
-            </div>
+            </div> */}
 
             {/* Korten */}
             <div className="flex flex-grow overflow-auto gap-6 px-4">

@@ -48,13 +48,16 @@ const Main = () => {
             description: 'Navigera genom labyrinter och lös matematikgåtor.',
             date: '18 Nov 2024',
             author: 'Bob Green',
+            link: '/maze', // Add specific link for Labyrint
         },
     ];
 
     return (
         <div className="min-h-screen bg-white flex flex-col items-center">
             {/* Title and Text */}
-            <div className="mb-10 mt-4 md:mt-0 text-center">
+            <div className="mb-10 mt-8 md:mt-12 text-center">
+                {' '}
+                {/* Increased margin above the title */}
                 <h1 className="text-3xl md:text-4xl font-bold">Matematik</h1>
                 <p className="text-lg mt-2">Välj en aktivitet nedan och börja öva på matematik.</p>
             </div>
@@ -64,7 +67,7 @@ const Main = () => {
                 {cards.map((card, index) => (
                     <div
                         key={index}
-                        onClick={() => navigate(`/${card.title.toLowerCase()}`)}
+                        onClick={() => navigate(card.title === 'Labyrint' ? '/maze' : `/${card.title.toLowerCase()}`)}
                         className="cursor-pointer bg-white shadow-md rounded overflow-hidden transition-transform duration-500 ease-in-out group hover:shadow-lg hover:scale-105"
                     >
                         <div className="relative h-64 overflow-hidden">

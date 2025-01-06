@@ -1100,20 +1100,20 @@
 // export default Header;
 
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toggleSidebar } from '../../store/themeConfigSlice';
 
 interface User {
     username: string;
     avatar: string;
 }
 
-const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
+const Header: React.FC = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-
+    const dispatch = useDispatch();
     const [user, setUser] = useState<User | null>(null);
-    const [showMenu, setShowMenu] = useState(false); // Profilmeny state
-    const [showClassDropdown, setShowClassDropdown] = useState(false); // Klass-dropdown state
+    const [showMenu, setShowMenu] = useState(false);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -1131,49 +1131,16 @@ const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
         navigate('/profile');
     };
 
-    // Kontrollera om "Religion"-knappen ska visas
-    const showReligionButton = location.pathname === '/teacherstartpage' || location.pathname === '/coursematerials';
-
-    const menuLinks = location.pathname.startsWith('/teacher') ? (
-        <>
-            <Link to="/info" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200">
-                InfoHyllan
-            </Link>
-            <Link to="/apps/calendar" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200">
-                Kalender
-            </Link>
-            <Link to="/coursematerials" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200">
-                Kursmaterial
-            </Link>
-            <Link to="/assignments" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200">
-                Uppgifter
-            </Link>
-        </>
-    ) : (
-        <>
-            <Link to="/info" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200">
-                InfoHyllan
-            </Link>
-            <Link to="/weeklyschedule" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200">
-                Schema
-            </Link>
-            <Link to="/studytechniques" className="text-sm px-3 py-2 hover:bg-blue-200 rounded-md transition duration-200">
-                Personlig Assistent
-            </Link>
-        </>
-    );
-
     return (
         <header className="bg-blue-100/50 shadow-md">
-            {/* Huvudheader */}
             <div className="py-3 px-6 flex justify-between items-center">
-                {/* Sidebar Toggle Button */}
-                <button onClick={toggleSidebar} className="p-2 bg-blue-200 hover:bg-blue-300 rounded-md text-base font-bold text-black" aria-label="Toggle Sidebar">
+                {/* Sidomeny-knapp */}
+                <button onClick={() => dispatch(toggleSidebar())} className="p-2 bg-blue-200 hover:bg-blue-300 rounded-md text-base font-bold text-black" aria-label="Toggle Sidebar">
                     ☰
                 </button>
 
                 {/* Titel */}
-                <span className="text-2xl font-serif font-bold text-black tracking-wider shadow-none">KUNSKAPSPLATSEN</span>
+                <span className="font-serif font-bold text-black tracking-wider text-lg sm:text-2xl">KUNSKAPSPLATSEN</span>
 
                 {/* Profilmeny */}
                 <div className="flex items-center space-x-3 relative">
@@ -1182,12 +1149,13 @@ const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
                     </span>
                     <img
                         src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
-                        alt="User Avatar"
+                        alt={user?.username || 'Standard Avatar'} // Lägg till en fallback-text för alt-attributet
                         className="w-8 h-8 rounded-full cursor-pointer border-2 border-blue-400 hover:border-blue-600 transition duration-200"
                         onClick={() => setShowMenu((prev) => !prev)}
                     />
+
                     {showMenu && (
-                        <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10 text-blue-900" role="menu" aria-label="User menu">
+                        <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10 text-blue-900" role="menu">
                             <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-medium hover:bg-blue-100" role="menuitem">
                                 Profil
                             </button>
@@ -1198,35 +1166,6 @@ const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
                     )}
                 </div>
             </div>
-
-            {/* Undermeny */}
-            <nav className="bg-white shadow-sm py-2 px-6 flex justify-between items-center">
-                <div className="flex space-x-4">{menuLinks}</div>
-                {showReligionButton && (
-                    <div className="relative">
-                        {/* Klass-dropdown */}
-                        <button
-                            className="bg-blue-200 text-black py-2 px-4 rounded-full text-sm font-medium hover:bg-blue-300 transition duration-200"
-                            onClick={() => setShowClassDropdown((prev) => !prev)}
-                        >
-                            Religion 3A
-                        </button>
-                        {showClassDropdown && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10 text-blue-900">
-                                <Link to="/classes/math" className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-blue-100">
-                                    Matematik 3A
-                                </Link>
-                                <Link to="/classes/english" className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-blue-100">
-                                    Engelska 3B
-                                </Link>
-                                <Link to="/classes/history" className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-blue-100">
-                                    Historia 3C
-                                </Link>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </nav>
         </header>
     );
 };

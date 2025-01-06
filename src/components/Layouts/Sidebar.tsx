@@ -696,134 +696,106 @@
 
 // export default Sidebar;
 
-import { useEffect, useState } from 'react';
-import AnimateHeight from 'react-animate-height';
+import React, { useEffect, useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { IRootState } from '../../store';
 import { toggleSidebar } from '../../store/themeConfigSlice';
 
-const Sidebar = () => {
-    const [currentMenu, setCurrentMenu] = useState<string>('');
+const Sidebar: React.FC = () => {
+    const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 640);
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const dispatch = useDispatch();
-    const isSidebarVisible = themeConfig.sidebar; // Redux-tillstånd för sidomenyns synlighet
+    const location = useLocation();
 
-    const toggleMenu = (menu: string) => {
-        setCurrentMenu((prev) => (prev === menu ? '' : menu));
-    };
+    const [userRole, setUserRole] = useState<string>(''); // Lärarroll eller elevroll
 
     useEffect(() => {
-        const selector = document.querySelector(`.sidebar ul a[href="${window.location.pathname}"]`);
-        if (selector) {
-            selector.classList.add('active');
-            const ul = selector.closest('ul.sub-menu');
-            if (ul) {
-                const parentMenu = ul.closest('li.menu')?.querySelector('.nav-link');
-                if (parentMenu) {
-                    setTimeout(() => {
-                        (parentMenu as HTMLElement).click();
-                    });
-                }
-            }
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 640);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        // Hämta användarroll från localStorage eller annan datakälla
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            const parsedUser = JSON.parse(storedUser);
+            setUserRole(parsedUser.isAdmin ? 'teacher' : 'student');
         }
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
+
+    const isSidebarVisible = themeConfig.sidebar;
+
+    const teacherLinks = (
+        <>
+            <li>
+                <NavLink to="/info" className="block px-4 py-2 hover:bg-blue-100 rounded">
+                    InfoHyllan
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to="/apps/calendar" className="block px-4 py-2 hover:bg-blue-100 rounded">
+                    Kalender
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to="/coursematerials" className="block px-4 py-2 hover:bg-blue-100 rounded">
+                    Kursmaterial
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to="/assignments" className="block px-4 py-2 hover:bg-blue-100 rounded">
+                    Uppgifter
+                </NavLink>
+            </li>
+        </>
+    );
+
+    const studentLinks = (
+        <>
+            <li>
+                <NavLink to="/info" className="block px-4 py-2 hover:bg-blue-100 rounded">
+                    InfoHyllan
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to="/weeklyschedule" className="block px-4 py-2 hover:bg-blue-100 rounded">
+                    Schema
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to="/studytechniques" className="block px-4 py-2 hover:bg-blue-100 rounded">
+                    Personlig Assistent
+                </NavLink>
+            </li>
+        </>
+    );
 
     return (
         <div>
-            {/* Sidebar är dold som standard och visas endast om `isSidebarVisible` är true */}
             <nav
                 className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] bg-white shadow-md z-50 transition-all duration-300 ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'}`}
             >
                 <div className="h-full">
-                    {/* Header */}
                     <div className="flex justify-between items-center px-4 py-3">
                         <NavLink to="/" className="main-logo flex items-center shrink-0">
                             🌌
                             <span className="text-2xl ml-2 font-semibold text-blue-900">ORION</span>
                         </NavLink>
 
-                        <button
-                            type="button"
-                            className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-200 text-gray-700 transition"
-                            onClick={() => dispatch(toggleSidebar())} // Döljer sidomenyn
-                        >
+                        <button type="button" className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-200 text-gray-700 transition" onClick={() => dispatch(toggleSidebar())}>
                             🔽
                         </button>
                     </div>
 
-                    {/* Navigation */}
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
-                        <ul className="font-semibold space-y-0.5 p-4 py-0">
-                            {/* Dashboard Menu */}
-                            <li className="menu nav-item">
-                                <button
-                                    type="button"
-                                    className={`nav-link group w-full flex justify-between items-center ${currentMenu === 'dashboard' ? 'active' : ''}`}
-                                    onClick={() => toggleMenu('dashboard')}
-                                >
-                                    <div className="flex items-center">
-                                        📊
-                                        <span className="pl-3 text-blue-900 group-hover:text-blue-700">Dashboard</span>
-                                    </div>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className={`w-4 h-4 transform transition-transform ${currentMenu === 'dashboard' ? 'rotate-180' : ''}`}
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6" />
-                                    </svg>
-                                </button>
-                            </li>
-
-                            {/* Apps Menu */}
-                            <li className="menu nav-item">
-                                <button
-                                    type="button"
-                                    className={`nav-link group w-full flex justify-between items-center ${currentMenu === 'apps' ? 'active' : ''}`}
-                                    onClick={() => toggleMenu('apps')}
-                                >
-                                    <div className="flex items-center">
-                                        📱
-                                        <span className="pl-3 text-blue-900 group-hover:text-blue-700">Apps</span>
-                                    </div>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className={`w-4 h-4 transform transition-transform ${currentMenu === 'apps' ? 'rotate-180' : ''}`}
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6" />
-                                    </svg>
-                                </button>
-                                <AnimateHeight duration={300} height={currentMenu === 'apps' ? 'auto' : 0}>
-                                    <ul className="sub-menu text-blue-700">
-                                        {/* Notes Navigation */}
-                                        <li>
-                                            <NavLink to="/notes" className="group">
-                                                <div className="flex items-center">
-                                                    📝
-                                                    <span className="pl-3">Notes</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Calendar Navigation */}
-                                        <li>
-                                            <NavLink to="/apps/calendar" className="group">
-                                                <div className="flex items-center">
-                                                    📅
-                                                    <span className="pl-3">Kalender</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                    </ul>
-                                </AnimateHeight>
-                            </li>
-                        </ul>
+                        <ul className="font-semibold space-y-1 px-4">{userRole === 'teacher' ? teacherLinks : studentLinks}</ul>
                     </PerfectScrollbar>
                 </div>
             </nav>

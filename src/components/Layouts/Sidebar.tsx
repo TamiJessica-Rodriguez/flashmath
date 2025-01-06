@@ -699,17 +699,17 @@
 import React, { useEffect, useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { IRootState } from '../../store';
 import { toggleSidebar } from '../../store/themeConfigSlice';
+import IconArrowBackward from '../Icon/IconArrowBackward'; // Import the IconArrowBackward component
 
 const Sidebar: React.FC = () => {
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 640);
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const dispatch = useDispatch();
-    const location = useLocation();
 
-    const [userRole, setUserRole] = useState<string>(''); // Lärarroll eller elevroll
+    const [userRole, setUserRole] = useState<string>(''); // User role (teacher or student)
 
     useEffect(() => {
         const handleResize = () => {
@@ -718,7 +718,7 @@ const Sidebar: React.FC = () => {
 
         window.addEventListener('resize', handleResize);
 
-        // Hämta användarroll från localStorage eller annan datakälla
+        // Fetch user role from localStorage
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             const parsedUser = JSON.parse(storedUser);
@@ -782,15 +782,17 @@ const Sidebar: React.FC = () => {
             <nav
                 className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] bg-white shadow-md z-50 transition-all duration-300 ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'}`}
             >
-                <div className="h-full">
-                    <div className="flex justify-between items-center px-4 py-3">
-                        <button type="button" className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-200 text-gray-700 transition" onClick={() => dispatch(toggleSidebar())}>
-                            🔽
+                <div className="h-full flex flex-col">
+                    {/* Arrow placed above the navigation bar */}
+                    <div className="flex justify-end px-4 py-3 border-b border-gray-200">
+                        <button type="button" className="text-gray-700 hover:text-gray-900" onClick={() => dispatch(toggleSidebar())} aria-label="Close Sidebar">
+                            <IconArrowBackward />
                         </button>
                     </div>
 
-                    <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
-                        <ul className="font-semibold space-y-1 px-4">{userRole === 'teacher' ? teacherLinks : studentLinks}</ul>
+                    {/* Navigation menu */}
+                    <PerfectScrollbar className="flex-1">
+                        <ul className="font-semibold space-y-1 px-4 mt-4">{userRole === 'teacher' ? teacherLinks : studentLinks}</ul>
                     </PerfectScrollbar>
                 </div>
             </nav>

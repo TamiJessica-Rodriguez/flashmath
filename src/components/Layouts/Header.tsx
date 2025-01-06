@@ -991,118 +991,11 @@
 
 // export default Header;
 
-// import { useEffect, useState } from 'react';
-// import { Link, useLocation, useNavigate } from 'react-router-dom';
-
-// const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
-//     const [user, setUser] = useState<{ username: string; avatar: string } | null>(null);
-//     const [showMenu, setShowMenu] = useState(false);
-//     const navigate = useNavigate();
-//     const location = useLocation();
-
-//     useEffect(() => {
-//         const storedUser = localStorage.getItem('user');
-//         if (storedUser) {
-//             setUser(JSON.parse(storedUser));
-//         }
-//     }, []);
-
-//     const handleLogout = () => {
-//         localStorage.removeItem('user');
-//         navigate('/');
-//     };
-
-//     const handleProfileClick = () => {
-//         navigate('/profile');
-//     };
-
-//     return (
-//         <header className="flex flex-col bg-gray-100 shadow-md">
-//             {/* Main Header */}
-//             <div className="flex justify-between items-center px-4 py-3">
-//                 <div className="flex items-center space-x-4">
-//                     <button onClick={toggleSidebar} className="p-3 bg-gray-200 hover:bg-gray-300 rounded-md text-lg font-bold" aria-label="Toggle Sidebar">
-//                         ☰
-//                     </button>
-//                 </div>
-
-//                 <div className="relative flex items-center space-x-6">
-//                     <Link to="/info" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
-//                         🌍 <span className="ml-2">InfoHyllan</span>
-//                     </Link>
-//                     <Link to="/weeklyschedule" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
-//                         📋 <span className="ml-2">Schema</span>
-//                     </Link>
-//                     <Link to="/teams" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
-//                         👥 <span className="ml-2">Teams</span>
-//                     </Link>
-//                     <Link to="/studytechniques" className="flex items-center text-gray-700 hover:text-blue-500 text-xl font-bold">
-//                         🤖 <span className="ml-2">Personlig Assistent</span>
-//                     </Link>
-//                     <div className="flex items-center space-x-4">
-//                         <span className="text-lg font-bold text-gray-700">{user?.username}</span>
-//                         <img
-//                             src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
-//                             alt="User Avatar"
-//                             className="w-10 h-10 rounded-full cursor-pointer"
-//                             onClick={() => setShowMenu((prev) => !prev)}
-//                         />
-//                     </div>
-//                     {showMenu && (
-//                         <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10">
-//                             <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-bold text-gray-700 hover:bg-gray-200">
-//                                 Profil
-//                             </button>
-//                             <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-lg font-bold text-red-600 hover:bg-gray-200">
-//                                 Logga ut
-//                             </button>
-//                         </div>
-//                     )}
-//                 </div>
-//             </div>
-
-//             {/* Submenu - Visible on /swedishmenu and /mathematicsmenu */}
-//             {(location.pathname === '/swedishmenu' || location.pathname === '/mathematicsmenu') && (
-//                 <nav className="bg-gray-200 px-4 py-2">
-//                     <ul className="flex space-x-4 text-sm text-gray-600 font-medium">
-//                         <li>
-//                             <Link to="/swedishmenu/kursmaterial" className="hover:text-blue-500 flex items-center">
-//                                 📘 <span className="ml-1">Kursmaterial</span>
-//                             </Link>
-//                         </li>
-//                         <li>
-//                             <Link to="/swedishmenu/kursplan" className="hover:text-blue-500 flex items-center">
-//                                 🗂️ <span className="ml-1">Kursplan</span>
-//                             </Link>
-//                         </li>
-//                         <li>
-//                             <Link to="/swedishmenu/betygskriterier" className="hover:text-blue-500 flex items-center">
-//                                 🏅 <span className="ml-1">Betygskriterier</span>
-//                             </Link>
-//                         </li>
-//                         <li>
-//                             <Link to="/swedishmenu/uppgifter" className="hover:text-blue-500 flex items-center">
-//                                 ✏️ <span className="ml-1">Uppgifter</span>
-//                             </Link>
-//                         </li>
-//                         <li>
-//                             <Link to="/swedishmenu/video" className="hover:text-blue-500 flex items-center">
-//                                 🎥 <span className="ml-1">Video</span>
-//                             </Link>
-//                         </li>
-//                     </ul>
-//                 </nav>
-//             )}
-//         </header>
-//     );
-// };
-
-// export default Header;
-
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toggleSidebar } from '../../store/themeConfigSlice';
+import IconMenu from '../Icon/IconMenu'; // Uppdatera sökvägen till din `IconMenu`-komponent
 
 interface User {
     username: string;
@@ -1132,39 +1025,37 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="bg-blue-100/50 shadow-md">
-            <div className="py-3 px-6 flex justify-between items-center">
-                {/* Sidomeny-knapp */}
-                <button onClick={() => dispatch(toggleSidebar())} className="p-2 bg-blue-200 hover:bg-blue-300 rounded-md text-base font-bold text-black" aria-label="Toggle Sidebar">
-                    ☰
-                </button>
+        <header className="bg-blue-100/50 shadow-md flex justify-between items-center py-3 px-6">
+            {/* Större hamburgermeny */}
+            <button onClick={() => dispatch(toggleSidebar())} className="p-3 rounded-md font-bold text-black" aria-label="Toggle Sidebar">
+                <IconMenu className="w-8 h-8 text-black hover:text-blue-600 transition duration-200" />
+            </button>
 
-                {/* Titel */}
-                <span className="font-serif font-bold text-black tracking-wider text-lg sm:text-2xl">KUNSKAPSPLATSEN</span>
+            {/* Titel */}
+            <span className="font-serif font-bold text-black tracking-wider text-lg sm:text-2xl">KUNSKAPSPLATSEN</span>
 
-                {/* Profilmeny */}
-                <div className="flex items-center space-x-3 relative">
-                    <span className="text-base font-medium cursor-pointer hover:underline" onClick={() => setShowMenu((prev) => !prev)} aria-label="Toggle user menu">
-                        {user?.username || 'Användare'}
-                    </span>
-                    <img
-                        src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
-                        alt={user?.username || 'Standard Avatar'} // Lägg till en fallback-text för alt-attributet
-                        className="w-8 h-8 rounded-full cursor-pointer border-2 border-blue-400 hover:border-blue-600 transition duration-200"
-                        onClick={() => setShowMenu((prev) => !prev)}
-                    />
+            {/* Profilmeny */}
+            <div className="flex items-center space-x-3 relative">
+                <span className="text-base font-medium cursor-pointer hover:underline" onClick={() => setShowMenu((prev) => !prev)} aria-label="Toggle user menu">
+                    {user?.username || 'Användare'}
+                </span>
+                <img
+                    src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
+                    alt={user?.username || 'Standard Avatar'} // Lägg till en fallback-text för alt-attributet
+                    className="w-8 h-8 rounded-full cursor-pointer border-2 border-blue-400 hover:border-blue-600 transition duration-200"
+                    onClick={() => setShowMenu((prev) => !prev)}
+                />
 
-                    {showMenu && (
-                        <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10 text-blue-900" role="menu">
-                            <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-medium hover:bg-blue-100" role="menuitem">
-                                Profil
-                            </button>
-                            <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-lg font-medium text-red-600 hover:bg-blue-100" role="menuitem">
-                                Logga ut
-                            </button>
-                        </div>
-                    )}
-                </div>
+                {showMenu && (
+                    <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10 text-blue-900" role="menu">
+                        <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-medium hover:bg-blue-100" role="menuitem">
+                            Profil
+                        </button>
+                        <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-lg font-medium text-red-600 hover:bg-blue-100" role="menuitem">
+                            Logga ut
+                        </button>
+                    </div>
+                )}
             </div>
         </header>
     );

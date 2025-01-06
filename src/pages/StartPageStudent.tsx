@@ -12,7 +12,7 @@ interface Note {
     title: string;
     date: string;
     tag: string;
-    isRemote?: boolean; // Flagga för att markera distans
+    isRemote?: boolean;
 }
 
 interface ScheduleNote {
@@ -27,9 +27,7 @@ const StartPageStudent: React.FC = () => {
     const navigate = useNavigate();
 
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 640);
-    const [isTablet, setIsTablet] = useState<boolean>(window.innerWidth > 640 && window.innerWidth <= 1024);
     const [showSchedule, setShowSchedule] = useState<boolean>(false);
-    const [scheduleHeight, setScheduleHeight] = useState<'auto' | 0>(0);
 
     const notesList: Note[] = [
         { id: 1, user: 'Mohanned', thumb: 'profile-5.jpeg', title: 'Engelska', date: '11/01/2020', tag: 'personal', isRemote: true },
@@ -61,7 +59,6 @@ const StartPageStudent: React.FC = () => {
 
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 640);
-            setIsTablet(window.innerWidth > 640 && window.innerWidth <= 1024);
         };
 
         window.addEventListener('resize', handleResize);
@@ -71,22 +68,17 @@ const StartPageStudent: React.FC = () => {
     }, [dispatch]);
 
     return (
-        <div className="flex flex-col gap-5 relative sm:h-screen h-screen overflow-hidden bg-white">
-            {/* Bild ovanför korten */}
-            {/* <div className="w-full h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden">
-                <img src="/assets/images/blastartpage.webp" alt="Banner" className="w-full h-full object-cover" />
-            </div> */}
-
+        <div className="flex flex-col gap-5 relative bg-white overflow-auto min-h-screen">
             {/* Mobil knapp för schema */}
             {isMobile && (
-                <button onClick={() => setShowSchedule(!showSchedule)} className="w-full text-center bg-blue-500 text-white py-2 rounded-md shadow-md">
+                <button onClick={() => setShowSchedule((prev) => !prev)} className="w-full text-center bg-blue-500 text-white py-2 rounded-md shadow-md">
                     {showSchedule ? 'Dölj Schema' : 'Visa Schema'}
                 </button>
             )}
 
-            {/* Mobil vy - schema */}
-            {isMobile && showSchedule && (
-                <AnimateHeight duration={300} height={scheduleHeight}>
+            {/* Mobilvy - schema */}
+            {isMobile && (
+                <AnimateHeight duration={300} height={showSchedule ? 'auto' : 0}>
                     <div className="w-full bg-white shadow-lg p-4">
                         <div className="mb-4">
                             <h3 className="text-lg font-bold">Idag: Tisdag</h3>
@@ -96,15 +88,12 @@ const StartPageStudent: React.FC = () => {
                 </AnimateHeight>
             )}
 
-            {/* Titlar */}
-            {/* <div className="px-4">
-                <h1 className="text-2xl font-bold">Mina kurser</h1>
-                <h2 className="text-lg font-bold text-gray-600 mt-1">Mina uppdateringar (2)</h2>
-            </div> */}
-
-            {/* Korten */}
-            <div className="flex flex-grow overflow-auto gap-6 px-4">
-                <div className="panel flex-1 h-full">
+            {/* Huvudinnehåll */}
+            <div className="flex flex-grow">
+                <div className="panel flex-1 h-auto">
+                    <div className="px-4">
+                        <h1 className="text-2xl font-bold mb-5">Dina klasser</h1>
+                    </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         {notesList.map((note) => {
                             const details = courseDetails[note.title];
@@ -142,15 +131,12 @@ const StartPageStudent: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Schema för tablet/desktop */}
+                {/* Schema för större skärmar */}
                 {!isMobile && (
-                    <div className="w-64 flex-shrink-0">
-                        <div className="mb-4 flex justify-between items-center">
-                            <div>
-                                <p className="text-sm font-medium text-black">Idag:</p>
-                                <h3 className="text-lg font-bold text-black">Tisdag</h3>
-                            </div>
-                            <h3 className="text-lg font-bold text-black">V.45</h3>
+                    <div className="w-64 flex-shrink-0 bg-gray-100 p-4 shadow-md">
+                        <div className="mb-4">
+                            <p className="text-sm font-medium">Idag:</p>
+                            <h3 className="text-lg font-bold">Tisdag</h3>
                         </div>
                         <ScheduleColumn notes={scheduleNotes} />
                     </div>

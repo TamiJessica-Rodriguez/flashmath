@@ -24,7 +24,7 @@ const TeacherStartpage: React.FC = () => {
 
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 640);
     const [showSchedule, setShowSchedule] = useState<boolean>(false);
-    const [scheduleHeight, setScheduleHeight] = useState<'auto' | 0>(0); // För att hantera höjd med animation
+    const [scheduleHeight, setScheduleHeight] = useState<'auto' | 0>(0);
 
     const notesList: Note[] = [
         { id: 3, title: '3A', date: '11/03/2020' },
@@ -61,7 +61,7 @@ const TeacherStartpage: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col gap-5 relative sm:h-screen h-screen overflow-hidden bg-gray-50 font-['Roboto']" aria-label="Teacher Startpage">
+        <div className="flex flex-col gap-5 sm:h-screen h-screen bg-gray-50 font-['Roboto'] overflow-auto" aria-label="Teacher Startpage">
             {/* Knapp för schema i mobilläge */}
             {isMobile && (
                 <button
@@ -88,8 +88,8 @@ const TeacherStartpage: React.FC = () => {
             </AnimateHeight>
 
             {/* Huvudinnehåll */}
-            <div className="flex flex-grow overflow-hidden">
-                <div className="panel flex-1 h-full mr-5">
+            <div className="flex flex-grow">
+                <div className="panel flex-1 mr-5 overflow-auto">
                     <div className="px-4">
                         <h1 className="text-2xl font-bold mb-5" id="class-title">
                             Dina klasser
@@ -120,7 +120,7 @@ const TeacherStartpage: React.FC = () => {
 
                 {/* Schema i desktop vy */}
                 {!isMobile && (
-                    <div className="w-64 flex-shrink-0" aria-label="Daily schedule">
+                    <div className="w-64 flex-shrink-0 overflow-auto" aria-label="Daily schedule">
                         <div className="mb-4 flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium">Idag:</p>

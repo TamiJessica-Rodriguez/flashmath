@@ -784,11 +784,6 @@ const Sidebar: React.FC = () => {
             >
                 <div className="h-full">
                     <div className="flex justify-between items-center px-4 py-3">
-                        <NavLink to="/" className="main-logo flex items-center shrink-0">
-                            🌌
-                            <span className="text-2xl ml-2 font-semibold text-blue-900">ORION</span>
-                        </NavLink>
-
                         <button type="button" className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-200 text-gray-700 transition" onClick={() => dispatch(toggleSidebar())}>
                             🔽
                         </button>

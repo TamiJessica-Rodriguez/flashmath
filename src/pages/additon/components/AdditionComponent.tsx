@@ -29,31 +29,42 @@ const AdditionComponent = () => {
     const colors = ['bg-blue-200', 'bg-blue-300', 'bg-blue-400', 'bg-blue-500'];
 
     const [question, setQuestion] = useState(generateQuestion());
-    const [feedback, setFeedback] = useState('');
-    const [showVideo, setShowVideo] = useState(false);
-    const [showAssistant, setShowAssistant] = useState(false);
-    const [isSimpleMode, setIsSimpleMode] = useState(false);
+    const [showErrorPopup, setShowErrorPopup] = useState(false);
+    const [showToast, setShowToast] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState(1);
     const [score, setScore] = useState(0);
+    const [isSimpleMode, setIsSimpleMode] = useState(false);
 
     const handleAnswer = (answer: number) => {
         if (answer === question.correctAnswer) {
-            setFeedback('');
             setScore((prev) => prev + 1);
             if (currentQuestion < totalQuestions) {
-                setQuestion(generateQuestion());
                 setCurrentQuestion((prev) => prev + 1);
+                setQuestion(generateQuestion());
+            } else {
+                setShowToast(true); // Show toast after completing all questions
             }
         } else {
-            setFeedback('Fel svar. Försök igen! ❌');
+            setShowErrorPopup(true);
         }
+    };
+
+    const closeErrorPopup = () => {
+        setShowErrorPopup(false);
+    };
+
+    const handleContinue = () => {
+        setShowToast(false);
+        setQuestion(generateQuestion());
+        setCurrentQuestion(1);
+        setScore(0);
     };
 
     const restartQuiz = () => {
         setQuestion(generateQuestion());
         setCurrentQuestion(1);
-        setFeedback('');
         setScore(0);
+        setShowToast(false);
     };
 
     const playIntroductionAudio = () => {
@@ -63,12 +74,46 @@ const AdditionComponent = () => {
         window.speechSynthesis.speak(utterance);
     };
 
-    const progressPercentage = Math.min((currentQuestion / totalQuestions) * 100, 100);
+    const playQuestionAudio = () => {
+        const questionText = `Vad är ${question.num1} plus ${question.num2}?`;
+        const utterance = new SpeechSynthesisUtterance(questionText);
+        utterance.lang = 'sv-SE';
+        window.speechSynthesis.speak(utterance);
+    };
 
     return (
         <div className={`min-h-screen flex items-center justify-center relative overflow-hidden ${isSimpleMode ? 'bg-white' : 'bg-blue-100'}`}>
-            {/* Toggle Button */}
-            <div className="absolute top-4 right-4 mt-4">
+            {/* Error Popup */}
+            {showErrorPopup && (
+                <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded shadow-lg text-center">
+                        <h2 className="text-xl font-bold text-red-500 mb-4">Fel svar</h2>
+                        <p className="text-gray-700 mb-4">Var vänlig försök igen!</p>
+                        <button onClick={closeErrorPopup} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center font-bold transition">
+                            Försök igen
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Toast Notification */}
+            {showToast && (
+                <div className="fixed top-16 left-1/2 transform -translate-x-1/2 bg-white p-6 rounded shadow-lg z-50">
+                    <h2 className="text-xl font-bold text-blue-500 mb-4">Grattis! 🎉 Du klarade alla frågor!</h2>
+                    <p className="text-gray-700 mb-4">Vill du fortsätta?</p>
+                    <div className="flex justify-center gap-4">
+                        <button onClick={handleContinue} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center font-bold transition">
+                            Ja
+                        </button>
+                        <button onClick={restartQuiz} className="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded-md text-center font-bold transition">
+                            Nej
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Toggle Background Button */}
+            <div className="absolute top-4 right-4">
                 <label className="flex items-center space-x-2 cursor-pointer">
                     <span className="text-sm font-semibold text-gray-700">Ingen bakgrundsfärg</span>
                     <button
@@ -78,11 +123,6 @@ const AdditionComponent = () => {
                         <span className={`absolute top-0.5 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300 ${isSimpleMode ? 'translate-x-5' : ''}`}></span>
                     </button>
                 </label>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="absolute top-0 left-0 w-full h-4 bg-gray-300">
-                <div className="h-full bg-blue-500 transition-all" style={{ width: `${progressPercentage}%` }}></div>
             </div>
 
             {/* Main Content */}
@@ -107,10 +147,13 @@ const AdditionComponent = () => {
                     <>
                         {/* Quiz Question */}
                         <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
-                            <div className="text-center text-2xl font-bold py-6 px-4 rounded-md">
-                                <p>
+                            <div className="flex justify-between items-center">
+                                <p className="text-center text-2xl font-bold py-6 px-4 rounded-md">
                                     Vad är {question.num1} + {question.num2}?
                                 </p>
+                                <button onClick={playQuestionAudio} className="text-2xl text-blue-500 hover:text-blue-600 transition">
+                                    🔊
+                                </button>
                             </div>
                             <div className="mt-8 grid grid-cols-2 gap-4">
                                 {question.options.map((option, index) => (
@@ -129,9 +172,7 @@ const AdditionComponent = () => {
                     </>
                 ) : (
                     <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <h2 className="text-xl font-bold mb-4 text-gray-800">
-                            Grattis! 🎉 Du fick {score} av {totalQuestions} rätt!
-                        </h2>
+                        <h2 className="text-xl font-bold mb-4 text-gray-800">Grattis! 🎉 Du klarade det!</h2>
                         <button onClick={restartQuiz} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center font-bold transition">
                             Börja om
                         </button>

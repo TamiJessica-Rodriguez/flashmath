@@ -1000,7 +1000,7 @@ import IconMenu from '../Icon/IconMenu';
 interface User {
     username: string;
     avatar: string;
-    isAdmin: boolean; // Nytt fält för att avgöra om användaren är admin
+    isAdmin: boolean; // Field to determine if the user is an admin
 }
 
 const Header: React.FC = () => {
@@ -1025,23 +1025,36 @@ const Header: React.FC = () => {
         navigate('/profile');
     };
 
+    const handleTitleClick = () => {
+        if (user) {
+            navigate(user.isAdmin ? '/teacherstartpage' : '/startpagestudent');
+        } else {
+            navigate('/'); // Fallback for users who are not logged in
+        }
+    };
+
     return (
         <header className="bg-blue-100/50 shadow-md flex justify-between items-center py-3 px-6">
-            {/* Större hamburgermeny */}
+            {/* Larger hamburger menu */}
             <button onClick={() => dispatch(toggleSidebar())} className="p-3 rounded-md font-bold text-black" aria-label="Toggle Sidebar">
                 <IconMenu className="w-8 h-8 text-black hover:text-blue-600 transition duration-200" />
             </button>
 
-            {/* Titel */}
-            <span className="font-serif font-bold text-black tracking-wider text-lg sm:text-2xl">KUNSKAPSPLATSEN</span>
+            {/* Title with click handler and updated font */}
+            <span
+                className="text-black tracking-wider text-lg sm:text-2xl cursor-pointer font-bold font-[Roboto]" // Replace 'font-[Roboto]' with your app's shared font class
+                onClick={handleTitleClick}
+            >
+                KUNSKAPSPLATSEN
+            </span>
 
-            {/* Profilmeny */}
+            {/* Profile menu */}
             <div className="flex items-center space-x-3 relative">
                 <span className="text-base font-medium cursor-pointer hover:underline" onClick={() => setShowMenu((prev) => !prev)} aria-label="Toggle user menu">
                     {user?.username || 'Användare'}
                 </span>
 
-                {/* Visa bara profilbild om användaren inte är admin */}
+                {/* Show profile picture only if user is not an admin */}
                 {!user?.isAdmin && (
                     <img
                         src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}

@@ -90,7 +90,7 @@ const AdditionComponent = () => {
             </div>
 
             {/* Main Content */}
-            <div className="transition-transform duration-700 ease-in-out w-full max-w-md">
+            <div className="transition-transform duration-700 ease-in-out w-full max-w-md mt-10 mb-10">
                 {/* Instructions */}
                 {currentQuestion <= totalQuestions && (
                     <div className="w-full bg-white p-6 rounded-lg shadow-lg mb-6">

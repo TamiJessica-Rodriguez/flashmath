@@ -4,6 +4,7 @@ const ProblemSolvingComponent = () => {
     const [feedback, setFeedback] = useState('');
     const [frogs, setFrogs] = useState(Array(10).fill(false)); // Tracks which frogs are clicked
     const [cars, setCars] = useState(Array(8).fill(false)); // Tracks which cars are clicked
+    const [crabs, setCrabs] = useState(Array(6).fill(false)); // Tracks which crabs are clicked
 
     const handleAnswer = (isCorrect: boolean) => {
         if (isCorrect) {
@@ -23,6 +24,10 @@ const ProblemSolvingComponent = () => {
         setCars((prev) => prev.map((clicked, i) => (i === index ? !clicked : clicked)));
     };
 
+    const toggleCrabOpacity = (index: number) => {
+        setCrabs((prev) => prev.map((clicked, i) => (i === index ? !clicked : clicked)));
+    };
+
     const playQuestionAudio = (text: string) => {
         if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance(text);
@@ -33,28 +38,28 @@ const ProblemSolvingComponent = () => {
         }
     };
 
-    const playIntroductionAudio = () => {
-        const introText = `Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar eller lyssna på frågan!`;
-        playQuestionAudio(introText);
-    };
-
     return (
         <div className="min-h-screen p-6 flex flex-col items-center">
+            {/* Introduction */}
             <div className="bg-white w-full mx-auto p-6 rounded-lg shadow-md mb-10 mt-5">
-                <div className="flex justify-between items-center">
-                    <p className="text-2xl text-center mb-8 text-black font-extrabold">
+                <div className="flex justify-between items-center mb-4">
+                    <p className="text-2xl text-center text-black font-extrabold">
                         Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar eller lyssna på frågan!
                     </p>
-                    <button onClick={playIntroductionAudio} className="text-blue-500 hover:text-blue-700 text-2xl" aria-label="Lyssna på introduktion">
+                    <button
+                        onClick={() => playQuestionAudio('Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar eller lyssna på frågan!')}
+                        className="text-blue-500 hover:text-blue-700 text-xl"
+                        aria-label="Lyssna på introduktionen"
+                    >
                         🔊
                     </button>
                 </div>
             </div>
 
             {/* Feedback */}
-            {feedback && <div className="bg-blue-50 text-blue-700 py-2 px-4 rounded-md mb-4 text-center shadow-md">{feedback}</div>}
+            {feedback && <div className="bg-blue-50 text-blue-700 py-2 px-4 rounded-md mb-8 text-center shadow-md">{feedback}</div>}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-20 max-w-4xl w-full">
                 {/* Problem 1 */}
                 <div className="bg-white p-6 rounded-lg shadow-lg">
                     <div className="flex justify-between items-center mb-4">
@@ -155,6 +160,46 @@ const ProblemSolvingComponent = () => {
                         </button>
                         <button onClick={() => handleAnswer(false)} className="bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 transition">
                             4
+                        </button>
+                    </div>
+                </div>
+
+                {/* Problem 4 */}
+                <div className="bg-white p-6 rounded-lg shadow-lg">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-extrabold">Hur många krabbor är kvar på stranden?</h2>
+                        <button
+                            onClick={() => playQuestionAudio('Det fanns 6 krabbor på stranden. Två gömde sig. Hur många är kvar?')}
+                            className="text-blue-500 hover:text-blue-700 text-xl"
+                            aria-label="Lyssna på frågan"
+                        >
+                            🔊
+                        </button>
+                    </div>
+                    <p className="mb-4 font-extrabold">Det fanns 6 krabbor på stranden. Två gömde sig. Hur många är kvar?</p>
+                    <div className="grid grid-cols-3 gap-4">
+                        {crabs.map((clicked, index) => (
+                            <img
+                                key={index}
+                                src="/assets/images/crabpirate.png"
+                                alt={`Krabba ${index + 1}`}
+                                className={`w-16 h-16 rounded-lg cursor-pointer transition-opacity ${clicked ? 'opacity-25' : 'opacity-100'}`}
+                                onClick={() => toggleCrabOpacity(index)}
+                            />
+                        ))}
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                        <button onClick={() => handleAnswer(true)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition">
+                            4
+                        </button>
+                        <button onClick={() => handleAnswer(false)} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition">
+                            5
+                        </button>
+                        <button onClick={() => handleAnswer(false)} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition">
+                            3
+                        </button>
+                        <button onClick={() => handleAnswer(false)} className="bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 transition">
+                            6
                         </button>
                     </div>
                 </div>

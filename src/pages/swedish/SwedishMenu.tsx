@@ -69,11 +69,11 @@ const SwedishMenu = () => {
             >
                 <Tab.List className="mt-4 flex w-full justify-between border-b border-gray-200 dark:border-gray-700">
                     {[
-                        { image: 'assets/images/boyreading.png', text: 'Läsa', style: 'w-20 h-20' },
-                        { image: 'assets/images/boylistening.png', text: 'Lyssna', style: 'w-20 h-20' },
-                        { image: 'assets/images/flattv.png', text: 'Video', style: 'w-25 h-20' }, // Anpassad höjd för att matcha
-                        { image: 'assets/images/controlgame.png', text: 'Spela', style: 'w-20 h-20 object-contain' },
-                        { image: 'assets/images/girlVR.png', text: 'Upplev', style: 'w-20 h-20' },
+                        { image: 'assets/images/boyreading.png', text: 'Läsa', style: 'w-12 h-12 sm:w-20 sm:h-20' },
+                        { image: 'assets/images/boylistening.png', text: 'Lyssna', style: 'w-12 h-12 sm:w-20 sm:h-20' },
+                        { image: 'assets/images/flattv.png', text: 'Video', style: 'w-12 h-12 sm:w-20 sm:h-20' }, // Justerat för samma höjd
+                        { image: 'assets/images/controlgame.png', text: 'Spela', style: 'w-12 h-12 sm:w-20 sm:h-20 object-contain' },
+                        { image: 'assets/images/girlVR.png', text: 'Upplev', style: 'w-12 h-12 sm:w-20 sm:h-20' },
                     ].map((tab, idx) => (
                         <Tab as={Fragment} key={idx}>
                             {({ selected }) => (

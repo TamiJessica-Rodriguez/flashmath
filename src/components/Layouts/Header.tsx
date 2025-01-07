@@ -1056,7 +1056,7 @@ const Header: React.FC = () => {
                     <img
                         src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
                         alt={user?.username || 'Standard Avatar'}
-                        className="w-12 h-12 cursor-pointer  transition duration-200 object-cover"
+                        className="w-10 h-10 cursor-pointer  transition duration-200 object-cover"
                         onClick={() => setShowMenu((prev) => !prev)}
                     />
                 )}

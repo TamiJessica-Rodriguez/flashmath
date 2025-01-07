@@ -25,43 +25,6 @@ const Login = () => {
         }));
     };
 
-    // const handleSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     setError('');
-
-    //     try {
-    //         let response;
-    //         if (form.isAdmin) {
-    //             // Om det är en admin
-    //             response = await loginAdmin(form.username, form.password);
-    //         } else {
-    //             // Om det är en vanlig användare
-    //             response = await loginUser(form.username, form.password);
-    //         }
-
-    //         console.log('Login successful:', response);
-
-    //         // Spara användardata i localStorage eller global state
-    //         localStorage.setItem('user', JSON.stringify(response.user));
-
-    //         // Navigera baserat på adminstatus
-    //         if (response.user.isAdmin) {
-    //             navigate('/teacherstartpage');
-    //         } else {
-    //             navigate('/startpagestudent');
-    //         }
-    //     } catch (error: any) {
-    //         console.error('Error logging in:', error);
-    //         if (error.response) {
-    //             setError(error.response.data || 'Felaktigt användarnamn eller lösenord');
-    //         } else if (error.request) {
-    //             setError('Ingen respons från servern. Kontrollera din anslutning.');
-    //         } else {
-    //             setError('Ett oväntat fel inträffade. Försök igen senare.');
-    //         }
-    //     }
-    // };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
@@ -98,7 +61,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-cover bg-center flex items-center justify-center" style={{ backgroundImage: "url('/assets/images/ocean.webp')" }}>
+        <div className="min-h-screen bg-cover bg-center flex items-center justify-center" style={{ backgroundImage: "url('/assets/images/startpage.webp')" }}>
             <div
                 className="w-full max-w-md mx-auto rounded shadow-md p-8"
                 style={{

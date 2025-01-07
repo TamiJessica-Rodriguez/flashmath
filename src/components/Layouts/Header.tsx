@@ -1034,17 +1034,14 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="bg-blue-100/50 shadow-md flex justify-between items-center py-3 px-6">
+        <header className="bg-blue-100 shadow-md flex justify-between items-center py-3 px-6">
             {/* Larger hamburger menu */}
             <button onClick={() => dispatch(toggleSidebar())} className="p-3 rounded-md font-bold text-black" aria-label="Toggle Sidebar">
                 <IconMenu className="w-8 h-8 text-black hover:text-blue-600 transition duration-200" />
             </button>
 
             {/* Title with click handler and updated font */}
-            <span
-                className="text-black tracking-wider text-lg sm:text-2xl cursor-pointer font-bold font-[Roboto]" // Replace 'font-[Roboto]' with your app's shared font class
-                onClick={handleTitleClick}
-            >
+            <span className="text-black tracking-wider text-lg sm:text-2xl cursor-pointer font-bold font-[Roboto]" onClick={handleTitleClick}>
                 KUNSKAPSPLATSEN
             </span>
 
@@ -1058,7 +1055,7 @@ const Header: React.FC = () => {
                 {!user?.isAdmin && (
                     <img
                         src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
-                        alt={user?.username || 'Standard Avatar'} // Lägg till en fallback-text för alt-attributet
+                        alt={user?.username || 'Standard Avatar'}
                         className="w-8 h-8 rounded-full cursor-pointer border-2 border-blue-400 hover:border-blue-600 transition duration-200"
                         onClick={() => setShowMenu((prev) => !prev)}
                     />

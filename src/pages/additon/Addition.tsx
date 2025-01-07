@@ -9,7 +9,7 @@ const Tabs = () => {
     return (
         <Tab.Group>
             {/* Tab List */}
-            <Tab.List className="mt-6 flex flex-wrap gap-6 p-4 bg-gray-100 rounded-lg shadow-md">
+            <Tab.List className="mt-6 flex flex-wrap gap-6 p-4 bg-transparent rounded-lg shadow-md">
                 {/* Addition Tab */}
                 <Tab as={Fragment}>
                     {({ selected }) => (
@@ -38,7 +38,7 @@ const Tabs = () => {
                 <Tab as={Fragment}>
                     {({ selected }) => (
                         <button
-                            className={`${selected ? 'bg-blue-300 text-white !outline-none' : ''} flex items-center gap-2 text-2xl font-semibold rounded p-3 py-2 hover:bg-blue-600 hover:text-white`}
+                            className={`${selected ? 'bg-blue-600 text-white !outline-none' : ''} flex items-center gap-2 text-2xl font-semibold rounded p-3 py-2 hover:bg-blue-600 hover:text-white`}
                         >
                             <span className="text-3xl">🧩</span> {/* Emoji för Problemlösning */}
                             Problemlösning
@@ -48,7 +48,7 @@ const Tabs = () => {
             </Tab.List>
 
             {/* Tab Panels */}
-            <Tab.Panels className="mt-8 p-6 bg-gray-50 rounded-lg shadow-md">
+            <Tab.Panels className="mt-8 p-6 rounded-lg shadow-md bg-blue-100">
                 {/* Addition Panel */}
                 <Tab.Panel>
                     <AdditionComponent />

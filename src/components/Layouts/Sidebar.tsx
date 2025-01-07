@@ -780,7 +780,9 @@ const Sidebar: React.FC = () => {
     return (
         <div>
             <nav
-                className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] bg-white shadow-md z-50 transition-all duration-300 ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'}`}
+                className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] bg-blue-100 shadow-md z-50 transition-all duration-300 ${
+                    isSidebarVisible ? 'translate-x-0' : '-translate-x-full'
+                }`}
             >
                 <div className="h-full flex flex-col">
                     {/* Arrow placed above the navigation bar */}

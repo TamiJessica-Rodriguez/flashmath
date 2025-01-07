@@ -33,12 +33,22 @@ const ProblemSolvingComponent = () => {
         }
     };
 
+    const playIntroductionAudio = () => {
+        const introText = `Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar eller lyssna på frågan!`;
+        playQuestionAudio(introText);
+    };
+
     return (
         <div className="min-h-screen p-6 flex flex-col items-center">
             <div className="bg-white w-full mx-auto p-6 rounded-lg shadow-md mb-10 mt-5">
-                <p className="text-2xl text-center mb-8 text-black font-extrabold">
-                    Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar eller lyssna på frågan!
-                </p>
+                <div className="flex justify-between items-center">
+                    <p className="text-2xl text-center mb-8 text-black font-extrabold">
+                        Här kan du träna på att lösa problem med hjälp av bilder och ledtrådar. Klicka på rätt svar eller lyssna på frågan!
+                    </p>
+                    <button onClick={playIntroductionAudio} className="text-blue-500 hover:text-blue-700 text-2xl" aria-label="Lyssna på introduktion">
+                        🔊
+                    </button>
+                </div>
             </div>
 
             {/* Feedback */}

@@ -14,10 +14,10 @@ Content-Type: application/json
 Authorization: Bearer <JWT_TOKEN>
 
 {
-    "firstname": "Silvia",
-    "lastname": "Silvia",
-    "username": "Silvia",
-    "password": "Silvia"
+    "firstname": "testadmin",
+    "lastname": "testadmin",
+    "username": "testadmin",
+    "password": "testadmin"
 }
 
 ### LOGIN ADMIN

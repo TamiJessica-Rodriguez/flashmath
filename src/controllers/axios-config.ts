@@ -1,3 +1,5 @@
+
+// Running the application locally 
 import axios from 'axios';
 import { getToken } from './axios-helper';
 
@@ -17,6 +19,8 @@ axiosInstance.interceptors.request.use((config) => {
 console.log('API Base URL:', axiosInstance.defaults.baseURL);
 
 export default axiosInstance;
+
+// Running the application through deployment
 
 // import axios from 'axios';
 // import { getToken } from './axios-helper';

@@ -41,7 +41,7 @@ const Sidebar: React.FC = () => {
     const teacherLinks = (
         <>
             <li>
-                <NavLink to="/startpagestudent" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
+                <NavLink to="/teacherstartpage" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
                     <IconListCheck className="mr-2" /> Startsidan
                 </NavLink>
             </li>

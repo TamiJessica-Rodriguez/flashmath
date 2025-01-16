@@ -36,10 +36,10 @@ const TeacherStartpage: React.FC = () => {
     ];
 
     const scheduleNotes: ScheduleNote[] = [
-        { title: '4B', colorClass: 'bg-gray-200', startTime: '08:00', endTime: '09:30' },
-        { title: '4C', colorClass: 'bg-gray-200', startTime: '10:00', endTime: '11:15' },
-        { title: '3A', colorClass: 'bg-gray-200', startTime: '13:00', endTime: '14:30' },
-        { title: '3C', colorClass: 'bg-gray-200', startTime: '15:00', endTime: '16:30' },
+        { title: '4B', colorClass: 'bg-[#83b0e1]/50 opacity-50', startTime: '08:00', endTime: '09:30' },
+        { title: '4C', colorClass: 'bg-[#83b0e1]/50 opacity-50', startTime: '10:00', endTime: '11:15' },
+        { title: '3A', colorClass: 'bg-[#83b0e1]/50 opacity-50', startTime: '13:00', endTime: '14:30' },
+        { title: '3C', colorClass: 'bg-[#83b0e1]/50 opacity-50', startTime: '15:00', endTime: '16:30' },
     ];
 
     useEffect(() => {
@@ -100,19 +100,18 @@ const TeacherStartpage: React.FC = () => {
                             <div
                                 key={note.id}
                                 className={`h-48 ${
-                                    note.title.includes('3') ? 'bg-[#83b0e1]/50' : 'bg-[#e1ecf7]/75'
-                                } shadow-md rounded-lg flex items-center justify-center text-center cursor-pointer hover:shadow-lg hover:scale-105 transition-transform`}
+                                    note.title === '3A' ? 'bg-[#83b0e1]/50 cursor-pointer hover:shadow-lg hover:scale-105 transition-transform' : 'bg-[#e1ecf7]/75 cursor-not-allowed'
+                                } shadow-md rounded-lg flex items-center justify-center text-center`}
                                 onClick={() => {
                                     if (note.title === '3A') {
                                         navigate('/coursematerials');
-                                    } else {
-                                        navigate(`/${note.title.toLowerCase()}menu`);
                                     }
                                 }}
                                 role="listitem"
-                                aria-label={`Navigate to ${note.title}`}
+                                aria-label={note.title === '3A' ? `Navigate to ${note.title}` : `${note.title} is not clickable`}
+                                aria-disabled={note.title !== '3A'}
                             >
-                                <h2 className="text-xl font-bold text-gray-800">{note.title}</h2>
+                                <h2 className={`text-xl font-bold ${note.title === '3A' ? 'text-gray-800' : 'text-gray-400'}`}>{note.title}</h2>
                             </div>
                         ))}
                     </div>

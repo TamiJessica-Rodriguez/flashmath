@@ -79,7 +79,7 @@ const StartPageStudent: React.FC = () => {
             {/* Mobilvy - schema */}
             {isMobile && (
                 <AnimateHeight duration={300} height={showSchedule ? 'auto' : 0}>
-                    <div className="w-full bg-white shadow-lg p-4">
+                    <div className="w-full bg-white shadow-lg p-4 opacity-50">
                         <div className="mb-4">
                             <h3 className="text-lg font-bold">Idag: Tisdag</h3>
                         </div>
@@ -100,9 +100,9 @@ const StartPageStudent: React.FC = () => {
                             return (
                                 <div
                                     key={note.id}
-                                    className={`relative p-6 h-64 cursor-pointer rounded-lg shadow-lg ${
-                                        details?.colorClass || 'bg-gray-100'
-                                    } transition-transform duration-300 ease-in-out group hover:scale-105`}
+                                    className={`relative p-6 h-64 cursor-pointer rounded-lg shadow-lg ${details?.colorClass || 'bg-gray-100'} transition-transform duration-300 ease-in-out ${
+                                        ['Svenska', 'Matematik'].includes(note.title) ? 'group hover:scale-105' : 'opacity-50'
+                                    }`}
                                     onClick={() => {
                                         if (note.title === 'Svenska') {
                                             navigate('/swedishmenu');
@@ -133,7 +133,7 @@ const StartPageStudent: React.FC = () => {
 
                 {/* Schema för större skärmar */}
                 {!isMobile && (
-                    <div className="w-64 flex-shrink-0 bg-gray-100 p-4 shadow-md">
+                    <div className="w-64 flex-shrink-0 bg-gray-100 p-4 shadow-md opacity-50">
                         <div className="mb-4">
                             <p className="text-sm font-medium">Idag:</p>
                             <h3 className="text-lg font-bold">Tisdag</h3>

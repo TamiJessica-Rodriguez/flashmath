@@ -54,7 +54,7 @@ const Header: React.FC = () => {
 
             {/* Profile menu */}
             <div className="flex items-center space-x-3 relative">
-                <span className="text-base font-medium cursor-pointer hover:underline" onClick={() => setShowMenu((prev) => !prev)} aria-label="Toggle user menu">
+                <span className="text-base font-medium cursor-pointer hover:text-white hover:bg-blue-500 px-2 py-1 rounded" onClick={() => setShowMenu((prev) => !prev)} aria-label="Toggle user menu">
                     {user?.username || 'Användare'}
                 </span>
 
@@ -63,14 +63,14 @@ const Header: React.FC = () => {
                     <img
                         src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
                         alt={user?.username || 'Standard Avatar'}
-                        className="w-10 h-10 cursor-pointer  transition duration-200 object-cover"
+                        className="w-10 h-10 cursor-pointer transition duration-200 object-cover"
                         onClick={() => setShowMenu((prev) => !prev)}
                     />
                 )}
 
                 {showMenu && (
                     <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10 text-blue-900" role="menu">
-                        <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-medium hover:bg-blue-100" role="menuitem">
+                        <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-medium opacity-50 pointer-events-none" role="menuitem">
                             Profil
                         </button>
                         <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-lg font-medium text-red-600 hover:bg-blue-100" role="menuitem">

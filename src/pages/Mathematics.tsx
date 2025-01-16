@@ -15,11 +15,10 @@ const Main = () => {
 
     // Log out user
     const handleLogout = () => {
-        localStorage.removeItem('user'); // Clear user data
-        navigate('/login'); // Redirect to login page
+        localStorage.removeItem('user');
+        navigate('/login');
     };
 
-    // Data for the cards
     const cards = [
         {
             title: 'Addition',
@@ -48,7 +47,7 @@ const Main = () => {
             description: 'Navigera genom labyrinter och lös matematikgåtor.',
             date: '18 Nov 2024',
             author: 'Bob Green',
-            link: '/maze', // Add specific link for Labyrint
+            link: '/maze', 
         },
     ];
 
@@ -68,10 +67,18 @@ const Main = () => {
                     <div
                         key={index}
                         onClick={() => navigate(card.title === 'Labyrint' ? '/maze' : `/${card.title.toLowerCase()}`)}
-                        className="cursor-pointer bg-white shadow-md rounded overflow-hidden transition-transform duration-500 ease-in-out group hover:shadow-lg hover:scale-105"
+                        className={`cursor-pointer bg-white shadow-md rounded overflow-hidden transition-transform duration-500 ease-in-out group ${
+                            ['Addition', 'Labyrint'].includes(card.title) ? 'hover:shadow-lg hover:scale-105' : 'opacity-50 pointer-events-none'
+                        }`}
                     >
                         <div className="relative h-64 overflow-hidden">
-                            <img src={card.image} alt={card.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110" />
+                            <img
+                                src={card.image}
+                                alt={card.title}
+                                className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-in-out ${
+                                    ['Addition', 'Labyrint'].includes(card.title) ? 'group-hover:scale-110' : ''
+                                }`}
+                            />
                         </div>
                         <div className="p-4">
                             <p className="text-primary text-xs font-bold mb-1">{card.date}</p>

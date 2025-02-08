@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { IRootState } from '../../store';
 import { toggleSidebar } from '../../store/themeConfigSlice';
-import IconArrowBackward from '../Icon/IconArrowBackward'; // Import the IconArrowBackward component
+import IconArrowBackward from '../Icon/IconArrowBackward';
 import IconBook from '../Icon/IconBook';
 import IconCalendar from '../Icon/IconCalendar';
 import IconGallery from '../Icon/IconGallery';
@@ -42,27 +42,32 @@ const Sidebar: React.FC = () => {
         <>
             <li>
                 <NavLink to="/teacherstartpage" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
-                    <IconListCheck className="mr-2" /> Startsidan
+                    <IconListCheck className="mr-2" aria-hidden="true" />
+                    <span>Startsidan</span>
                 </NavLink>
             </li>
             <li>
                 <NavLink to="/info" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
-                    <IconGallery className="mr-2" /> InfoHyllan
+                    <IconGallery className="mr-2" aria-hidden="true" />
+                    <span>InfoHyllan</span>
                 </NavLink>
             </li>
             <li>
                 <NavLink to="/apps/calendar" className="block px-4 py-2 opacity-50 pointer-events-none rounded flex items-center">
-                    <IconCalendar className="mr-2" /> Kalender
+                    <IconCalendar className="mr-2" aria-hidden="true" />
+                    <span>Kalender</span>
                 </NavLink>
             </li>
             <li>
                 <NavLink to="/coursematerials" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
-                    <IconBook className="mr-2" /> Kursmaterial
+                    <IconBook className="mr-2" aria-hidden="true" />
+                    <span>Kursmaterial</span>
                 </NavLink>
             </li>
             <li>
                 <NavLink to="/assignments" className="block px-4 py-2 opacity-50 pointer-events-none rounded flex items-center">
-                    <IconBook className="mr-2" /> Uppgifter
+                    <IconBook className="mr-2" aria-hidden="true" />
+                    <span>Uppgifter</span>
                 </NavLink>
             </li>
         </>
@@ -72,22 +77,26 @@ const Sidebar: React.FC = () => {
         <>
             <li>
                 <NavLink to="/startpagestudent" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
-                    <IconListCheck className="mr-2" /> Startsidan
+                    <IconListCheck className="mr-2" aria-hidden="true" />
+                    <span>Startsidan</span>
                 </NavLink>
             </li>
             <li>
                 <NavLink to="/info" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
-                    <IconGallery className="mr-2" /> InfoHyllan
+                    <IconGallery className="mr-2" aria-hidden="true" />
+                    <span>InfoHyllan</span>
                 </NavLink>
             </li>
             <li>
                 <NavLink to="/weeklyschedule" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
-                    <IconCalendar className="mr-2" /> Schema
+                    <IconCalendar className="mr-2" aria-hidden="true" />
+                    <span>Schema</span>
                 </NavLink>
             </li>
             <li>
                 <NavLink to="/studytechniques" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
-                    <IconBook className="mr-2" /> Personlig Assistent
+                    <IconBook className="mr-2" aria-hidden="true" />
+                    <span>Personlig Assistent</span>
                 </NavLink>
             </li>
         </>
@@ -103,8 +112,8 @@ const Sidebar: React.FC = () => {
                 <div className="h-full flex flex-col">
                     {/* Arrow placed above the navigation bar */}
                     <div className="flex justify-end px-4 py-3 border-b border-gray-200">
-                        <button type="button" className="text-gray-700 hover:text-white hover:bg-blue-500 p-2 rounded-full" onClick={() => dispatch(toggleSidebar())} aria-label="Close Sidebar">
-                            <IconArrowBackward />
+                        <button type="button" className="text-gray-700 hover:text-white hover:bg-blue-500 p-2 rounded-full" onClick={() => dispatch(toggleSidebar())} aria-label="Stäng sidomenyn">
+                            <IconArrowBackward aria-hidden="true" />
                         </button>
                     </div>
 

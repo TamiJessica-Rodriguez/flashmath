@@ -7,7 +7,7 @@ import IconMenu from '../Icon/IconMenu';
 interface User {
     username: string;
     avatar: string;
-    isAdmin: boolean; // Field to determine if the user is an admin
+    isAdmin: boolean;
 }
 
 const Header: React.FC = () => {
@@ -36,18 +36,16 @@ const Header: React.FC = () => {
         if (user) {
             navigate(user.isAdmin ? '/teacherstartpage' : '/startpagestudent');
         } else {
-            navigate('/'); // Fallback for users who are not logged in
+            navigate('/');
         }
     };
 
     return (
-        <header className="bg-blue-100 shadow-md flex justify-between items-center py-3 px-6">
-            {/* Larger hamburger menu */}
-            <button onClick={() => dispatch(toggleSidebar())} className="p-3 rounded-md font-bold text-black" aria-label="Toggle Sidebar">
+        <header className="bg-blue-100 shadow-md flex justify-between items-center">
+            <button onClick={() => dispatch(toggleSidebar())} className="p-3 rounded-md font-bold text-black ml-2" aria-label="Toggle Sidebar">
                 <IconMenu className="w-8 h-8 text-black hover:text-blue-600 transition duration-200" aria-hidden="true" />
             </button>
 
-            {/* Title with click handler and updated font */}
             <span className="text-black tracking-wider text-lg sm:text-2xl cursor-pointer font-bold font-[Roboto]" onClick={handleTitleClick} role="heading" aria-level={1}>
                 KUNSKAPSPLATSEN
             </span>
@@ -62,7 +60,6 @@ const Header: React.FC = () => {
                     {user?.username || 'Användare'}
                 </button>
 
-                {/* Show profile picture only if user is not an admin */}
                 {!user?.isAdmin && (
                     <img
                         src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}

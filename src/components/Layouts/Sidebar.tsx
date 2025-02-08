@@ -41,31 +41,31 @@ const Sidebar: React.FC = () => {
     const teacherLinks = (
         <>
             <li>
-                <NavLink to="/teacherstartpage" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
+                <NavLink to="/teacherstartpage" className="px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
                     <IconListCheck className="mr-2" aria-hidden="true" />
                     <span>Startsidan</span>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/info" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
+                <NavLink to="/info" className="px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
                     <IconGallery className="mr-2" aria-hidden="true" />
                     <span>InfoHyllan</span>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/apps/calendar" className="block px-4 py-2 opacity-50 pointer-events-none rounded flex items-center">
+                <NavLink to="/apps/calendar" className="px-4 py-2 opacity-50 pointer-events-none rounded flex items-center">
                     <IconCalendar className="mr-2" aria-hidden="true" />
                     <span>Kalender</span>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/coursematerials" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
+                <NavLink to="/coursematerials" className="px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
                     <IconBook className="mr-2" aria-hidden="true" />
                     <span>Kursmaterial</span>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/assignments" className="block px-4 py-2 opacity-50 pointer-events-none rounded flex items-center">
+                <NavLink to="/assignments" className="px-4 py-2 opacity-50 pointer-events-none rounded flex items-center">
                     <IconBook className="mr-2" aria-hidden="true" />
                     <span>Uppgifter</span>
                 </NavLink>
@@ -76,25 +76,25 @@ const Sidebar: React.FC = () => {
     const studentLinks = (
         <>
             <li>
-                <NavLink to="/startpagestudent" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
+                <NavLink to="/startpagestudent" className="px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
                     <IconListCheck className="mr-2" aria-hidden="true" />
                     <span>Startsidan</span>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/info" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
+                <NavLink to="/info" className="px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
                     <IconGallery className="mr-2" aria-hidden="true" />
                     <span>InfoHyllan</span>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/weeklyschedule" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
+                <NavLink to="/weeklyschedule" className="px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
                     <IconCalendar className="mr-2" aria-hidden="true" />
                     <span>Schema</span>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/studytechniques" className="block px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
+                <NavLink to="/studytechniques" className="px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
                     <IconBook className="mr-2" aria-hidden="true" />
                     <span>Personlig Assistent</span>
                 </NavLink>

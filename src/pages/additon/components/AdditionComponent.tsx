@@ -82,14 +82,18 @@ const AdditionComponent = () => {
     };
 
     return (
-        <div className={`min-h-screen flex items-center justify-center relative overflow-hidden ${isSimpleMode ? 'bg-white' : 'bg-blue-100'}`}>
+        <div className={`min-h-screen flex items-center justify-center relative overflow-hidden ${isSimpleMode ? 'bg-white' : 'bg-blue-100'}`} aria-label="Addition Quiz Page">
             {/* Error Popup */}
             {showErrorPopup && (
-                <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+                <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50" role="alertdialog" aria-labelledby="error-title" aria-describedby="error-description">
                     <div className="bg-white p-6 rounded shadow-lg text-center">
-                        <h2 className="text-xl font-bold text-red-500 mb-4">Fel svar</h2>
-                        <p className="text-gray-700 mb-4">Var vänlig försök igen!</p>
-                        <button onClick={closeErrorPopup} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center font-bold transition">
+                        <h2 id="error-title" className="text-xl font-bold text-red-500 mb-4">
+                            Fel svar
+                        </h2>
+                        <p id="error-description" className="text-gray-700 mb-4">
+                            Var vänlig försök igen!
+                        </p>
+                        <button onClick={closeErrorPopup} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center font-bold transition" aria-label="Försök igen">
                             Försök igen
                         </button>
                     </div>
@@ -98,14 +102,14 @@ const AdditionComponent = () => {
 
             {/* Toast Notification */}
             {showToast && (
-                <div className="fixed top-16 left-1/2 transform -translate-x-1/2 bg-white p-6 rounded shadow-lg z-50">
+                <div className="fixed top-16 left-1/2 transform -translate-x-1/2 bg-white p-6 rounded shadow-lg z-50" role="alert" aria-live="assertive">
                     <h2 className="text-xl font-bold text-blue-500 mb-4">Grattis! 🎉 Du klarade alla frågor!</h2>
                     <p className="text-gray-700 mb-4">Vill du fortsätta?</p>
                     <div className="flex justify-center gap-4">
-                        <button onClick={handleContinue} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center font-bold transition">
+                        <button onClick={handleContinue} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center font-bold transition" aria-label="Ja, fortsätt">
                             Ja
                         </button>
-                        <button onClick={restartQuiz} className="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded-md text-center font-bold transition">
+                        <button onClick={restartQuiz} className="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded-md text-center font-bold transition" aria-label="Nej, börja om">
                             Nej
                         </button>
                     </div>
@@ -119,6 +123,7 @@ const AdditionComponent = () => {
                     <button
                         onClick={() => setIsSimpleMode((prev) => !prev)}
                         className={`w-10 h-5 rounded-full ${isSimpleMode ? 'bg-blue-200' : 'bg-gray-300'} relative transition-colors duration-300`}
+                        aria-label="Toggle background color"
                     >
                         <span className={`absolute top-0.5 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300 ${isSimpleMode ? 'translate-x-5' : ''}`}></span>
                     </button>
@@ -129,10 +134,12 @@ const AdditionComponent = () => {
             <div className="transition-transform duration-700 ease-in-out w-full max-w-md mt-10 mb-10">
                 {/* Instructions */}
                 {currentQuestion <= totalQuestions && (
-                    <div className="w-full bg-white p-6 rounded-lg shadow-lg mb-6">
+                    <div className="w-full bg-white p-6 rounded-lg shadow-lg mb-6" role="region" aria-labelledby="instructions-title">
                         <div className="flex justify-between items-center">
-                            <h2 className="text-xl font-bold text-gray-800">Hur man spelar</h2>
-                            <button onClick={playIntroductionAudio} className="text-2xl text-blue-500 hover:text-blue-600 transition">
+                            <h2 id="instructions-title" className="text-xl font-bold text-gray-800">
+                                Hur man spelar
+                            </h2>
+                            <button onClick={playIntroductionAudio} className="text-2xl text-blue-500 hover:text-blue-600 transition" aria-label="Play introduction audio">
                                 🔊
                             </button>
                         </div>
@@ -146,12 +153,12 @@ const AdditionComponent = () => {
                 {currentQuestion <= totalQuestions ? (
                     <>
                         {/* Quiz Question */}
-                        <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
+                        <div className="bg-white p-6 rounded-lg shadow-lg mb-6" role="region" aria-labelledby="question-title">
                             <div className="flex justify-between items-center">
-                                <p className="text-center text-2xl font-bold py-6 px-4 rounded-md">
+                                <p id="question-title" className="text-center text-2xl font-bold py-6 px-4 rounded-md">
                                     Vad är {question.num1} + {question.num2}?
                                 </p>
-                                <button onClick={playQuestionAudio} className="text-2xl text-blue-500 hover:text-blue-600 transition">
+                                <button onClick={playQuestionAudio} className="text-2xl text-blue-500 hover:text-blue-600 transition" aria-label="Play question audio">
                                     🔊
                                 </button>
                             </div>
@@ -163,6 +170,7 @@ const AdditionComponent = () => {
                                             isSimpleMode ? 'bg-gray-200 text-gray-800 hover:bg-gray-300' : `text-white ${colors[index % colors.length]} hover:bg-blue-600`
                                         } shadow-lg hover:shadow-xl transition transform hover:scale-105`}
                                         onClick={() => handleAnswer(option)}
+                                        aria-label={`Answer option ${option}`}
                                     >
                                         {option}
                                     </button>
@@ -171,9 +179,11 @@ const AdditionComponent = () => {
                         </div>
                     </>
                 ) : (
-                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <h2 className="text-xl font-bold mb-4 text-gray-800">Grattis! 🎉 Du klarade det!</h2>
-                        <button onClick={restartQuiz} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center font-bold transition">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center" role="region" aria-labelledby="congratulations-title">
+                        <h2 id="congratulations-title" className="text-xl font-bold mb-4 text-gray-800">
+                            Grattis! 🎉 Du klarade det!
+                        </h2>
+                        <button onClick={restartQuiz} className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center font-bold transition" aria-label="Börja om">
                             Börja om
                         </button>
                     </div>

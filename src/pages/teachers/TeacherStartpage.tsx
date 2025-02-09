@@ -23,7 +23,6 @@ const TeacherStartpage: React.FC = () => {
     const navigate = useNavigate();
 
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 640);
-    const [isTablet, setIsTablet] = useState<boolean>(window.innerWidth > 640 && window.innerWidth <= 1024);
     const [showSchedule, setShowSchedule] = useState<boolean>(false);
     const [scheduleHeight, setScheduleHeight] = useState<'auto' | 0>(0);
     const [showModal, setShowModal] = useState<boolean>(false);
@@ -49,7 +48,6 @@ const TeacherStartpage: React.FC = () => {
 
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 640);
-            setIsTablet(window.innerWidth > 640 && window.innerWidth <= 1024);
         };
 
         window.addEventListener('resize', handleResize);
@@ -65,10 +63,16 @@ const TeacherStartpage: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-5 sm:h-screen h-screen bg-gray-50 font-['Roboto'] overflow-auto" aria-label="Teacher Startpage">
-            {/* Knapp för schema i alla vyer */}
-            <button onClick={toggleSchedule} className="w-full text-center bg-gray-700 text-white py-2 rounded-md shadow-md focus:ring-2 focus:ring-gray-500" aria-label="Toggle schedule visibility">
-                {showSchedule ? 'Dölj Schema' : 'Visa Schema'}
-            </button>
+            {/* Knapp för schema i mobilläge */}
+            {isMobile && (
+                <button
+                    onClick={toggleSchedule}
+                    className="w-full text-center bg-gray-700 text-white py-2 rounded-md shadow-md focus:ring-2 focus:ring-gray-500"
+                    aria-label="Toggle schedule visibility"
+                >
+                    {showSchedule ? 'Dölj Schema' : 'Visa Schema'}
+                </button>
+            )}
 
             {/* Schema i mobil vy */}
             <AnimateHeight duration={300} height={scheduleHeight}>
@@ -92,7 +96,7 @@ const TeacherStartpage: React.FC = () => {
                             Dina klasser
                         </h1>
                     </div>
-                    <div className={`grid grid-cols-1 ${isTablet ? 'md:grid-cols-2' : 'sm:grid-cols-3'} gap-6`} role="list">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6" role="list">
                         {notesList.map((note) => (
                             <div
                                 key={note.id}

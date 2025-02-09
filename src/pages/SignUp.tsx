@@ -50,7 +50,7 @@ const SignUp = () => {
     };
 
     return (
-        <div className="min-h-screen bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: "url('/assets/images/startPage.webp')" }}>
+        <div className="min-h-screen bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: "url('/assets/images/startPage.webp')" }} aria-label="Sign up page background">
             <div
                 className="flex flex-col lg:flex-row bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl"
                 style={{
@@ -62,7 +62,11 @@ const SignUp = () => {
                 <div className="w-full lg:w-1/2 p-6 flex flex-col justify-between">
                     <div>
                         <h1 className="text-2xl font-bold text-center mb-4">Bli Medlem</h1>
-                        {error && <div className="text-red-600 mb-4">{error}</div>}
+                        {error && (
+                            <div className="text-red-600 mb-4" role="alert">
+                                {error}
+                            </div>
+                        )}
 
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
@@ -78,6 +82,8 @@ const SignUp = () => {
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                                     placeholder="Ange ditt förnamn"
                                     required
+                                    aria-required="true"
+                                    aria-label="Förnamn"
                                 />
                             </div>
 
@@ -94,6 +100,8 @@ const SignUp = () => {
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                                     placeholder="Ange ditt efternamn"
                                     required
+                                    aria-required="true"
+                                    aria-label="Efternamn"
                                 />
                             </div>
 
@@ -110,6 +118,8 @@ const SignUp = () => {
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                                     placeholder="Ange ditt användarnamn"
                                     required
+                                    aria-required="true"
+                                    aria-label="Användarnamn"
                                 />
                             </div>
 
@@ -126,12 +136,20 @@ const SignUp = () => {
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                                     placeholder="Ange ett starkt lösenord"
                                     required
+                                    aria-required="true"
+                                    aria-label="Lösenord"
                                 />
                             </div>
                         </form>
                     </div>
                     <div className="flex justify-center mt-4">
-                        <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none" disabled={loading} onClick={handleSubmit}>
+                        <button
+                            type="submit"
+                            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none"
+                            disabled={loading}
+                            onClick={handleSubmit}
+                            aria-label="Bli medlem"
+                        >
                             {loading ? 'Skapar konto...' : 'Bli medlem'}
                         </button>
                     </div>
@@ -146,8 +164,16 @@ const SignUp = () => {
                                 key={avatar.value}
                                 className={`p-2 border rounded cursor-pointer ${form.avatar === avatar.value ? 'border-blue-500' : 'border-gray-300'}`}
                                 onClick={() => handleAvatarClick(avatar.value)}
+                                role="button"
+                                tabIndex={0}
+                                aria-label={`Välj ${avatar.name}`}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        handleAvatarClick(avatar.value);
+                                    }
+                                }}
                             >
-                                <img src={avatar.image} alt={avatar.name} className="w-full h-auto object-cover rounded" />
+                                <img src={avatar.image} alt={`Avatar: ${avatar.name}`} className="w-full h-auto object-cover rounded" />
                             </div>
                         ))}
                     </div>

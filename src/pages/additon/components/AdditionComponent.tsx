@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const AdditionComponent = () => {
     const totalQuestions = 3;
@@ -34,6 +34,15 @@ const AdditionComponent = () => {
     const [currentQuestion, setCurrentQuestion] = useState(1);
     const [score, setScore] = useState(0);
     const [isSimpleMode, setIsSimpleMode] = useState(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        // Simulate data fetching
+        setTimeout(() => {
+            setLoading(false);
+        }, 2000);
+    }, []);
 
     const handleAnswer = (answer: number) => {
         if (answer === question.correctAnswer) {
@@ -80,6 +89,22 @@ const AdditionComponent = () => {
         utterance.lang = 'sv-SE';
         window.speechSynthesis.speak(utterance);
     };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="loader">Laddar...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="text-red-500">{error}</div>
+            </div>
+        );
+    }
 
     return (
         <div className={`min-h-screen flex items-center justify-center relative overflow-hidden ${isSimpleMode ? 'bg-white' : 'bg-blue-100'}`} aria-label="Addition Quiz Page">

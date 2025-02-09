@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const Main = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState<{ username: string; avatar: string } | null>(null);
+    const [showModal, setShowModal] = useState(false);
 
     // Fetch user data on mount
     useEffect(() => {
@@ -47,9 +48,16 @@ const Main = () => {
             description: 'Navigera genom labyrinter och lös matematikgåtor.',
             date: '18 Nov 2024',
             author: 'Bob Green',
-            link: '/maze',
         },
     ];
+
+    const handleCardClick = (title: string) => {
+        if (title === 'Addition') {
+            navigate(`/${title.toLowerCase()}`);
+        } else {
+            setShowModal(true);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-white flex flex-col items-center" aria-label="Mathematics Page">
@@ -64,16 +72,16 @@ const Main = () => {
                 {cards.map((card, index) => (
                     <div
                         key={index}
-                        onClick={() => navigate(card.title === 'Labyrint' ? '/maze' : `/${card.title.toLowerCase()}`)}
+                        onClick={() => handleCardClick(card.title)}
                         className={`cursor-pointer bg-white shadow-md rounded overflow-hidden transition-transform duration-500 ease-in-out group ${
-                            ['Addition', 'Labyrint'].includes(card.title) ? 'hover:shadow-lg hover:scale-105' : 'opacity-50 pointer-events-none'
+                            ['Addition'].includes(card.title) ? 'hover:shadow-lg hover:scale-105' : 'opacity-50'
                         }`}
                         role="listitem"
                         aria-label={`Card for ${card.title}`}
                         tabIndex={0}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
-                                navigate(card.title === 'Labyrint' ? '/maze' : `/${card.title.toLowerCase()}`);
+                                handleCardClick(card.title);
                             }
                         }}
                     >
@@ -82,7 +90,7 @@ const Main = () => {
                                 src={card.image}
                                 alt={`Image for ${card.title} activity`}
                                 className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-in-out ${
-                                    ['Addition', 'Labyrint'].includes(card.title) ? 'group-hover:scale-110' : ''
+                                    ['Addition'].includes(card.title) ? 'group-hover:scale-110' : ''
                                 }`}
                             />
                         </div>
@@ -94,6 +102,19 @@ const Main = () => {
                     </div>
                 ))}
             </div>
+
+            {/* Modal */}
+            {showModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <h2 className="text-2xl font-bold mb-4">Under Konstruktion</h2>
+                        <p className="mb-4">Sidan är under konstruktion och kommer att lanseras inom kort.</p>
+                        <button onClick={() => setShowModal(false)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition">
+                            Stäng
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

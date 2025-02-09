@@ -20,9 +20,8 @@ const WeeklySchedule: React.FC = () => {
 
         const duration = endInMinutes - startInMinutes;
 
-        // Dynamiskt beräknad höjd för raster baserat på tid
-        if (duration >= 90) return 'h-10'; // Längre raster
-        if (duration >= 60) return 'h-8'; // Medelraster
+        if (duration >= 90) return 'h-10'; 
+        if (duration >= 60) return 'h-8'; 
         return 'h-6'; // Kort raster
     };
 

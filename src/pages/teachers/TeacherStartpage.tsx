@@ -63,23 +63,17 @@ const TeacherStartpage: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-5 sm:h-screen h-screen bg-gray-50 font-['Roboto'] overflow-auto" aria-label="Teacher Startpage">
-            {/* Knapp för schema i mobilläge */}
-            {isMobile && (
-                <button
-                    onClick={toggleSchedule}
-                    className="w-full text-center bg-gray-700 text-white py-2 rounded-md shadow-md focus:ring-2 focus:ring-gray-500"
-                    aria-label="Toggle schedule visibility"
-                >
-                    {showSchedule ? 'Dölj Schema' : 'Visa Schema'}
-                </button>
-            )}
+            {/* Knapp för schema */}
+            <button onClick={toggleSchedule} className="w-full text-center bg-gray-700 text-white py-2 rounded-md shadow-md focus:ring-2 focus:ring-gray-500" aria-label="Toggle schedule visibility">
+                {showSchedule ? 'Dölj Schema' : 'Visa Schema'}
+            </button>
 
-            {/* Schema i mobil vy */}
+            {/* Schema */}
             <AnimateHeight duration={300} height={scheduleHeight}>
-                {isMobile && showSchedule && (
-                    <div className="w-full bg-white shadow-lg p-4" role="dialog" aria-labelledby="mobile-schedule-title">
+                {showSchedule && (
+                    <div className="w-full bg-white shadow-lg p-4" role="dialog" aria-labelledby="schedule-title">
                         <div className="mb-4">
-                            <h2 className="text-lg font-bold" id="mobile-schedule-title">
+                            <h2 className="text-lg font-bold" id="schedule-title">
                                 Idag: Tisdag
                             </h2>
                         </div>
@@ -96,7 +90,7 @@ const TeacherStartpage: React.FC = () => {
                             Dina klasser
                         </h1>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6" role="list">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
                         {notesList.map((note) => (
                             <div
                                 key={note.id}
@@ -119,22 +113,6 @@ const TeacherStartpage: React.FC = () => {
                         ))}
                     </div>
                 </div>
-
-                {/* Schema i desktop vy */}
-                {!isMobile && (
-                    <div className="w-64 flex-shrink-0 overflow-auto" aria-label="Daily schedule">
-                        <div className="mb-4 flex justify-between items-center">
-                            <div>
-                                <p className="text-sm font-medium">Idag:</p>
-                                <h2 className="text-lg font-bold" id="today-schedule">
-                                    Tisdag
-                                </h2>
-                            </div>
-                            <p className="text-lg font-bold">V.45</p>
-                        </div>
-                        <ScheduleColumn notes={scheduleNotes} />
-                    </div>
-                )}
             </div>
 
             {/* Modal */}

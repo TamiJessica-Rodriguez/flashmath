@@ -93,12 +93,6 @@ const Sidebar: React.FC = () => {
                     <span>Schema</span>
                 </NavLink>
             </li>
-            <li>
-                <NavLink to="/studytechniques" className="px-4 py-2 hover:text-white hover:bg-blue-500 rounded flex items-center">
-                    <IconBook className="mr-2" aria-hidden="true" />
-                    <span>Personlig Assistent</span>
-                </NavLink>
-            </li>
         </>
     );
 

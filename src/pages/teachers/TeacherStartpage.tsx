@@ -26,6 +26,7 @@ const TeacherStartpage: React.FC = () => {
     const [isTablet, setIsTablet] = useState<boolean>(window.innerWidth > 640 && window.innerWidth <= 1024);
     const [showSchedule, setShowSchedule] = useState<boolean>(false);
     const [scheduleHeight, setScheduleHeight] = useState<'auto' | 0>(0);
+    const [showModal, setShowModal] = useState<boolean>(false);
 
     const notesList: Note[] = [
         { id: 3, title: '3A', date: '11/03/2020' },
@@ -101,6 +102,8 @@ const TeacherStartpage: React.FC = () => {
                                 onClick={() => {
                                     if (note.title === '3A') {
                                         navigate('/coursematerials');
+                                    } else {
+                                        setShowModal(true);
                                     }
                                 }}
                                 role="listitem"
@@ -112,21 +115,33 @@ const TeacherStartpage: React.FC = () => {
                         ))}
                     </div>
                 </div>
-            </div>
 
-            {/* Schema i modal */}
-            {showSchedule && (
-                <div className="fixed inset-0 flex items-start justify-center z-50 pt-16 bg-black bg-opacity-50" role="dialog" aria-labelledby="schedule-modal-title">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-2/3 lg:w-1/2 max-h-[80vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold" id="schedule-modal-title">
-                                Idag: Tisdag
-                            </h3>
-                            <button onClick={() => setShowSchedule(false)} className="text-gray-500 hover:text-gray-700" aria-label="Stäng schema">
-                                Stäng
-                            </button>
+                {/* Schema i desktop vy */}
+                {!isMobile && (
+                    <div className="w-64 flex-shrink-0 overflow-auto" aria-label="Daily schedule">
+                        <div className="mb-4 flex justify-between items-center">
+                            <div>
+                                <p className="text-sm font-medium">Idag:</p>
+                                <h2 className="text-lg font-bold" id="today-schedule">
+                                    Tisdag
+                                </h2>
+                            </div>
+                            <p className="text-lg font-bold">V.45</p>
                         </div>
                         <ScheduleColumn notes={scheduleNotes} />
+                    </div>
+                )}
+            </div>
+
+            {/* Modal */}
+            {showModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <h2 className="text-2xl font-bold mb-4">Under Konstruktion</h2>
+                        <p className="mb-4">Arbete pågår men sidan kommer lanseras snart.</p>
+                        <button onClick={() => setShowModal(false)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition">
+                            Stäng
+                        </button>
                     </div>
                 </div>
             )}

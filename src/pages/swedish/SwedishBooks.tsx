@@ -88,7 +88,7 @@ const SwedishBooks = () => {
                                 <div key={task.id} className="p-3 rounded-lg bg-white shadow-md flex flex-col sm:flex-row items-center gap-4">
                                     {/* Visa bilder för "Böcker", "Dokument", och "Föreläsningar" */}
                                     {['Böcker', 'Dokument', 'Föreläsningar'].includes(project.title) && task.imageId && (
-                                        <img src={`http://localhost:3000/api/images/${task.imageId}`} alt={`Bild för ${task.title}`} className="w-24 h-32 object-cover rounded-md" />
+                                        <img src={`http://localhost:3000/api/images/${task.imageId}`} alt={`Bild för uppgift: ${task.title}`} className="w-24 h-32 object-cover rounded-md" />
                                     )}
                                     <div className="text-center sm:text-left">
                                         <h5 className="font-semibold text-lg text-gray-700">{task.title}</h5>

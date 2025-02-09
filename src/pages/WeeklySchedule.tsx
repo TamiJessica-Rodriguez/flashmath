@@ -59,7 +59,7 @@ const WeeklySchedule: React.FC = () => {
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-4">Veckoschema</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                 {days.map((day) => (
                     <div key={day} className="flex flex-col w-full">
                         {/* Veckodag */}
@@ -79,12 +79,28 @@ const WeeklySchedule: React.FC = () => {
                                             navigate('/english');
                                         }
                                     }}
+                                    role="button"
+                                    tabIndex={0}
+                                    aria-label={`Lektion i ${note.title} från ${note.startTime} till ${note.endTime}`}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            if (note.title === 'Svenska') {
+                                                navigate('/swedishmenu');
+                                            } else if (note.title === 'Matematik') {
+                                                navigate('/mathematicsmenu');
+                                            } else if (note.title === 'Engelska') {
+                                                navigate('/english');
+                                            }
+                                        }
+                                    }}
                                 >
                                     <h3 className="font-bold text-sm sm:text-lg">{note.title}</h3>
                                     <p className="text-xs sm:text-sm text-gray-600">Distans</p>
                                     <div className="absolute top-2 left-2 text-xs sm:text-sm font-medium text-gray-700">{note.startTime}</div>
                                     <div className="absolute bottom-2 right-2 text-xs sm:text-sm font-medium text-gray-700">{note.endTime}</div>
-                                    <div className="absolute top-2 right-2 text-base sm:text-lg">📹</div>
+                                    <div className="absolute top-2 right-2 text-base sm:text-lg" aria-hidden="true">
+                                        📹
+                                    </div>
                                 </div>
 
                                 {/* Raster */}
@@ -94,6 +110,8 @@ const WeeklySchedule: React.FC = () => {
                                             note.endTime,
                                             dayNotes[idx + 1].startTime
                                         )} w-full bg-gray-200 rounded-lg shadow-inner flex items-center justify-start pl-2 my-2`}
+                                        role="region"
+                                        aria-label={`Raster från ${note.endTime} till ${dayNotes[idx + 1].startTime}`}
                                     >
                                         <p className="text-xs sm:text-sm font-bold text-black">
                                             {note.endTime} - {dayNotes[idx + 1].startTime}

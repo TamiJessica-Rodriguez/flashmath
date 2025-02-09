@@ -7,7 +7,7 @@ import IconMenu from '../Icon/IconMenu';
 interface User {
     username: string;
     avatar: string;
-    isAdmin: boolean; // Field to determine if the user is an admin
+    isAdmin: boolean;
 }
 
 const Header: React.FC = () => {
@@ -36,40 +36,41 @@ const Header: React.FC = () => {
         if (user) {
             navigate(user.isAdmin ? '/teacherstartpage' : '/startpagestudent');
         } else {
-            navigate('/'); // Fallback for users who are not logged in
+            navigate('/');
         }
     };
 
     return (
-        <header className="bg-blue-100 shadow-md flex justify-between items-center py-3 px-6">
-            {/* Larger hamburger menu */}
-            <button onClick={() => dispatch(toggleSidebar())} className="p-3 rounded-md font-bold text-black" aria-label="Toggle Sidebar">
-                <IconMenu className="w-8 h-8 text-black hover:text-blue-600 transition duration-200" />
+        <header className="bg-blue-100 shadow-md flex justify-between items-center">
+            <button onClick={() => dispatch(toggleSidebar())} className="p-3 rounded-md font-bold text-black ml-2" aria-label="Toggle Sidebar">
+                <IconMenu className="w-8 h-8 text-black hover:text-blue-600 transition duration-200" aria-hidden="true" />
             </button>
 
-            {/* Title with click handler and updated font */}
-            <span className="text-black tracking-wider text-lg sm:text-2xl cursor-pointer font-bold font-[Roboto]" onClick={handleTitleClick}>
+            <span className="text-black tracking-wider text-lg sm:text-2xl cursor-pointer font-bold font-[Roboto]" onClick={handleTitleClick} role="heading" aria-level={1}>
                 KUNSKAPSPLATSEN
             </span>
 
             {/* Profile menu */}
             <div className="flex items-center space-x-3 relative">
-                <span className="text-base font-medium cursor-pointer hover:text-white hover:bg-blue-500 px-2 py-1 rounded" onClick={() => setShowMenu((prev) => !prev)} aria-label="Toggle user menu">
+                <button
+                    className="text-base font-medium cursor-pointer hover:text-white hover:bg-blue-500 px-2 py-1 rounded"
+                    onClick={() => setShowMenu((prev) => !prev)}
+                    aria-label="Toggle user menu"
+                >
                     {user?.username || 'Användare'}
-                </span>
+                </button>
 
-                {/* Show profile picture only if user is not an admin */}
                 {!user?.isAdmin && (
                     <img
                         src={user?.avatar ? `/assets/images/${user.avatar}` : '/assets/images/default-avatar.png'}
-                        alt={user?.username || 'Standard Avatar'}
-                        className="w-10 h-10 cursor-pointer transition duration-200 object-cover"
+                        alt={`Profilbild av ${user?.username || 'Standard användare'}`}
+                        className="w-10 h-10 cursor-pointer transition duration-200 object-cover rounded-full"
                         onClick={() => setShowMenu((prev) => !prev)}
                     />
                 )}
 
                 {showMenu && (
-                    <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10 text-blue-900" role="menu">
+                    <div className="absolute right-0 mt-3 w-48 bg-white shadow-md rounded-md z-10 text-blue-900" role="menu" aria-label="User menu">
                         <button onClick={handleProfileClick} className="block w-full text-left px-4 py-3 text-lg font-medium opacity-50 pointer-events-none" role="menuitem">
                             Profil
                         </button>

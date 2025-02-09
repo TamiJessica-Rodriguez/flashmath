@@ -67,23 +67,23 @@ const SwedishMenu = () => {
                     setActiveTab(tabNames[index]);
                 }}
             >
-                <Tab.List className="mt-4 flex w-full justify-between border-b border-gray-200 dark:border-gray-700">
+                <Tab.List className="mt-4 flex flex-wrap justify-between gap-4 border-b border-gray-200 dark:border-gray-700">
                     {[
-                        { image: 'assets/images/boyreading.png', text: 'Läsa', style: 'w-12 h-12 sm:w-20 sm:h-20' },
-                        { image: 'assets/images/boylistening.png', text: 'Lyssna', style: 'w-12 h-12 sm:w-20 sm:h-20' },
-                        { image: 'assets/images/flattv.png', text: 'Video', style: 'w-12 h-12 sm:w-20 sm:h-20' }, // Justerat för samma höjd
-                        { image: 'assets/images/controlgame.png', text: 'Spela', style: 'w-14 h-10 sm:w-20 sm:h-20 object-contain' },
-                        { image: 'assets/images/girlVR.png', text: 'Upplev', style: 'w-12 h-12 sm:w-20 sm:h-20' },
+                        { image: 'assets/images/boyreading.png', text: 'Läsa', alt: 'Pojke som läser', style: 'w-12 h-12 sm:w-20 sm:h-20' },
+                        { image: 'assets/images/boylistening.png', text: 'Lyssna', alt: 'Pojke som lyssnar', style: 'w-12 h-12 sm:w-20 sm:h-20' },
+                        { image: 'assets/images/flattv.png', text: 'Video', alt: 'Platt TV', style: 'w-12 h-12 sm:w-20 sm:h-20' },
+                        { image: 'assets/images/controlgame.png', text: 'Spela', alt: 'Spelkontroll', style: 'w-14 h-10 sm:w-20 sm:h-20 object-contain' },
+                        { image: 'assets/images/girlVR.png', text: 'Upplev', alt: 'Flicka med VR-headset', style: 'w-12 h-12 sm:w-20 sm:h-20' },
                     ].map((tab, idx) => (
                         <Tab as={Fragment} key={idx}>
                             {({ selected }) => (
                                 <button
-                                    className={`w-full flex flex-col items-center py-4 border-b-2 transition-all duration-200 ${
+                                    className={`flex-1 flex flex-col items-center py-4 border-b-2 transition-all duration-200 ${
                                         selected ? 'text-primary border-primary' : 'text-gray-600 border-transparent'
                                     } hover:text-blue-500 hover:scale-110`}
                                 >
-                                    <img src={tab.image} alt={tab.text} className={`${tab.style} mb-2`} />
-                                    <span className="mt-2 text-base font-bold">{tab.text}</span>
+                                    <img src={tab.image} alt={tab.alt} className={`${tab.style} mb-2`} />
+                                    <span className="mt-2 text-sm sm:text-base font-bold">{tab.text}</span>
                                 </button>
                             )}
                         </Tab>

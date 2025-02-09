@@ -28,6 +28,8 @@ const StartPageStudent: React.FC = () => {
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768);
     const [showSchedule, setShowSchedule] = useState<boolean>(false);
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const notesList: Note[] = [
         { id: 1, user: 'Mohanned', thumb: 'profile-5.jpeg', title: 'Engelska', date: '11/01/2020', tag: 'personal', isRemote: true },
@@ -67,6 +69,13 @@ const StartPageStudent: React.FC = () => {
         };
     }, [dispatch]);
 
+    useEffect(() => {
+        // Simulate data fetching
+        setTimeout(() => {
+            setLoading(false);
+        }, 2000);
+    }, []);
+
     const handleCardClick = (title: string) => {
         if (title === 'Svenska') {
             navigate('/swedishmenu');
@@ -76,6 +85,22 @@ const StartPageStudent: React.FC = () => {
             setShowModal(true);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="loader">Laddar...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="text-red-500">{error}</div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-5 relative bg-white overflow-auto min-h-screen">
@@ -102,7 +127,7 @@ const StartPageStudent: React.FC = () => {
                     <div className="px-4">
                         <h1 className="text-xl sm:text-3xl font-bold mb-5">Kunskapsplatsen</h1>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {notesList.map((note) => {
                             const details = courseDetails[note.title];
                             return (

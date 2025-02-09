@@ -21,6 +21,8 @@ const SwedishBooks = () => {
     const dispatch = useDispatch();
 
     const [projectList, setProjectList] = useState<Category[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         dispatch(setPageTitle('Kursmaterial'));
@@ -50,10 +52,29 @@ const SwedishBooks = () => {
             });
 
             setProjectList(categories);
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching posts:', error);
+            setError('Kunde inte hämta data. Försök igen senare.');
+            setLoading(false);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="loader">Laddar...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="text-red-500">{error}</div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-5">

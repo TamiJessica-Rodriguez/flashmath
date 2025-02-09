@@ -10,68 +10,58 @@ The platform is a versatile learning tool designed to support both students and 
 
 ### Technologies
 
-- **React**
-- **TypeScript**
-- **Vristo UI Kit**
-- **Zod**
-- **bcrypt**
-- **JWT**
-- **LocalStorage**
-- **React-hook-form**
+-   **React**
+-   **TypeScript**
+-   **Vristo UI Kit**
+-   **Zod**
+-   **bcrypt**
+-   **JWT**
+-   **LocalStorage**
+-   **React-hook-form**
 
-- **Backend**:
-  - **MongoDb**
+-   **Backend**:
+    -   **MongoDb**
 
 ### Installation backend
 
-- `cd server`
-- `npm install`
-- `npm run dev`
+-   `cd server`
+-   `npm install`
+-   `npm run dev`
 
 ### Installation frontend
 
-- `cd flashmath`
-- `npm run dev`
-
-### Checklista för godkänt
-- [x] Utför en noggrann målgruppsanalys.
-- [x] Använd ett projekthanteringsverktyg, som Trello eller Kanban, för att strukturera arbetet.
-
-#### Design och Prototyping
-
-- [x] Skapa wireframes och en prototyp i Figma som följer UX/UI-principer.
-- [x] Säkerställ att designen är responsiv för minst två olika skärmstorlekar och följer WCAG 2.1-standarder.
-
-#### Applikationsutveckling
-
-- [x] Utveckla med ett modernt JavaScript-ramverk.
-- [x] Använd en databas för lagring och hämtning av data.
-- [x] Implementera state-hantering och skapa dynamiska komponenter med reaktivitet och interaktivitet.
-- [x] Följa WCAG 2.1-standarder och använda semantisk HTML.
-
-**Webbapplikation:**
-
-- [x] Produkten är responsiv och fungerar korrekt på minst två skärmstorlekar (mobil och dator).
-- [x] Gränssnittet är användarvänligt och anpassar sig efter enheterna.
-
-**Native mobilapplikation:**
-
-- [x] Produkten anpassas till olika skärmstorlekar och enhetsorienteringar (porträtt och landskap).
-- [x] Gränssnittet fungerar sömlöst på smartphones och surfplattor med korrekt layout och användarvänlighet.
-
-#### Versionshantering
-
-- [x] Använd Git för versionshantering och hosta ett repo på GitHub.
-
-#### Slutrapport
-
-- [x] Skriv en rapport (2–3 sidor) som inkluderar:
-  - Abstract på engelska.
-  - Val av tech stack och motiveringar.
-  - Dokumentation av arbetsprocess, planering och research.
-
-#### Deploy
-
-- [x] Host projektet och gör det tillgängligt för visning i en webbläsare eller simulator.
+-   `cd flashmath`
+-   `npm run dev`
 
 
+### Checklista för väl godkänt
+
+ [x] Allt för godkänt
+
+ [x] Implementera interaktivitet i prototypen för att demonstrera hur användaren interagerar med produkten.
+
+ [x] Prototypen ska vara väldigt lik den färdiga produkten.
+
+ [x] Designen följer, utan undantag, WCAG 2.1-standarder för nivå A och AA.
+
+ [x] Använd en state management-lösning som till exempel Redux eller Pinia för att hantera global state i applikationen.
+
+ [x] Koden följer, utan undantag, WCAG 2.1-standarder för nivå A och AA.
+
+ [ ] Produkten ska vara optimerad och ha tillräckligt stora filformat, återanvända kod och komponenter samt använda optimeringstekniker där det behövs.
+
+ [x] Implementera CRUD-operationer, Create, Read, Update, Delete, med säker hantering av användardata.
+
+ [x] Implementera en säker autentiseringslösning för databasen, till exempel OAuth, JWT (JSON Web Tokens) eller Firebase Authentication, för att säkerställa att endast behöriga användare kan få åtkomst till och hantera data. Detta skyddar användardata genom att verifiera identiteten innan CRUD-operationer tillåts.
+
+ [x] Produkten ska vara fullt responsiv och anpassa sig dynamiskt till olika skärmstorlekar och enheter, från mobiltelefoner till större skärmar. Gränssnittet ska ge en optimal användarupplevelse oavsett enhet, med korrekt layout och funktionalitet för både små och stora skärmar.
+
+ [x] Arbeta med feature branches och gör pull requests innan du mergar till baskoden för att säkerställa ordning och spårbarhet.
+
+ [x] Dokumentera varje steg i din commit-historik med tydliga och informativa commit-meddelanden.
+
+ [x] Skriv en tydlig README som inte bara beskriver projektet och hur det körs, men som också förklarar projektets tekniska val och hur olika funktioner implementerats.
+
+ [x] Automatiserat flöde för bygge och deploy av applikationen, där byggprocessen automatiskt triggar publicering till en produktionsmiljö utan manuell inblandning, vilket säkerställer effektivitet och kontinuerlig leverans.
+
+ [x] Skriv en djupgående slutrapport som inkluderar en analys av projektets genomförande, tekniska val och resultat.

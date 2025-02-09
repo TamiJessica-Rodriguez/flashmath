@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface Note {
@@ -10,6 +10,8 @@ interface Note {
 
 const WeeklySchedule: React.FC = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const calculateBreakHeight = (startTime: string, endTime: string) => {
         const [startHour, startMinute] = startTime.split(':').map(Number);
@@ -20,8 +22,8 @@ const WeeklySchedule: React.FC = () => {
 
         const duration = endInMinutes - startInMinutes;
 
-        if (duration >= 90) return 'h-10'; 
-        if (duration >= 60) return 'h-8'; 
+        if (duration >= 90) return 'h-10';
+        if (duration >= 60) return 'h-8';
         return 'h-6'; // Kort raster
     };
 
@@ -54,6 +56,29 @@ const WeeklySchedule: React.FC = () => {
     };
 
     const days = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag'];
+
+    useEffect(() => {
+        // Simulate data fetching
+        setTimeout(() => {
+            setLoading(false);
+        }, 2000);
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="loader">Laddar...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="text-red-500">{error}</div>
+            </div>
+        );
+    }
 
     return (
         <div className="p-4">

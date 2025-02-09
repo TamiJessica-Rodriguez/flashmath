@@ -47,22 +47,20 @@ const Main = () => {
             description: 'Navigera genom labyrinter och lös matematikgåtor.',
             date: '18 Nov 2024',
             author: 'Bob Green',
-            link: '/maze', 
+            link: '/maze',
         },
     ];
 
     return (
-        <div className="min-h-screen bg-white flex flex-col items-center">
+        <div className="min-h-screen bg-white flex flex-col items-center" aria-label="Mathematics Page">
             {/* Title and Text */}
             <div className="mb-10 mt-8 md:mt-12 text-center">
-                {' '}
-                {/* Increased margin above the title */}
                 <h1 className="text-3xl md:text-4xl font-bold">Matematik</h1>
                 <p className="text-lg mt-2">Välj en aktivitet nedan och börja öva på matematik.</p>
             </div>
 
             {/* Grid for Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
                 {cards.map((card, index) => (
                     <div
                         key={index}
@@ -70,11 +68,19 @@ const Main = () => {
                         className={`cursor-pointer bg-white shadow-md rounded overflow-hidden transition-transform duration-500 ease-in-out group ${
                             ['Addition', 'Labyrint'].includes(card.title) ? 'hover:shadow-lg hover:scale-105' : 'opacity-50 pointer-events-none'
                         }`}
+                        role="listitem"
+                        aria-label={`Card for ${card.title}`}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                navigate(card.title === 'Labyrint' ? '/maze' : `/${card.title.toLowerCase()}`);
+                            }
+                        }}
                     >
                         <div className="relative h-64 overflow-hidden">
                             <img
                                 src={card.image}
-                                alt={card.title}
+                                alt={`Image for ${card.title} activity`}
                                 className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-in-out ${
                                     ['Addition', 'Labyrint'].includes(card.title) ? 'group-hover:scale-110' : ''
                                 }`}

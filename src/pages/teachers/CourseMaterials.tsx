@@ -192,9 +192,18 @@ const CourseMaterial = () => {
                                 className="space-y-2"
                             >
                                 {category.tasks.map((task) => (
-                                    <div key={`${category.id}-${task.id}`} className="bg-white shadow rounded-md p-4 relative flex" role="listitem" aria-label={`Uppgift: ${task.title}`}>
+                                    <div
+                                        key={`${category.id}-${task.id}`}
+                                        className="bg-white shadow rounded-md p-4 relative flex flex-col sm:flex-row"
+                                        role="listitem"
+                                        aria-label={`Uppgift: ${task.title}`}
+                                    >
                                         {task.imageId && (
-                                            <img src={`http://localhost:3000/api/images/${task.imageId}`} alt={`Bild för uppgift: ${task.title}`} className="w-24 h-24 object-cover rounded-md mr-4" />
+                                            <img
+                                                src={`http://localhost:3000/api/images/${task.imageId}`}
+                                                alt={`Bild för uppgift: ${task.title}`}
+                                                className="w-full sm:w-24 h-24 object-cover rounded-md mb-4 sm:mb-0 sm:mr-4"
+                                            />
                                         )}
                                         <div className="flex flex-col justify-between">
                                             <div>

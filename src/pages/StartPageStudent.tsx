@@ -27,6 +27,9 @@ const StartPageStudent: React.FC = () => {
 
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768);
     const [showSchedule, setShowSchedule] = useState<boolean>(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const notesList: Note[] = [
         { id: 1, user: 'Mohanned', thumb: 'profile-5.jpeg', title: 'Engelska', date: '11/01/2020', tag: 'personal', isRemote: true },
@@ -66,6 +69,39 @@ const StartPageStudent: React.FC = () => {
         };
     }, [dispatch]);
 
+    useEffect(() => {
+        // Simulate data fetching
+        setTimeout(() => {
+            setLoading(false);
+        }, 2000);
+    }, []);
+
+    const handleCardClick = (title: string) => {
+        if (title === 'Svenska') {
+            navigate('/swedishmenu');
+        } else if (title === 'Matematik') {
+            navigate('/mathematicsmenu');
+        } else {
+            setShowModal(true);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="loader">Laddar...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="text-red-500">{error}</div>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col gap-5 relative bg-white overflow-auto min-h-screen">
             <button onClick={() => setShowSchedule((prev) => !prev)} className="w-full text-center bg-blue-500 text-white py-2 rounded-md shadow-md">
@@ -91,7 +127,7 @@ const StartPageStudent: React.FC = () => {
                     <div className="px-4">
                         <h1 className="text-xl sm:text-3xl font-bold mb-5">Kunskapsplatsen</h1>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {notesList.map((note) => {
                             const details = courseDetails[note.title];
                             return (
@@ -100,13 +136,7 @@ const StartPageStudent: React.FC = () => {
                                     className={`relative p-6 h-64 cursor-pointer rounded-lg shadow-lg ${details?.colorClass || 'bg-gray-100'} transition-transform duration-300 ease-in-out ${
                                         ['Svenska', 'Matematik'].includes(note.title) ? 'group hover:scale-105' : 'opacity-50'
                                     }`}
-                                    onClick={() => {
-                                        if (note.title === 'Svenska') {
-                                            navigate('/swedishmenu');
-                                        } else if (note.title === 'Matematik') {
-                                            navigate('/mathematicsmenu');
-                                        }
-                                    }}
+                                    onClick={() => handleCardClick(note.title)}
                                 >
                                     <div className="absolute top-2 left-2">{note.isRemote && <span className="text-black font-semibold">Distans</span>}</div>
                                     <div className="absolute inset-0 flex items-center justify-center">
@@ -132,6 +162,19 @@ const StartPageStudent: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal */}
+            {showModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <h2 className="text-2xl font-bold mb-4">Under Konstruktion</h2>
+                        <p className="mb-4">Sidan är under konstruktion och kommer att lanseras inom kort.</p>
+                        <button onClick={() => setShowModal(false)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition">
+                            Stäng
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

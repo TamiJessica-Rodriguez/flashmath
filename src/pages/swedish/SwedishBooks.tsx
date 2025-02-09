@@ -21,6 +21,8 @@ const SwedishBooks = () => {
     const dispatch = useDispatch();
 
     const [projectList, setProjectList] = useState<Category[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         dispatch(setPageTitle('Kursmaterial'));
@@ -50,26 +52,45 @@ const SwedishBooks = () => {
             });
 
             setProjectList(categories);
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching posts:', error);
+            setError('Kunde inte hämta data. Försök igen senare.');
+            setLoading(false);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="loader">Laddar...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="text-red-500">{error}</div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-5">
             {/* Project List */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {projectList.map((project: Category) => (
                     <div key={project.id} className="panel p-4 rounded-lg bg-blue-100/50 shadow-lg">
                         <h4 className="text-xl font-bold text-gray-800 mb-4">{project.title}</h4>
                         <div className="space-y-4">
                             {project.tasks.map((task: Task) => (
-                                <div key={task.id} className="p-3 rounded-lg bg-white shadow-md flex items-center gap-4">
+                                <div key={task.id} className="p-3 rounded-lg bg-white shadow-md flex flex-col sm:flex-row items-center gap-4">
                                     {/* Visa bilder för "Böcker", "Dokument", och "Föreläsningar" */}
                                     {['Böcker', 'Dokument', 'Föreläsningar'].includes(project.title) && task.imageId && (
-                                        <img src={`http://localhost:3000/api/images/${task.imageId}`} alt={task.title} className="w-24 h-32 object-cover rounded-md" />
+                                        <img src={`http://localhost:3000/api/images/${task.imageId}`} alt={`Bild för ${task.title}`} className="w-24 h-32 object-cover rounded-md" />
                                     )}
-                                    <div>
+                                    <div className="text-center sm:text-left">
                                         <h5 className="font-semibold text-lg text-gray-700">{task.title}</h5>
                                         <p className="text-sm text-gray-600">{task.description}</p>
                                         <p className="text-xs text-gray-500 mt-2">{task.date}</p>

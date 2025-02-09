@@ -1,5 +1,5 @@
 import { Tab } from '@headlessui/react';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -16,6 +16,8 @@ const Info = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const [favorites, setFavorites] = useState<Item[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const categories = [
         {
@@ -64,6 +66,13 @@ const Info = () => {
         { image: 'assets/images/girlVR.png', text: 'Upplev', alt: 'Flicka med VR-headset' },
     ];
 
+    useEffect(() => {
+        // Simulate data fetching
+        setTimeout(() => {
+            setLoading(false);
+        }, 2000);
+    }, []);
+
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
     };
@@ -83,6 +92,22 @@ const Info = () => {
     };
 
     const isFavorite = (item: Item) => favorites.some((fav) => fav.id === item.id);
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="loader">Laddar...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="text-red-500">{error}</div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-800 flex flex-col gap-10 p-6">

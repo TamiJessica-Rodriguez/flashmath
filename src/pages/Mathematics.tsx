@@ -5,6 +5,8 @@ const Main = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState<{ username: string; avatar: string } | null>(null);
     const [showModal, setShowModal] = useState(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     // Fetch user data on mount
     useEffect(() => {
@@ -12,6 +14,7 @@ const Main = () => {
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
+        setLoading(false);
     }, []);
 
     // Log out user
@@ -58,6 +61,22 @@ const Main = () => {
             setShowModal(true);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="loader">Laddar...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="text-red-500">{error}</div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white flex flex-col items-center" aria-label="Mathematics Page">

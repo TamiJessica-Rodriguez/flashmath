@@ -61,7 +61,11 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-cover bg-center flex items-center justify-center" style={{ backgroundImage: "url('/assets/images/startpage.webp')" }}>
+        <div
+            className="min-h-screen bg-cover bg-center flex items-center justify-center p-4 sm:p-0"
+            style={{ backgroundImage: "url('/assets/images/startpage.webp')" }}
+            aria-label="An image of an ocean with a pink pirate boat."
+        >
             <div
                 className="w-full max-w-md mx-auto rounded shadow-md p-8"
                 style={{
@@ -72,7 +76,11 @@ const Login = () => {
                 <h1 className="text-2xl font-bold text-center mb-4">Logga in</h1>
 
                 {/* Error message display */}
-                {error && <div className="text-red-600 mb-4">{error}</div>}
+                {error && (
+                    <div className="text-red-600 mb-4" role="alert">
+                        {error}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit}>
                     {/* Username input */}
@@ -89,6 +97,8 @@ const Login = () => {
                             className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                             placeholder="Ange ditt användarnamn"
                             required
+                            aria-required="true"
+                            aria-label="Användarnamn"
                         />
                     </div>
 
@@ -106,19 +116,21 @@ const Login = () => {
                             className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                             placeholder="Ange ditt lösenord"
                             required
+                            aria-required="true"
+                            aria-label="Lösenord"
                         />
                     </div>
 
                     {/* Admin toggle */}
                     <div className="mb-4 flex items-center">
-                        <input type="checkbox" id="isAdmin" name="isAdmin" checked={form.isAdmin} onChange={handleAdminToggle} className="mr-2" />
+                        <input type="checkbox" id="isAdmin" name="isAdmin" checked={form.isAdmin} onChange={handleAdminToggle} className="mr-2" aria-label="Logga in som admin" />
                         <label htmlFor="isAdmin" className="text-gray-700 font-medium">
                             Logga in som admin
                         </label>
                     </div>
 
                     {/* Submit button */}
-                    <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none">
+                    <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none" aria-label="Logga in">
                         Logga in
                     </button>
                 </form>
